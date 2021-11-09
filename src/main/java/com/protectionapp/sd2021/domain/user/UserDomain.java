@@ -1,6 +1,7 @@
 package com.protectionapp.sd2021.domain.user;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -8,10 +9,10 @@ import javax.persistence.*;
 @Table(name = "user")
 public class UserDomain implements IBaseDomain {
     private static final long serialVersionUID = 1L;
-    
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private Integer id;
 
     @Column(name = "name")
@@ -19,6 +20,9 @@ public class UserDomain implements IBaseDomain {
 
     @Column(name = "surname")
     private String surname;
+
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "cn")
     private Integer cn;
@@ -37,6 +41,12 @@ public class UserDomain implements IBaseDomain {
 
     @Transient
     private String confirmPassword;
+
+    /* Crea una columna llamada "role_id" que hace referencia a "id" dentro de RoleDomain
+     * Quien sea duenho del FK tendra un @JoinColumn */
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    private RoleDomain role;
 
     public String getName() {
         return name;
@@ -108,5 +118,13 @@ public class UserDomain implements IBaseDomain {
 
     public void setPhone(Integer phone) {
         this.phone = phone;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

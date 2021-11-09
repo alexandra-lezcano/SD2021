@@ -37,6 +37,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         final UserDTO user = new UserDTO();
         user.setName(domain.getName());
         user.setSurname(domain.getSurname());
+        user.setUsername(domain.getUsername());
         user.setCn(domain.getCn());
         user.setEmail(domain.getEmail());
         user.setPhone(domain.getPhone());
@@ -50,6 +51,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         final UserDomain user = new UserDomain();
         user.setName(dto.getName());
         user.setSurname(dto.getSurname());
+        user.setUsername(dto.getUsername());
         user.setCn(dto.getCn());
         user.setEmail(dto.getEmail());
         user.setPhone(dto.getPhone());

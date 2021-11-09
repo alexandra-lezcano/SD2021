@@ -10,6 +10,7 @@ public class UserDTO extends BaseDTO {
 
     private String name;
     private String surname;
+    private String username;
     private Integer cn;
     private String address;
     private String email;
@@ -61,5 +62,13 @@ public class UserDTO extends BaseDTO {
 
     public void setPhone(Integer phone) {
         this.phone = phone;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

@@ -1,4 +1,4 @@
-package com.protectionapp.sd2021.dao;
+package com.protectionapp.sd2021.dao.user;
 
 import com.protectionapp.sd2021.domain.user.UserDomain;
 import org.springframework.data.domain.Page;

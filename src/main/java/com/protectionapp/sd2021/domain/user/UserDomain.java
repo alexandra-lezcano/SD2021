@@ -3,7 +3,6 @@ package com.protectionapp.sd2021.domain.user;
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
 import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Set;

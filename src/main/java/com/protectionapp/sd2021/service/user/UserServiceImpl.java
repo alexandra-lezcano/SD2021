@@ -1,6 +1,6 @@
 package com.protectionapp.sd2021.service.user;
 
-import com.protectionapp.sd2021.dao.IUserDao;
+import com.protectionapp.sd2021.dao.user.IUserDao;
 import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.dto.user.UserResult;
@@ -106,7 +106,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     @Override
     @Transactional
     public UserResult getAll(Pageable pageable) {
-        final List<UserDTO> users = new ArrayList<UserDTO>();
+        final List<UserDTO> users = new ArrayList<>();
         Page<UserDomain> results = userDao.findAll(pageable);
         results.forEach(user -> users.add(convertDomainToDto(user)));
 

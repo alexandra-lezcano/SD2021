@@ -10,7 +10,7 @@ public class DepEstadoDTO extends BaseDTO {
 
 
     private String description;
-    private Date date;
+    private String name;
 
 
 
@@ -22,11 +22,11 @@ public class DepEstadoDTO extends BaseDTO {
         this.description = description;
     }
 
-    public Date getDate() {
-        return date;
+    public String getName() {
+        return name;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setName(String name) {
+        this.name = name;
     }
 }

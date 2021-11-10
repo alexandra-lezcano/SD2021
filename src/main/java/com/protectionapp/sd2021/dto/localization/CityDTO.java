@@ -14,7 +14,7 @@ public class CityDTO extends BaseDTO {
 
     private String name;
     private String description;
-    private UserDomain user;
+    private Set<UserDomain> users;
     private Set<NeighborhoodDomain> neighborhood;
 
     @XmlElement
@@ -28,8 +28,8 @@ public class CityDTO extends BaseDTO {
     }
 
     @XmlElement
-    public UserDomain getUser() {
-        return user;
+    public Set<UserDomain> getUsers() {
+        return users;
     }
 
     @XmlElement
@@ -45,8 +45,8 @@ public class CityDTO extends BaseDTO {
         this.description = description;
     }
 
-    public void setUser(UserDomain user) {
-        this.user = user;
+    public void setUsers(Set<UserDomain> users) {
+        this.users = users;
     }
 
     public void setNeighborhood(Set<NeighborhoodDomain> neighborhood) {

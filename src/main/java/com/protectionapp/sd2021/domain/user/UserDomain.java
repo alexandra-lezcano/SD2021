@@ -46,11 +46,12 @@ public class UserDomain implements IBaseDomain {
 
     /* Crea una columna llamada "role_id" que hace referencia a "id" dentro de RoleDomain
      * Quien sea duenho del FK tendra un @JoinColumn */
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private RoleDomain role;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    /*Hay muchos usuarios en una ciudad, una ciudad puede tener muchos usuarios*/
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "city_id", referencedColumnName = "id")
     private CityDomain city;
 
@@ -157,5 +158,13 @@ public class UserDomain implements IBaseDomain {
 
     public void setNeighborhoods(Set<NeighborhoodDomain> neighborhoods) {
         this.neighborhoods = neighborhoods;
+    }
+
+    public CityDomain getCity() {
+        return city;
+    }
+
+    public void setCity(CityDomain city) {
+        this.city = city;
     }
 }

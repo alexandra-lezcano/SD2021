@@ -22,8 +22,9 @@ public class CityDomain implements IBaseDomain {
     @Column(name = "description")
     private String description;
 
-    @OneToOne(mappedBy = "city")
-    private UserDomain user;
+    /*Una ciudad tiene muchos usuarios ... hay muchos usuarios en una ciudad*/
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
+    private Set<UserDomain> users;
 
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
     private Set<NeighborhoodDomain> neighborhood;
@@ -58,5 +59,13 @@ public class CityDomain implements IBaseDomain {
 
     public void setNeighborhood(Set<NeighborhoodDomain> neighborhood) {
         this.neighborhood = neighborhood;
+    }
+
+    public Set<UserDomain> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<UserDomain> users) {
+        this.users = users;
     }
 }

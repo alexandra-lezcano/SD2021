@@ -12,6 +12,7 @@ public class DenunciaDTO extends BaseDTO {
     private Date fecha;
     private String descripcion;
     private String estado;
+    private String codigo;
 
 
     public Date getFecha(){return fecha;}
@@ -23,4 +24,6 @@ public class DenunciaDTO extends BaseDTO {
     public String getEstado(){ return estado; }
     public void setEstado(String estado){ this.estado = estado;}
 
+    public String getCodigo(){ return codigo;}
+    public void setCodigo(String codigo){ this.codigo = codigo;}
 }

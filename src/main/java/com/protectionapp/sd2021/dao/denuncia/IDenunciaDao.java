@@ -1,4 +1,4 @@
-package com.protectionapp.sd2021.dao;
+package com.protectionapp.sd2021.dao.denuncia;
 
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import org.springframework.data.domain.Page;

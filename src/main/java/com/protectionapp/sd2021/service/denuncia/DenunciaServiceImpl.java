@@ -1,6 +1,6 @@
 package com.protectionapp.sd2021.service.denuncia;
 
-import com.protectionapp.sd2021.dao.IDenunciaDao;
+import com.protectionapp.sd2021.dao.denuncia.IDenunciaDao;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaResult;

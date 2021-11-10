@@ -55,18 +55,23 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         user.setAddress(userDomain.getAddress());
 
         /* Relacion ManyToOne */
-        Integer city_id = userDomain.getCity().getId();
-        user.setCityId(city_id);
+        if (userDomain.getCity() != null) {
+            Integer city_id = userDomain.getCity().getId();
+            user.setCityId(city_id);
+        }
 
         /* Relacion ManyToMany
         Necesito guardar una lista de ids de los barrios a mi user DTO */
-        Set<Integer> neighborhood_ids = new HashSet<>();
+        if (userDomain.getNeighborhoods() != null) {
+            Set<Integer> neighborhood_ids = new HashSet<>();
 
-        for (NeighborhoodDomain nd : userDomain.getNeighborhoods()) {
-            neighborhood_ids.add(nd.getId());
+            for (NeighborhoodDomain nd : userDomain.getNeighborhoods()) {
+                neighborhood_ids.add(nd.getId());
+            }
+
+            user.setNeighborhoods(neighborhood_ids);
         }
 
-        user.setNeighborhoods(neighborhood_ids);
 
         return user;
     }
@@ -82,17 +87,22 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         userDomain.setPhone(userDTO.getPhone());
         userDomain.setAddress(userDTO.getAddress());
 
-        // guardo un cityDomain obtenido por el cityDao - recordar, el dao es un CrudRepository!
-        userDomain.setCity(cityDao.findById(userDTO.getCityId()).get());
+        if (userDTO.getCityId() != null) {
+            // guardo un cityDomain obtenido por el cityDao - recordar, el dao es un CrudRepository!
+            userDomain.setCity(cityDao.findById(userDTO.getCityId()).get());
+        }
+        if (userDTO.getNeighborhoodIds() != null) {
+            Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
 
-        Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
+            Set<Integer> neighborhood_ids = userDTO.getNeighborhoodIds();
+            for (Integer nId : neighborhood_ids) {
+                neighborhoodDomains.add(neighborhoodDao.findById(nId).get());
+            }
 
-        Set<Integer> neighborhood_ids = userDTO.getNeighborhoodIds();
-        for (Integer nId : neighborhood_ids) {
-            neighborhoodDomains.add(neighborhoodDao.findById(nId).get());
+            userDomain.setNeighborhoods(neighborhoodDomains);
         }
 
-        userDomain.setNeighborhoods(neighborhoodDomains);
+
         return userDomain;
     }
 

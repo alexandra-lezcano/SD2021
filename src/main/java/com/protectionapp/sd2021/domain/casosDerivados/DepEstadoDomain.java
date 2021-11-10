@@ -2,12 +2,14 @@ package com.protectionapp.sd2021.domain.casosDerivados;
 
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
+import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
-@Table(name = "Dependencias_Del_estado")
+@Table(name = "dependencias_Del_estado")
 public class DepEstadoDomain implements IBaseDomain {
 
     @Id
@@ -20,7 +22,14 @@ public class DepEstadoDomain implements IBaseDomain {
 
     private static final long serialVersionUID = 1L;
 
-  
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "CD_DE",
+            joinColumns = @JoinColumn(name = "depEstado_id"),
+            inverseJoinColumns = @JoinColumn(name = "casosDep_id")
+    )
+    private Set<CasosDerivadosDomain> casosDerivados;
 
     @Column(name = "name")
     private String name;

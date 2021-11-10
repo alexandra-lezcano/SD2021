@@ -1,6 +1,7 @@
 package com.protectionapp.sd2021.domain.denuncia;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
+import com.protectionapp.sd2021.domain.casosDerivados.CasosDerivadosDomain;
 import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import org.hibernate.annotations.Cascade;
@@ -50,8 +51,18 @@ public class DenunciaDomain implements IBaseDomain {
             joinColumns = @JoinColumn(name="denuncia_id"),
             inverseJoinColumns = @JoinColumn(name="tipo_id")
     )
+
+
     private Set<TipoDenunciaDomain> tipos;
 
+    /*Crea la tabla intermedia entre com.protectionapp.sd2021.dao.casosDerivados y denuncia*/
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "denuncias")
+    @JoinTable(
+            name = "casosDerivados_denuncias",
+            joinColumns = {@JoinColumn(name = "denuncia_id")},
+            inverseJoinColumns = {@JoinColumn(name = "casosDerivados_id")}
+    )
+    private Set<CasosDerivadosDomain> casosDerivados;
 
     public Integer getId() {
         return id;

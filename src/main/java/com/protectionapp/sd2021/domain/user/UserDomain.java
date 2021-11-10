@@ -1,6 +1,7 @@
 package com.protectionapp.sd2021.domain.user;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
+import com.protectionapp.sd2021.domain.casosDerivados.CasosDerivadosDomain;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
@@ -73,6 +74,10 @@ public class UserDomain implements IBaseDomain {
     /*Relacion many to many bidireccional entre user y denuncia*/
     @ManyToMany (cascade = CascadeType.ALL)
     private Set<DenunciaDomain> denuncias_victima_victimario;
+
+    /*Relacion many to many bidireccional entre user y com.protectionapp.sd2021.dao.casosDerivados*/
+    @ManyToMany (cascade = CascadeType.ALL)
+    private Set<CasosDerivadosDomain> casosDerivados_persona;
 
     public String getName() {
         return name;

@@ -4,6 +4,7 @@ import com.protectionapp.sd2021.domain.base.IBaseDomain;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "role")
@@ -24,8 +25,8 @@ public class RoleDomain implements IBaseDomain {
     /* Relacion bidireccional donde RoleDomain es un -non-owning-side-
      * mappedBy significa que en la classe UserDomain la relacion esta
      * mapeada por el atributo -role- */
-    @OneToOne(mappedBy = "role")
-    private UserDomain user;
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    private Set<UserDomain> users;
 
     public Integer getId() {
         return id;
@@ -49,5 +50,13 @@ public class RoleDomain implements IBaseDomain {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<UserDomain> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<UserDomain> users) {
+        this.users = users;
     }
 }

@@ -14,8 +14,8 @@ public class CityDTO extends BaseDTO {
 
     private String name;
     private String description;
-    private Set<UserDomain> users;
-    private Set<NeighborhoodDomain> neighborhood;
+    private Set<Integer> user_ids;
+    private Set<Integer> neighborhood_ids;
 
     @XmlElement
     public String getName() {
@@ -28,13 +28,13 @@ public class CityDTO extends BaseDTO {
     }
 
     @XmlElement
-    public Set<UserDomain> getUsers() {
-        return users;
+    public Set<Integer> getUsers() {
+        return user_ids;
     }
 
     @XmlElement
-    public Set<NeighborhoodDomain> getNeighborhood() {
-        return neighborhood;
+    public Set<Integer> getNeighborhood() {
+        return neighborhood_ids;
     }
 
     public void setName(String name) {
@@ -45,11 +45,11 @@ public class CityDTO extends BaseDTO {
         this.description = description;
     }
 
-    public void setUsers(Set<UserDomain> users) {
-        this.users = users;
+    public void setUsers(Set<Integer> users) {
+        this.user_ids = users;
     }
 
-    public void setNeighborhood(Set<NeighborhoodDomain> neighborhood) {
-        this.neighborhood = neighborhood;
+    public void setNeighborhood(Set<Integer> neighborhood) {
+        this.neighborhood_ids = neighborhood;
     }
 }

@@ -1,8 +1,5 @@
 package com.protectionapp.sd2021.dto.user;
 
-import com.protectionapp.sd2021.domain.location.CityDomain;
-import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
-import com.protectionapp.sd2021.domain.user.RoleDomain;
 import com.protectionapp.sd2021.dto.base.BaseDTO;
 
 import javax.xml.bind.annotation.XmlElement;

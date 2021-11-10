@@ -2,7 +2,6 @@ package com.protectionapp.sd2021.dto.user;
 
 
 import com.protectionapp.sd2021.dto.base.BaseResult;
-import org.apache.catalina.User;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

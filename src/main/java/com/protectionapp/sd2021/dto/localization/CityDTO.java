@@ -1,7 +1,5 @@
 package com.protectionapp.sd2021.dto.localization;
 
-import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
-import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.base.BaseDTO;
 
 import javax.xml.bind.annotation.XmlElement;

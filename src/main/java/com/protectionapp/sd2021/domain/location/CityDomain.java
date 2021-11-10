@@ -1,13 +1,14 @@
-package com.protectionapp.sd2021.domain.user;
+package com.protectionapp.sd2021.domain.location;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
-import org.hibernate.annotations.GenericGenerator;
+import com.protectionapp.sd2021.domain.user.UserDomain;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
-@Table(name = "role")
-public class RoleDomain implements IBaseDomain {
+@Table(name = "city")
+public class CityDomain implements IBaseDomain {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -21,11 +22,11 @@ public class RoleDomain implements IBaseDomain {
     @Column(name = "description")
     private String description;
 
-    /* Relacion bidireccional donde RoleDomain es un -non-owning-side-
-     * mappedBy significa que en la classe UserDomain la relacion esta
-     * mapeada por el atributo -role- */
-    @OneToOne(mappedBy = "role")
+    @OneToOne(mappedBy = "city")
     private UserDomain user;
+
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
+    private Set<NeighborhoodDomain> neighborhood;
 
     public Integer getId() {
         return id;
@@ -47,7 +48,15 @@ public class RoleDomain implements IBaseDomain {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescription(String department) {
+        this.description = department;
+    }
+
+    public Set<NeighborhoodDomain> getNeighborhood() {
+        return neighborhood;
+    }
+
+    public void setNeighborhood(Set<NeighborhoodDomain> neighborhood) {
+        this.neighborhood = neighborhood;
     }
 }

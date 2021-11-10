@@ -1,8 +1,5 @@
 package com.protectionapp.sd2021.dto.user;
 
-import com.protectionapp.sd2021.domain.location.CityDomain;
-import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
-import com.protectionapp.sd2021.domain.user.RoleDomain;
 import com.protectionapp.sd2021.dto.base.BaseDTO;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -20,9 +17,9 @@ public class UserDTO extends BaseDTO {
     private String address;
     private String email;
     private Integer phone;
-    private CityDomain city;
-    private RoleDomain role;
-    private Set<NeighborhoodDomain> neighborhoods;
+    private Integer city_id;
+    private Integer role_id;
+    private Set<Integer> neighborhood_ids;
 
     @XmlElement
     public String getName() {
@@ -60,18 +57,18 @@ public class UserDTO extends BaseDTO {
     }
 
     @XmlElement
-    public CityDomain getCity() {
-        return city;
+    public Integer getCityId() {
+        return city_id;
     }
 
     @XmlElement
-    public RoleDomain getRole() {
-        return role;
+    public Integer getRoleId() {
+        return role_id;
     }
 
     @XmlElement
-    public Set<NeighborhoodDomain> getNeighborhoods() {
-        return neighborhoods;
+    public Set<Integer> getNeighborhoodIds() {
+        return neighborhood_ids;
     }
 
     public void setName(String name) {
@@ -102,15 +99,15 @@ public class UserDTO extends BaseDTO {
         this.username = username;
     }
 
-    public void setCity(CityDomain city) {
-        this.city = city;
+    public void setCityId(Integer cityId) {
+        this.city_id = cityId;
     }
 
-    public void setRole(RoleDomain role) {
-        this.role = role;
+    public void setRole(Integer role) {
+        this.role_id = role;
     }
 
-    public void setNeighborhoods(Set<NeighborhoodDomain> neighborhoods) {
-        this.neighborhoods = neighborhoods;
+    public void setNeighborhoods(Set<Integer> neighborhoods) {
+        this.neighborhood_ids = neighborhoods;
     }
 }

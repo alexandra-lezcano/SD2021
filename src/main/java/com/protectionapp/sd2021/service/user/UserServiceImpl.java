@@ -1,6 +1,9 @@
 package com.protectionapp.sd2021.service.user;
 
+import com.protectionapp.sd2021.dao.location.ICityDao;
+import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
 import com.protectionapp.sd2021.dao.user.IUserDao;
+import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.dto.user.UserResult;
@@ -12,7 +15,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional; // para todos los metodos que van a la db
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /* De arriba para abajo: el servicio recibe DTO y genera un DAO para la db
  * De abajo para arriba: el servicio recibe DAO y genera DTO para responder un request
@@ -32,32 +37,73 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     @Autowired
     private IUserDao userDao;
 
+    @Autowired
+    private ICityDao cityDao;
+
+    @Autowired
+    private INeighborhoodDao neighborhoodDao;
+
     @Override
-    protected UserDTO convertDomainToDto(UserDomain domain) {
+    protected UserDTO convertDomainToDto(UserDomain userDomain) {
         final UserDTO user = new UserDTO();
-        user.setName(domain.getName());
-        user.setSurname(domain.getSurname());
-        user.setUsername(domain.getUsername());
-        user.setCn(domain.getCn());
-        user.setEmail(domain.getEmail());
-        user.setPhone(domain.getPhone());
-        user.setAddress(domain.getAddress());
+        user.setName(userDomain.getName());
+        user.setSurname(userDomain.getSurname());
+        user.setUsername(userDomain.getUsername());
+        user.setCn(userDomain.getCn());
+        user.setEmail(userDomain.getEmail());
+        user.setPhone(userDomain.getPhone());
+        user.setAddress(userDomain.getAddress());
+
+        /* Relacion ManyToOne */
+        if (userDomain.getCity() != null) {
+            Integer city_id = userDomain.getCity().getId();
+            user.setCityId(city_id);
+        }
+
+        /* Relacion ManyToMany
+        Necesito guardar una lista de ids de los barrios a mi user DTO */
+        if (userDomain.getNeighborhoods() != null) {
+            Set<Integer> neighborhood_ids = new HashSet<>();
+
+            for (NeighborhoodDomain nd : userDomain.getNeighborhoods()) {
+                neighborhood_ids.add(nd.getId());
+            }
+
+            user.setNeighborhoods(neighborhood_ids);
+        }
+
 
         return user;
     }
 
     @Override
-    protected UserDomain convertDtoToDomain(UserDTO dto) {
-        final UserDomain user = new UserDomain();
-        user.setName(dto.getName());
-        user.setSurname(dto.getSurname());
-        user.setUsername(dto.getUsername());
-        user.setCn(dto.getCn());
-        user.setEmail(dto.getEmail());
-        user.setPhone(dto.getPhone());
-        user.setAddress(dto.getAddress());
+    protected UserDomain convertDtoToDomain(UserDTO userDTO) {
+        final UserDomain userDomain = new UserDomain();
+        userDomain.setName(userDTO.getName());
+        userDomain.setSurname(userDTO.getSurname());
+        userDomain.setUsername(userDTO.getUsername());
+        userDomain.setCn(userDTO.getCn());
+        userDomain.setEmail(userDTO.getEmail());
+        userDomain.setPhone(userDTO.getPhone());
+        userDomain.setAddress(userDTO.getAddress());
 
-        return user;
+        if (userDTO.getCityId() != null) {
+            // guardo un cityDomain obtenido por el cityDao - recordar, el dao es un CrudRepository!
+            userDomain.setCity(cityDao.findById(userDTO.getCityId()).get());
+        }
+        if (userDTO.getNeighborhoodIds() != null) {
+            Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
+
+            Set<Integer> neighborhood_ids = userDTO.getNeighborhoodIds();
+            for (Integer nId : neighborhood_ids) {
+                neighborhoodDomains.add(neighborhoodDao.findById(nId).get());
+            }
+
+            userDomain.setNeighborhoods(neighborhoodDomains);
+        }
+
+
+        return userDomain;
     }
 
     /**

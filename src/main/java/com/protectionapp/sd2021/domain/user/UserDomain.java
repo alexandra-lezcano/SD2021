@@ -1,9 +1,12 @@
 package com.protectionapp.sd2021.domain.user;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
+import com.protectionapp.sd2021.domain.location.CityDomain;
+import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -11,8 +14,8 @@ public class UserDomain implements IBaseDomain {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
     private Integer id;
 
     @Column(name = "name")
@@ -47,6 +50,19 @@ public class UserDomain implements IBaseDomain {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private RoleDomain role;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "city_id", referencedColumnName = "id")
+    private CityDomain city;
+
+    /* Crea la tabla intermedia user_neighborhood, con la columna "user_id" y "neighborhood_id" */
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_neighborhood",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "neighborhood_id")
+    )
+    private Set<NeighborhoodDomain> neighborhoods;
 
     public String getName() {
         return name;
@@ -126,5 +142,21 @@ public class UserDomain implements IBaseDomain {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public RoleDomain getRole() {
+        return role;
+    }
+
+    public void setRole(RoleDomain role) {
+        this.role = role;
+    }
+
+    public Set<NeighborhoodDomain> getNeighborhoods() {
+        return neighborhoods;
+    }
+
+    public void setNeighborhoods(Set<NeighborhoodDomain> neighborhoods) {
+        this.neighborhoods = neighborhoods;
     }
 }

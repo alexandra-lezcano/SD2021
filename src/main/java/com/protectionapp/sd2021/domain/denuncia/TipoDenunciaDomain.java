@@ -22,6 +22,7 @@ public class TipoDenunciaDomain implements IBaseDomain {
     @Column(name="descripcion")
     private String descripcion;
 
+    /*Relacion many to many bidireccional entre tipo de denuncia y denuncia*/
     @ManyToMany (mappedBy = "denuncias", cascade = CascadeType.ALL)
     private Set<TipoDenunciaDomain> tipos;
 

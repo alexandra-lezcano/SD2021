@@ -1,6 +1,8 @@
 package com.protectionapp.sd2021.domain.denuncia;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
+import com.protectionapp.sd2021.domain.location.CityDomain;
+import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -32,15 +34,17 @@ public class DenunciaDomain implements IBaseDomain {
     @Column(name = "codigo")
     private String codigo;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "denunciante_id", referencedColumnName = "id")
-    private UserDomain denunciante;
+    /*Crea la tabla intermedia entre user y denuncia*/
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "denuncias")
+    @JoinTable(
+            name = "denuncia_detalles_victimas_victimarios",
+            joinColumns = {@JoinColumn(name = "denuncia_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private Set<UserDomain> detalles_victimas_victimarios;
 
-    @OneToMany(cascade= CascadeType.ALL, mappedBy="denuncia")
-    @JoinColumn(name = "id")
-    private Set<UserDomain> detalles;
-
-    @ManyToMany(cascade= CascadeType.ALL, mappedBy = "denuncia")
+    /*Crea la tabla intermedia entre denuncia y tipo de denuncia*/
+    @ManyToMany(cascade= CascadeType.ALL, mappedBy = "denuncias")
     @JoinTable(
             name = "denuncia_tipos",
             joinColumns = @JoinColumn(name="denuncia_id"),
@@ -48,7 +52,6 @@ public class DenunciaDomain implements IBaseDomain {
     )
     private Set<TipoDenunciaDomain> tipos;
 
-    /*AGREGAR CIUDAD Y BARRIO*/
 
     public Integer getId() {
         return id;

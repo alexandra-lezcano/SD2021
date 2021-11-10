@@ -1,6 +1,7 @@
 package com.protectionapp.sd2021.domain.location;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
+import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
 
 import javax.persistence.*;
@@ -22,11 +23,17 @@ public class CityDomain implements IBaseDomain {
     @Column(name = "description")
     private String description;
 
-    @OneToOne(mappedBy = "city")
-    private UserDomain user;
+    /*Una ciudad tiene muchos usuarios ... hay muchos usuarios en una ciudad*/
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
+    private Set<UserDomain> users;
 
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
     private Set<NeighborhoodDomain> neighborhood;
+
+    /*Relacion unidireccional entre denuncia y ciudad*/
+    @OneToMany (cascade = CascadeType.ALL)
+    @JoinColumn (name= "ciudad_id")
+    private Set<DenunciaDomain> denuncias;
 
     public Integer getId() {
         return id;
@@ -58,5 +65,13 @@ public class CityDomain implements IBaseDomain {
 
     public void setNeighborhood(Set<NeighborhoodDomain> neighborhood) {
         this.neighborhood = neighborhood;
+    }
+
+    public Set<UserDomain> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<UserDomain> users) {
+        this.users = users;
     }
 }

@@ -2,6 +2,8 @@ package com.protectionapp.sd2021.service.location;
 
 
 import com.protectionapp.sd2021.dao.location.ICityDao;
+import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
+import com.protectionapp.sd2021.dao.user.IUserDao;
 import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.localization.CityResult;
@@ -14,6 +16,12 @@ import org.springframework.stereotype.Service;
 public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityResult> implements ICityService {
     @Autowired
     private ICityDao cityDao;
+
+    @Autowired
+    private INeighborhoodDao neighborhoodDao;
+
+    @Autowired
+    private IUserDao userDao;
 
     @Override
     protected CityDTO convertDomainToDto(CityDomain domain) {

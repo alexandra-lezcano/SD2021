@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import java.util.Date;
 
-@XmlRootElement(name = "denuncia")
+@XmlRootElement(name = "denuncias")
 public class DenunciaDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 

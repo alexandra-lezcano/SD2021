@@ -13,7 +13,7 @@ import java.util.Set;
 import com.protectionapp.sd2021.domain.user.UserDomain;
 
 @Entity
-@Table(name = "denuncias")
+@Table(name = "denuncia")
 public class DenunciaDomain implements IBaseDomain {
     private static final long serialVersionUID = 1L;
 
@@ -35,7 +35,7 @@ public class DenunciaDomain implements IBaseDomain {
     private String codigo;
 
     /*Crea la tabla intermedia entre user y denuncia*/
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "denuncias")
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "denuncia")
     @JoinTable(
             name = "denuncia_detalles_victimas_victimarios",
             joinColumns = {@JoinColumn(name = "denuncia_id")},
@@ -44,7 +44,7 @@ public class DenunciaDomain implements IBaseDomain {
     private Set<UserDomain> detalles_victimas_victimarios;
 
     /*Crea la tabla intermedia entre denuncia y tipo de denuncia*/
-    @ManyToMany(cascade= CascadeType.ALL, mappedBy = "denuncias")
+    @ManyToMany(cascade= CascadeType.ALL, mappedBy = "denuncia")
     @JoinTable(
             name = "denuncia_tipos",
             joinColumns = @JoinColumn(name="denuncia_id"),

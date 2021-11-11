@@ -38,4 +38,14 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     public DenunciaResult getAll(Pageable pageable) {
         return null;
     }
+
+    @Override
+    public DenunciaDTO update(DenunciaDTO dto, Integer id) {
+        return null;
+    }
+
+    @Override
+    public DenunciaDTO delete(Integer id) {
+        return null;
+    }
 }

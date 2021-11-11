@@ -28,11 +28,11 @@ public class CityDomain implements IBaseDomain {
     private Set<UserDomain> users;
 
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
-    private Set<NeighborhoodDomain> neighborhood;
+    private Set<NeighborhoodDomain> neighborhoods;
 
     /*Relacion unidireccional entre denuncia y ciudad*/
-    @OneToMany (cascade = CascadeType.ALL)
-    @JoinColumn (name= "ciudad_id")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ciudad_id")
     private Set<DenunciaDomain> denuncias;
 
     public Integer getId() {
@@ -59,12 +59,12 @@ public class CityDomain implements IBaseDomain {
         this.description = department;
     }
 
-    public Set<NeighborhoodDomain> getNeighborhood() {
-        return neighborhood;
+    public Set<NeighborhoodDomain> getNeighborhoods() {
+        return neighborhoods;
     }
 
-    public void setNeighborhood(Set<NeighborhoodDomain> neighborhood) {
-        this.neighborhood = neighborhood;
+    public void setNeighborhoods(Set<NeighborhoodDomain> neighborhood) {
+        this.neighborhoods = neighborhood;
     }
 
     public Set<UserDomain> getUsers() {
@@ -73,5 +73,29 @@ public class CityDomain implements IBaseDomain {
 
     public void setUsers(Set<UserDomain> users) {
         this.users = users;
+    }
+
+    public Set<DenunciaDomain> getDenuncias() {
+        return denuncias;
+    }
+
+    public void setDenuncias(Set<DenunciaDomain> denuncias) {
+        this.denuncias = denuncias;
+    }
+
+    public void updateDomain(String name, String description, Set<NeighborhoodDomain> neighborhoods, Set<UserDomain> users, Set<DenunciaDomain> denuncias) {
+        this.name = name;
+        this.description = description;
+        if (neighborhoods != null) {
+            this.neighborhoods = neighborhoods;
+        }
+
+        if (users != null) {
+            this.users = users;
+        }
+
+        if (denuncias != null) {
+            this.denuncias = denuncias;
+        }
     }
 }

@@ -8,6 +8,7 @@ import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.dto.user.UserResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -113,7 +114,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     /* Obtener el bean de user a traves del metodo convertDtoToDomain
      * Delegar al UserDao (@Autowired) la tarea de guardar el bean en la DB
      * Retornar un DTO guardado en la DB
-     * ** para que retornamos el objeto que acabamos de recibir? ** */
+     * ** Los response retornan dto ** */
     @Override
     @Transactional
     public UserDTO save(UserDTO dto) {
@@ -159,5 +160,32 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         final UserResult userResult = new UserResult();
         userResult.setUsers(users);
         return userResult;
+    }
+
+    @Override
+    @Transactional
+    public UserDTO update(UserDTO dto, Integer id) {
+        if (userDao.findById(id).isPresent()) {
+            final UserDomain oldUser = userDao.findById(id).get();
+            oldUser.setName(dto.getName());
+            oldUser.setSurname(dto.getSurname());
+            oldUser.setUsername(dto.getUsername());
+            oldUser.setCn(dto.getCn());
+            oldUser.setEmail(dto.getEmail());
+            oldUser.setPhone(dto.getPhone());
+            oldUser.setAddress(dto.getAddress());
+
+            final UserDomain newUser = userDao.save(oldUser);
+            return convertDomainToDto(newUser);
+
+
+        }
+
+        return null;
+    }
+
+    @Override
+    public UserDTO delete(Integer id) {
+        return null;
     }
 }

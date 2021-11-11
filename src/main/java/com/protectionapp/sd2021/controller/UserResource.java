@@ -5,6 +5,7 @@ import com.protectionapp.sd2021.dto.user.UserResult;
 import com.protectionapp.sd2021.service.user.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid; // framework de validacion de Java Beans
@@ -30,6 +31,7 @@ public class UserResource {
      *  Requests que sean GET /users/5 van a llamar a este metodo
      *  @PathVariable mastica el URL y gracias a eso obtenemos que id se pidio */
     @GetMapping("/{id}")
+    @ResponseBody
     public UserDTO getById(@PathVariable(value = "id") Integer userId) {
         return userService.getById(userId);
     }
@@ -39,12 +41,22 @@ public class UserResource {
      *  1- consumir la cantidad de resultados por pagina desde config.properties
      *  2- tolerancia a fallos */
     @GetMapping(path = "page/{page_num}")
+    @ResponseBody
     public UserResult getUsers(@PathVariable(value = "page_num") Integer pageNum) {
         return userService.getAll(PageRequest.of(pageNum, 5));
     }
 
     @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
     public UserDTO save(@Valid @RequestBody UserDTO userDto) {
         return userService.save(userDto);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO updateUser(@RequestBody UserDTO newUserDTO, @PathVariable(value = "id") Integer userId) {
+        return userService.update(newUserDTO, userId);
+
     }
 }

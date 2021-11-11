@@ -60,4 +60,12 @@ public class CityDTO extends BaseDTO {
     public void setDenuncias(Set<Integer> denuncias) {
         this.denuncias = denuncias;
     }
+
+    @Override
+    public String toString() {
+        return "CityDTO{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import java.util.Date;
+import java.util.Set;
 
 @XmlRootElement(name = "denuncias")
 public class DenunciaDTO extends BaseDTO {
@@ -15,7 +16,8 @@ public class DenunciaDTO extends BaseDTO {
     private String descripcion;
     private String estado;
     private String codigo;
-
+    private Set<Integer> detalle_ids;
+    private Set<Integer> tipo_ids;
 
     @XmlElement
     public Date getFecha() {
@@ -52,4 +54,14 @@ public class DenunciaDTO extends BaseDTO {
     public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
+
+    @XmlElement
+    public Set<Integer> getDetalleIds(){return detalle_ids;};
+
+    public void setDetalleIds (Set <Integer> detalles){this.detalle_ids = detalles;};
+
+    @XmlElement
+    public Set<Integer> getTipoIds(){return tipo_ids;}
+
+    public void setTipoIds(Set<Integer> tipos){this.tipo_ids = tipos;}
 }

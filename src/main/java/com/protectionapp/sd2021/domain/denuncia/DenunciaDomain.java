@@ -17,6 +17,8 @@ import com.protectionapp.sd2021.domain.user.UserDomain;
 public class DenunciaDomain implements IBaseDomain {
     private static final long serialVersionUID = 1L;
 
+    public DenunciaDomain(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
@@ -34,14 +36,14 @@ public class DenunciaDomain implements IBaseDomain {
     @Column(name = "codigo")
     private String codigo;
 
-    /*Crea la tabla intermedia entre user y denuncia
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "denuncia")
+    /*Crea la tabla intermedia entre user y denuncia*/
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "denuncias")
     @JoinTable(
             name = "denuncia_detalles_victimas_victimarios",
             joinColumns = {@JoinColumn(name = "denuncia_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
-    private Set<UserDomain> detalles_victimas_victimarios;*/
+    private Set<UserDomain> detalles_victimas_victimarios;
 
     /* Crea la tabla intermedia tipo_denuncia_detalle, con la columna "denuncia_id" y "tipo_id" */
     @ManyToMany(cascade = CascadeType.ALL)
@@ -51,7 +53,6 @@ public class DenunciaDomain implements IBaseDomain {
             inverseJoinColumns = @JoinColumn(name = "tipo_id")
     )
     private Set<TipoDenunciaDomain> tiposDenuncias;
-
 
     public Integer getId() {
         return id;
@@ -104,4 +105,8 @@ public class DenunciaDomain implements IBaseDomain {
     public void setTiposDenuncias(Set<TipoDenunciaDomain> tiposDenuncias) {
         this.tiposDenuncias = tiposDenuncias;
     }
+
+    public Set<UserDomain> getDetalles(){return detalles_victimas_victimarios;}
+
+    public void setDetalles(Set<UserDomain> detalles){this.detalles_victimas_victimarios = detalles;}
 }

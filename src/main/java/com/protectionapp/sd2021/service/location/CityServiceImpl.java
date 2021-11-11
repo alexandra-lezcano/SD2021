@@ -81,15 +81,15 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
         cityDomain.setDescription(dto.getDescription());
 
         if (dto.getNeighborhoods() != null) {
-            cityDomain.setNeighborhoods(getNeighborhoodsIfExists(dto));
+            cityDomain.setNeighborhoods(getNeighborhoodDomainsFromDTO(dto));
         }
 
         if (dto.getDenuncias() != null) {
-            cityDomain.setDenuncias(getDenunciasIfExists(dto));
+            cityDomain.setDenuncias(getDenunciaDomainFromDTO(dto));
         }
 
         if (dto.getUsers() != null) {
-            cityDomain.setUsers(getUsersIfExists(dto));
+            cityDomain.setUsers(getUserDomainsFromDTO(dto));
         }
 
         return cityDomain;
@@ -130,17 +130,17 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
 
         Set<NeighborhoodDomain> neighborhoodDomains = null;
         if (dto.getNeighborhoods() != null) {
-            neighborhoodDomains = getNeighborhoodsIfExists(dto);
+            neighborhoodDomains = getNeighborhoodDomainsFromDTO(dto);
         }
 
         Set<DenunciaDomain> denunciaDomains = null;
         if (dto.getDenuncias() != null) {
-            denunciaDomains = getDenunciasIfExists(dto);
+            denunciaDomains = getDenunciaDomainFromDTO(dto);
         }
 
         Set<UserDomain> userDomains = null;
         if (dto.getUsers() != null) {
-            userDomains = getUsersIfExists(dto);
+            userDomains = getUserDomainsFromDTO(dto);
         }
         updatedCityDomain.updateDomain(
                 dto.getName(),
@@ -160,19 +160,20 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
         return null;
     }
 
-    public Set<NeighborhoodDomain> getNeighborhoodsIfExists(CityDTO cityDTO) {
+    // Una opcion para evitar rep de codigo...
+    public Set<NeighborhoodDomain> getNeighborhoodDomainsFromDTO(CityDTO cityDTO) {
         Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
         cityDTO.getNeighborhoods().forEach(n_id -> neighborhoodDomains.add(neighborhoodDao.findById(n_id).get()));
         return neighborhoodDomains;
     }
 
-    public Set<UserDomain> getUsersIfExists(CityDTO cityDTO) {
+    public Set<UserDomain> getUserDomainsFromDTO(CityDTO cityDTO) {
         Set<UserDomain> userDomains = new HashSet<>();
         cityDTO.getUsers().forEach(u_id -> userDomains.add(userDao.findById(u_id).get()));
         return userDomains;
     }
 
-    public Set<DenunciaDomain> getDenunciasIfExists(CityDTO cityDTO) {
+    public Set<DenunciaDomain> getDenunciaDomainFromDTO(CityDTO cityDTO) {
         Set<DenunciaDomain> denunciasDomains = new HashSet<>();
         cityDTO.getDenuncias().forEach(d_id -> denunciasDomains.add(denunciaDao.findById(d_id).get()));
         return denunciasDomains;

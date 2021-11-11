@@ -64,6 +64,12 @@ public class DenunciaDomain implements IBaseDomain {
     )
     private Set<CasosDerivadosDomain> casosDerivados;
 
+    public Set<TipoDenunciaDomain> getTiposDenuncias(){return this.tipos;}
+    public void setTiposDenuncias(Set<TipoDenunciaDomain> tipos){this.tipos = tipos;}
+
+    public Set<UserDomain> getDetalles(){return this.detalles_victimas_victimarios;}
+    public void setDetalles(Set<UserDomain> detalles){this.detalles_victimas_victimarios = detalles;}
+
     public Integer getId() {
         return id;
     }
@@ -80,8 +86,5 @@ public class DenunciaDomain implements IBaseDomain {
 
     public String getCodigo(){return codigo;}
     public void setCodigo(String codigo) {this.codigo = codigo;}
-
-    --
-
 
 }

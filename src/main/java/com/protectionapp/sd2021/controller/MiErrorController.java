@@ -14,6 +14,10 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.logging.ErrorManager;
 
+/*Supuestamente esto lo que hace es redireccionar a las paginas que cree en resources.templates
+* El logger utiliza log4j para crear un log de errores, en el pom del proyecto agregue log4j
+* y en resources agregue configuraciones para que se cree un archivo al hacer log, porque por
+* defecto solo se muestra en pantalla el log */
 @Controller
 public class MiErrorController implements ErrorController
 {

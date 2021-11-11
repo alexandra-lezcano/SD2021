@@ -1,6 +1,7 @@
 package com.protectionapp.sd2021.domain.denuncia;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
+import com.protectionapp.sd2021.domain.casosDerivados.CasosDerivadosDomain;
 import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import org.hibernate.annotations.Cascade;
@@ -13,15 +14,13 @@ import java.util.Set;
 import com.protectionapp.sd2021.domain.user.UserDomain;
 
 @Entity
-@Table(name = "denuncia")
+@Table(name = "denuncias")
 public class DenunciaDomain implements IBaseDomain {
     private static final long serialVersionUID = 1L;
 
-    public DenunciaDomain(){}
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private Integer id;
 
     @Column(name = "fecha")
@@ -45,68 +44,44 @@ public class DenunciaDomain implements IBaseDomain {
     )
     private Set<UserDomain> detalles_victimas_victimarios;
 
-    /* Crea la tabla intermedia tipo_denuncia_detalle, con la columna "denuncia_id" y "tipo_id" */
-    @ManyToMany(cascade = CascadeType.ALL)
+    /*Crea la tabla intermedia entre denuncia y tipo de denuncia*/
+    @ManyToMany(cascade= CascadeType.ALL, mappedBy = "denuncias")
     @JoinTable(
-            name = "tipo_denuncia_detalle",
-            joinColumns = @JoinColumn(name = "denuncia_id"),
-            inverseJoinColumns = @JoinColumn(name = "tipo_id")
+            name = "denuncia_tipos",
+            joinColumns = @JoinColumn(name="denuncia_id"),
+            inverseJoinColumns = @JoinColumn(name="tipo_id")
     )
-    private Set<TipoDenunciaDomain> tiposDenuncias;
+
+
+    private Set<TipoDenunciaDomain> tipos;
+
+    /*Crea la tabla intermedia entre com.protectionapp.sd2021.dao.casosDerivados y denuncia*/
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "denuncias")
+    @JoinTable(
+            name = "casosDerivados_denuncias",
+            joinColumns = {@JoinColumn(name = "denuncia_id")},
+            inverseJoinColumns = {@JoinColumn(name = "casosDerivados_id")}
+    )
+    private Set<CasosDerivadosDomain> casosDerivados;
 
     public Integer getId() {
         return id;
     }
+    public void setID(Integer id){this.id = id;}
 
-    public void setID(Integer id) {
-        this.id = id;
-    }
+    public Date getFecha(){return fecha;}
+    public void setFecha(Date fecha){this.fecha = fecha;}
 
-    public Date getFecha() {
-        return fecha;
-    }
+    public String getEstado(){ return estado; }
+    public void setEstado(String estado){ this.estado = estado;}
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
+    public String getDescripcion(){return descripcion;}
+    public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
 
-    public String getEstado() {
-        return estado;
-    }
+    public String getCodigo(){return codigo;}
+    public void setCodigo(String codigo) {this.codigo = codigo;}
 
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
+    --
 
-    public String getDescripcion() {
-        return descripcion;
-    }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Set<TipoDenunciaDomain> getTiposDenuncias() {
-        return tiposDenuncias;
-    }
-
-    public void setTiposDenuncias(Set<TipoDenunciaDomain> tiposDenuncias) {
-        this.tiposDenuncias = tiposDenuncias;
-    }
-
-    public Set<UserDomain> getDetalles(){return detalles_victimas_victimarios;}
-
-    public void setDetalles(Set<UserDomain> detalles){this.detalles_victimas_victimarios = detalles;}
 }

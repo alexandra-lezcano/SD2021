@@ -2,6 +2,7 @@ package com.protectionapp.sd2021.service.user;
 
 import com.protectionapp.sd2021.dao.location.ICityDao;
 import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
+import com.protectionapp.sd2021.dao.user.IRoleDao;
 import com.protectionapp.sd2021.dao.user.IUserDao;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
@@ -43,6 +44,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     @Autowired
     private INeighborhoodDao neighborhoodDao;
 
+    @Autowired
+    private IRoleDao roleDao;
+
     @Override
     protected UserDTO convertDomainToDto(UserDomain userDomain) {
         final UserDTO user = new UserDTO();
@@ -63,15 +67,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         /* Relacion ManyToMany
         Necesito guardar una lista de ids de los barrios a mi user DTO */
         if (userDomain.getNeighborhoods() != null) {
-            Set<Integer> neighborhood_ids = new HashSet<>();
-
-            for (NeighborhoodDomain nd : userDomain.getNeighborhoods()) {
-                neighborhood_ids.add(nd.getId());
-            }
-
-            user.setNeighborhoods(neighborhood_ids);
+            user.setNeighborhoods(getNeighborhoodIdsFromDomain(userDomain));
         }
-
 
         return user;
     }
@@ -79,30 +76,28 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     @Override
     protected UserDomain convertDtoToDomain(UserDTO userDTO) {
         final UserDomain userDomain = new UserDomain();
-        userDomain.setName(userDTO.getName());
+       /* userDomain.setName(userDTO.getName());
         userDomain.setSurname(userDTO.getSurname());
         userDomain.setUsername(userDTO.getUsername());
         userDomain.setCn(userDTO.getCn());
         userDomain.setEmail(userDTO.getEmail());
         userDomain.setPhone(userDTO.getPhone());
-        userDomain.setAddress(userDTO.getAddress());
+        userDomain.setAddress(userDTO.getAddress());*/
+        userDomain.update(
+                userDTO.getName(),
+                userDTO.getSurname(),
+                userDTO.getUsername(),
+                userDTO.getCn(),
+                userDTO.getAddress(),
+                userDTO.getEmail(),
+                userDTO.getPhone());
 
         if (userDTO.getCityId() != null) {
-            // guardo un cityDomain obtenido por el cityDao - recordar, el dao es un CrudRepository!
             userDomain.setCity(cityDao.findById(userDTO.getCityId()).get());
         }
         if (userDTO.getNeighborhoodIds() != null) {
-            Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
-
-            Set<Integer> neighborhood_ids = userDTO.getNeighborhoodIds();
-            for (Integer nId : neighborhood_ids) {
-                neighborhoodDomains.add(neighborhoodDao.findById(nId).get());
-            }
-
-            userDomain.setNeighborhoods(neighborhoodDomains);
+            userDomain.setNeighborhoods(getNeighborhoodDomainsFromDTO(userDTO));
         }
-
-
         return userDomain;
     }
 
@@ -113,7 +108,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     /* Obtener el bean de user a traves del metodo convertDtoToDomain
      * Delegar al UserDao (@Autowired) la tarea de guardar el bean en la DB
      * Retornar un DTO guardado en la DB
-     * ** para que retornamos el objeto que acabamos de recibir? ** */
+     * ** Los response retornan dto ** */
     @Override
     @Transactional
     public UserDTO save(UserDTO dto) {
@@ -159,5 +154,54 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         final UserResult userResult = new UserResult();
         userResult.setUsers(users);
         return userResult;
+    }
+
+    @Override
+    @Transactional
+    public UserDTO update(UserDTO dto, Integer id) {
+        final UserDomain updatedUserDomain = userDao.findById(id).get();
+
+        if (dto.getNeighborhoodIds() != null) {
+            updatedUserDomain.setNeighborhoods(getNeighborhoodDomainsFromDTO(dto));
+        }
+
+        if (dto.getId() != null) {
+            updatedUserDomain.setCity(cityDao.findById(dto.getCityId()).get());
+        }
+
+        if (dto.getRoleId() != null) {
+            updatedUserDomain.setRole(roleDao.findById(dto.getRoleId()).get());
+        }
+
+        updatedUserDomain.update(
+                dto.getName(),
+                dto.getSurname(),
+                dto.getUsername(),
+                dto.getCn(),
+                dto.getAddress(),
+                dto.getEmail(),
+                dto.getPhone()
+        );
+
+        userDao.save(updatedUserDomain);
+        return convertDomainToDto(updatedUserDomain);
+    }
+
+    @Override
+    @Transactional
+    public UserDTO delete(Integer id) {
+        return null;
+    }
+
+    public Set<NeighborhoodDomain> getNeighborhoodDomainsFromDTO(UserDTO dto) {
+        Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
+        dto.getNeighborhoodIds().forEach(n_id -> neighborhoodDomains.add(neighborhoodDao.findById(n_id).get()));
+        return neighborhoodDomains;
+    }
+
+    public Set<Integer> getNeighborhoodIdsFromDomain(UserDomain domain) {
+        Set<Integer> neighborhood_ids = new HashSet<>();
+        domain.getNeighborhoods().forEach(n_domain -> neighborhood_ids.add(n_domain.getId()));
+        return neighborhood_ids;
     }
 }

@@ -67,12 +67,12 @@ public class UserDomain implements IBaseDomain {
     private Set<NeighborhoodDomain> neighborhoods;
 
     /*Relacion unidireccional entre denuncia y usuario*/
-    @OneToMany (cascade = CascadeType.ALL)
-    @JoinColumn (name= "denunciante_id")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "denunciante_id")
     private Set<DenunciaDomain> denuncias_denunciante;
 
     /*Relacion many to many bidireccional entre user y denuncia*/
-    @ManyToMany (cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     private Set<DenunciaDomain> denuncias_victima_victimario;
 
     /*Relacion many to many bidireccional entre user y com.protectionapp.sd2021.dao.casosDerivados*/
@@ -181,5 +181,24 @@ public class UserDomain implements IBaseDomain {
 
     public void setCity(CityDomain city) {
         this.city = city;
+    }
+
+    public void update(String name, String surname, String username, Integer cn, String address, String email, Integer phone) {
+       /*
+        this.name = name;
+        this.surname = surname;
+        this.username = username;
+        this.cn = cn;
+        this.address = address;
+        this.email = email;
+        this.phone = phone;*/
+
+        setName(name);
+        setSurname(surname);
+        setUsername(username);
+        setCn(cn);
+        setAddress(address);
+        setEmail(email);
+        setPhone(phone);
     }
 }

@@ -115,4 +115,14 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
         denunciaResult.setDenuncias(denuncias);
         return denunciaResult;
     }
+
+    @Override
+    public DenunciaDTO update(DenunciaDTO dto, Integer id) {
+        return null;
+    }
+
+    @Override
+    public DenunciaDTO delete(Integer id) {
+        return null;
+    }
 }

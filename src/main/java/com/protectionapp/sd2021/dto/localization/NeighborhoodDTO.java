@@ -1,7 +1,5 @@
 package com.protectionapp.sd2021.dto.localization;
 
-import com.protectionapp.sd2021.domain.location.CityDomain;
-import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.base.BaseDTO;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -14,8 +12,8 @@ public class NeighborhoodDTO extends BaseDTO {
 
     private String name;
     private String description;
-    private CityDomain city;
-    private Set<UserDomain> users;
+    private Integer city_id;
+    private Set<Integer> user_ids;
 
     @XmlElement
     public String getName() {
@@ -28,13 +26,13 @@ public class NeighborhoodDTO extends BaseDTO {
     }
 
     @XmlElement
-    public CityDomain getCity() {
-        return city;
+    public Integer getCity_id() {
+        return city_id;
     }
 
     @XmlElement
-    public Set<UserDomain> getUsers() {
-        return users;
+    public Set<Integer> getUser_ids() {
+        return user_ids;
     }
 
     public void setName(String name) {
@@ -45,11 +43,11 @@ public class NeighborhoodDTO extends BaseDTO {
         this.description = description;
     }
 
-    public void setCity(CityDomain city) {
-        this.city = city;
+    public void setCity_id(Integer city_id) {
+        this.city_id = city_id;
     }
 
-    public void setUsers(Set<UserDomain> users) {
-        this.users = users;
+    public void setUser_ids(Set<Integer> user_ids) {
+        this.user_ids = user_ids;
     }
 }

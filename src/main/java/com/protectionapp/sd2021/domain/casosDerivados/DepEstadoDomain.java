@@ -31,6 +31,15 @@ public class DepEstadoDomain implements IBaseDomain {
     )
     private Set<CasosDerivadosDomain> casosDerivados;
 
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "dC_DE",
+            joinColumns = @JoinColumn(name = "depEstado_id"),
+            inverseJoinColumns = @JoinColumn(name = "detallesCasos_id")
+    )
+    private Set<DetallesCasosDerDomain> detCasosDer;
+
     @Column(name = "name")
     private String name;
 

@@ -37,6 +37,31 @@ public class CasosDerivadosDTO extends BaseDTO {
         return user_ids;
     }
 
+    @Override
+    public Integer getId() {
+        return super.getId();
+    }
+
+    @Override
+    public void setId(Integer id) {
+        super.setId(id);
+    }
+
+    public void setDenuncia_ids(Set<Integer> denuncia_ids) {
+        this.denuncia_ids = denuncia_ids;
+    }
+
+    public Set<Integer> getDenuncia_ids() {
+        return denuncia_ids;
+    }
+
+    public void setUser_ids(Set<Integer> user_ids) {
+        this.user_ids = user_ids;
+    }
+
+    public Set<Integer> getUser_ids() {
+        return user_ids;
+    }
 
     public void setDate(Date date) {
         this.date = date;

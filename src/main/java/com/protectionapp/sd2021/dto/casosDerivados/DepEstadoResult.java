@@ -1,7 +1,6 @@
 package com.protectionapp.sd2021.dto.casosDerivados;
 
 import com.protectionapp.sd2021.dto.base.BaseResult;
-import com.protectionapp.sd2021.dto.user.UserDTO;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

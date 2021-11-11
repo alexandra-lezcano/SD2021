@@ -1,6 +1,9 @@
 package com.protectionapp.sd2021.domain.casosDerivados;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
+import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
+import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
+import com.protectionapp.sd2021.domain.user.RoleDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -22,8 +25,8 @@ public class CasosDerivadosDomain implements IBaseDomain {
     @ManyToMany(mappedBy ="casosDerivados", cascade = CascadeType.ALL)
     private Set<DepEstadoDomain> depEstado;
 
-    // @ManyToMany(mappedBy ="denuncias", cascade = CascadeType.ALL)
-    //private Set<DepEstadoDomain> com.protectionapp.sd2021.dao.casosDerivados ;
+     @ManyToMany(mappedBy ="casosDerivados", cascade = CascadeType.ALL)
+    private Set<DenunciaDomain> denuncia ;
 
     @ManyToMany(mappedBy ="casosDerivados_persona", cascade = CascadeType.ALL)
     private Set<UserDomain> user;
@@ -57,5 +60,29 @@ public class CasosDerivadosDomain implements IBaseDomain {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setDepEstado(Set<DepEstadoDomain> depEstado) {
+        this.depEstado = depEstado;
+    }
+
+    public Set<DepEstadoDomain> getDepEstado() {
+        return depEstado;
+    }
+
+    public Set<UserDomain> getUsers() {
+        return user;
+    }
+
+    public void setUsers(Set<UserDomain> users) {
+        this.user= users;
+    }
+
+    public Set<DenunciaDomain> getDenuncia() {
+        return denuncia;
+    }
+
+    public void setDenuncia(Set<DenunciaDomain> denuncia) {
+        this.denuncia = denuncia;
     }
 }

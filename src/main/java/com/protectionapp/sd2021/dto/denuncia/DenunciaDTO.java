@@ -5,14 +5,20 @@ import com.protectionapp.sd2021.dto.base.BaseDTO;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
+import java.util.TimeZone;
 
 @XmlRootElement(name = "denuncias")
 public class DenunciaDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
-    private Date fecha;
+    private static final SimpleDateFormat dateFormat
+            = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+    private String fecha;
     private String descripcion;
     private String estado;
     private String codigo;
@@ -20,11 +26,9 @@ public class DenunciaDTO extends BaseDTO {
     private Set<Integer> tipo_ids;
 
     @XmlElement
-    public Date getFecha() {
-        return fecha;
-    }
+    public String getFecha() {return fecha;}
 
-    public void setFecha(Date fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
@@ -64,4 +68,15 @@ public class DenunciaDTO extends BaseDTO {
     public Set<Integer> getTipoIds(){return tipo_ids;}
 
     public void setTipoIds(Set<Integer> tipos){this.tipo_ids = tipos;}
+
+    @XmlElement
+    public Date getConvertedFecha(String timezone) throws ParseException {
+        dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
+        return dateFormat.parse(this.fecha);
+    }
+
+    public void setConvertedFecha(Date date, String timezone) {
+        dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
+        this.fecha = dateFormat.format(date);
+    }
 }

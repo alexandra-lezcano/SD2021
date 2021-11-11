@@ -32,7 +32,7 @@ public class TipoDenunciaDomain implements IBaseDomain {
     /* Cuando decimos mappedBy significa que el otro objeto, en este caso DenunciasDomain tendra un parametro
      * el cual hara posible la relacion entre ambos objetos. Si miras la clase DenunciaDomain, encontras que
      * hay un atributo Set<TipoDenunciaDomain> tiposDenuncias */
-    @ManyToMany(mappedBy = "tipo_denuncia")
+    @ManyToMany(mappedBy = "tipos")
     private Set<DenunciaDomain> denuncias;
 
     public Integer getId() {

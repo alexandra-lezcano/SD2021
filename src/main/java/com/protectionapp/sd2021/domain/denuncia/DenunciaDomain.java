@@ -24,7 +24,7 @@ public class DenunciaDomain implements IBaseDomain {
     private Integer id;
 
     @Column(name = "fecha")
-    private Date fecha;
+    private String fecha;
 
     @Column(name = "descripcion")
     private String descripcion;
@@ -36,7 +36,7 @@ public class DenunciaDomain implements IBaseDomain {
     private String codigo;
 
     /*Crea la tabla intermedia entre user y denuncia*/
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "denuncias")
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "denuncia_detalles_victimas_victimarios",
             joinColumns = {@JoinColumn(name = "denuncia_id")},
@@ -45,7 +45,7 @@ public class DenunciaDomain implements IBaseDomain {
     private Set<UserDomain> detalles_victimas_victimarios;
 
     /*Crea la tabla intermedia entre denuncia y tipo de denuncia*/
-    @ManyToMany(cascade= CascadeType.ALL, mappedBy = "denuncias")
+    @ManyToMany(cascade= CascadeType.ALL)
     @JoinTable(
             name = "denuncia_tipos",
             joinColumns = @JoinColumn(name="denuncia_id"),
@@ -56,7 +56,7 @@ public class DenunciaDomain implements IBaseDomain {
     private Set<TipoDenunciaDomain> tipos;
 
     /*Crea la tabla intermedia entre com.protectionapp.sd2021.dao.casosDerivados y denuncia*/
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "denuncias")
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "casosDerivados_denuncias",
             joinColumns = {@JoinColumn(name = "denuncia_id")},
@@ -75,8 +75,8 @@ public class DenunciaDomain implements IBaseDomain {
     }
     public void setID(Integer id){this.id = id;}
 
-    public Date getFecha(){return fecha;}
-    public void setFecha(Date fecha){this.fecha = fecha;}
+    public String getFecha(){return fecha;}
+    public void setFecha(String fecha){this.fecha = fecha;}
 
     public String getEstado(){ return estado; }
     public void setEstado(String estado){ this.estado = estado;}

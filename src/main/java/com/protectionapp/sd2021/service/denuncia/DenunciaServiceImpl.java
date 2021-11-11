@@ -10,11 +10,15 @@ import com.protectionapp.sd2021.dto.denuncia.DenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -95,12 +99,20 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     }
 
     @Override
+    @Transactional
     public DenunciaDTO getById(Integer id) {
-        return null;
+        final DenunciaDomain denuncia = denunciaDao.findById(id).get();
+        return convertDomainToDto(denuncia);
     }
 
     @Override
+    @Transactional
     public DenunciaResult getAll(Pageable pageable) {
-        return null;
+        final List<DenunciaDTO> denuncias = new ArrayList<>();
+        Page<DenunciaDomain> results = denunciaDao.findAll(pageable);
+        results.forEach(denuncia -> denuncias.add(convertDomainToDto(denuncia)));
+        final DenunciaResult denunciaResult = new DenunciaResult();
+        denunciaResult.setDenuncias(denuncias);
+        return denunciaResult;
     }
 }

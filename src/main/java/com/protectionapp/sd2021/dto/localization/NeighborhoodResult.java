@@ -11,11 +11,11 @@ public class NeighborhoodResult extends BaseResult<NeighborhoodDTO> {
     private static final long serialVersionUID = 1L;
 
     @XmlElement
-    public List<NeighborhoodDTO> getUsers() {
+    public List<NeighborhoodDTO> getNeighborhoods() {
         return getList();
     }
 
-    public void setUsers(List<NeighborhoodDTO> dtos) {
+    public void setNeighborhoods(List<NeighborhoodDTO> dtos) {
         super.setList(dtos);
     }
 }

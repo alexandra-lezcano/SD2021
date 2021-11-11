@@ -4,11 +4,8 @@ import com.protectionapp.sd2021.dao.location.ICityDao;
 import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
 import com.protectionapp.sd2021.dao.user.IRoleDao;
 import com.protectionapp.sd2021.dao.user.IUserDao;
-import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
-import com.protectionapp.sd2021.domain.user.RoleDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
-import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.dto.user.UserResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
@@ -191,6 +188,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     }
 
     @Override
+    @Transactional
     public UserDTO delete(Integer id) {
         return null;
     }

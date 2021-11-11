@@ -32,8 +32,8 @@ public class NeighborhoodDomain implements IBaseDomain {
     private Set<UserDomain> users;
 
     /*Relacion unidireccional entre denuncia y ciudad*/
-    @OneToMany (cascade = CascadeType.ALL)
-    @JoinColumn (name= "barrio_id")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "barrio_id")
     private Set<DenunciaDomain> denuncias;
 
     public Integer getId() {

@@ -22,14 +22,14 @@ public class DepEstadoDomain implements IBaseDomain {
 
 
 
-    @ManyToMany(cascade = CascadeType.ALL)
+   /* @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "detalles_casos_derivados",
             joinColumns = @JoinColumn(name = "dep_estado_id"),
             inverseJoinColumns = @JoinColumn(name = "casos_derivados_id")
     )
     private Set<CasosDerivadosDomain> casosDerivados;
-
+*/
 
 
 

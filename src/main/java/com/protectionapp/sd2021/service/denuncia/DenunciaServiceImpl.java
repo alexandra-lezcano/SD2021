@@ -8,6 +8,7 @@ import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaResult;
+import com.protectionapp.sd2021.exception.DenunciaNotFoundException;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,7 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
 
     @Autowired
     private ITipoDenunciaDao tipoDenunciaDao;
+
 
     @Override
     protected DenunciaDTO convertDomainToDto(DenunciaDomain domain) {
@@ -100,14 +102,14 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
 
     @Override
     @Transactional
-    public DenunciaDTO getById(Integer id) {
+    public DenunciaDTO getById(Integer id) throws DenunciaNotFoundException{
         final DenunciaDomain denuncia = denunciaDao.findById(id).get();
         return convertDomainToDto(denuncia);
     }
 
     @Override
     @Transactional
-    public DenunciaResult getAll(Pageable pageable) {
+    public DenunciaResult getAll(Pageable pageable) throws DenunciaNotFoundException {
         final List<DenunciaDTO> denuncias = new ArrayList<>();
         Page<DenunciaDomain> results = denunciaDao.findAll(pageable);
         results.forEach(denuncia -> denuncias.add(convertDomainToDto(denuncia)));
@@ -118,11 +120,37 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
 
     @Override
     public DenunciaDTO update(DenunciaDTO dto, Integer id) {
-        return null;
+        final DenunciaDomain updated = denunciaDao.findById(id).get();
+        if(dto.getTipoIds() != null){
+            updated.setTiposDenuncias(getTipoDenunciaDomaniFromDTO(dto));
+        }
+        if(dto.getDetalleIds() != null){
+            updated.setDetalles(getDetallesFromDTO(dto));
+        }
+        updated.update(
+                dto.getFecha(),
+                dto.getDescripcion(),
+                dto.getEstado(),
+                dto.getCodigo()
+        );
+        denunciaDao.save(updated);
+        return convertDomainToDto(updated);
     }
 
     @Override
     public DenunciaDTO delete(Integer id) {
         return null;
+    }
+
+    public Set<TipoDenunciaDomain> getTipoDenunciaDomaniFromDTO(DenunciaDTO dto){
+        Set<TipoDenunciaDomain> domains = new HashSet<>();
+        dto.getTipoIds().forEach(id->domains.add(tipoDenunciaDao.findById(id).get()));
+        return domains;
+    }
+
+    public  Set<UserDomain> getDetallesFromDTO(DenunciaDTO dto){
+        Set<UserDomain> domains = new HashSet<>();
+        dto.getDetalleIds().forEach(id->domains.add(userDao.findById(id).get()));
+        return domains;
     }
 }

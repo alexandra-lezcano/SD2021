@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface IDenunciaDao extends CrudRepository<DenunciaDomain, Integer>{
     public Page<DenunciaDomain> findAll(Pageable pageable);
 
+
 }

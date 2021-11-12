@@ -80,4 +80,10 @@ public class DenunciaDomain implements IBaseDomain {
     public String getCodigo(){return codigo;}
     public void setCodigo(String codigo) {this.codigo = codigo;}
 
+    public void update (String fecha,String descripcion, String estado, String codigo){
+        setFecha(fecha);
+        setDescripcion(descripcion);
+        setCodigo(codigo);
+        setEstado(estado);
+    }
 }

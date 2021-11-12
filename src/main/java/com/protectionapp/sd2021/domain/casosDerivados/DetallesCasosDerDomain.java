@@ -18,8 +18,7 @@ public class DetallesCasosDerDomain implements IBaseDomain {
 
     private Integer id;
 
-    @ManyToMany(mappedBy = "detCasosDer", cascade = CascadeType.ALL)
-    private Set<DepEstadoDomain>  depEstado;
+
 
 
 

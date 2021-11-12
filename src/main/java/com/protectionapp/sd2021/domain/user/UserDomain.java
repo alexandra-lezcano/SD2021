@@ -75,9 +75,7 @@ public class UserDomain implements IBaseDomain {
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<DenunciaDomain> denuncias_victima_victimario;
 
-    /*Relacion many to many bidireccional entre user y com.protectionapp.sd2021.dao.casosDerivados*/
-    @ManyToMany (cascade = CascadeType.ALL)
-    private Set<CasosDerivadosDomain> casosDerivados_persona;
+
 
     public String getName() {
         return name;

@@ -55,14 +55,7 @@ public class DenunciaDomain implements IBaseDomain {
 
     private Set<TipoDenunciaDomain> tipos;
 
-    /*Crea la tabla intermedia entre com.protectionapp.sd2021.dao.casosDerivados y denuncia*/
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "casosDerivados_denuncias",
-            joinColumns = {@JoinColumn(name = "denuncia_id")},
-            inverseJoinColumns = {@JoinColumn(name = "casosDerivados_id")}
-    )
-    private Set<CasosDerivadosDomain> casosDerivados;
+
 
     public Set<TipoDenunciaDomain> getTiposDenuncias(){return this.tipos;}
     public void setTiposDenuncias(Set<TipoDenunciaDomain> tipos){this.tipos = tipos;}

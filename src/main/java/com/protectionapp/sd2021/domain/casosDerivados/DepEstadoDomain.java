@@ -11,34 +11,27 @@ import java.util.Set;
 @Entity
 @Table(name = "dependencias_Del_estado")
 public class DepEstadoDomain implements IBaseDomain {
+    private static final long serialVersionUID = 1L;
+
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-
-
     private Integer id;
 
-    private static final long serialVersionUID = 1L;
+
 
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "CD_DE",
-            joinColumns = @JoinColumn(name = "depEstado_id"),
-            inverseJoinColumns = @JoinColumn(name = "casosDep_id")
+            name = "detalles_casos_derivados",
+            joinColumns = @JoinColumn(name = "dep_estado_id"),
+            inverseJoinColumns = @JoinColumn(name = "casos_derivados_id")
     )
     private Set<CasosDerivadosDomain> casosDerivados;
 
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "dC_DE",
-            joinColumns = @JoinColumn(name = "depEstado_id"),
-            inverseJoinColumns = @JoinColumn(name = "detallesCasos_id")
-    )
-    private Set<DetallesCasosDerDomain> detCasosDer;
+
 
     @Column(name = "name")
     private String name;

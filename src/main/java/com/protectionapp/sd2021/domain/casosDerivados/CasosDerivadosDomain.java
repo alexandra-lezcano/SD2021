@@ -14,22 +14,25 @@ import java.util.Set;
 @Entity
 @Table(name = "casos_derivados")
 public class CasosDerivadosDomain implements IBaseDomain {
-
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id", nullable = false)
 
     private Integer id;
 
 
-    @ManyToMany(mappedBy ="casosDerivados", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "casosDerivados",cascade = CascadeType.ALL)
     private Set<DepEstadoDomain> depEstado;
 
-     @ManyToMany(mappedBy ="casosDerivados", cascade = CascadeType.ALL)
-    private Set<DenunciaDomain> denuncia ;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "denuncia_id", referencedColumnName = "id")
+    private DenunciaDomain denuncia ;
 
-    @ManyToMany(mappedBy ="casosDerivados_persona", cascade = CascadeType.ALL)
-    private Set<UserDomain> user;
+    //onetoone
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private UserDomain user;
 
 
     @Column(name = "date")
@@ -70,19 +73,19 @@ public class CasosDerivadosDomain implements IBaseDomain {
         return depEstado;
     }
 
-    public Set<UserDomain> getUsers() {
+    public UserDomain getUsers() {
         return user;
     }
 
-    public void setUsers(Set<UserDomain> users) {
+    public void setUsers(UserDomain users) {
         this.user= users;
     }
 
-    public Set<DenunciaDomain> getDenuncia() {
+    public DenunciaDomain getDenuncia() {
         return denuncia;
     }
 
-    public void setDenuncia(Set<DenunciaDomain> denuncia) {
+    public void setDenuncia(DenunciaDomain denuncia) {
         this.denuncia = denuncia;
     }
 }

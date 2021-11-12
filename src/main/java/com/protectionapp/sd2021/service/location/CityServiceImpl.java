@@ -12,7 +12,7 @@ import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.localization.CityResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
-import org.modelmapper.ModelMapper;
+//import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +40,7 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     @Autowired
     private IDenunciaDao denunciaDao;
 
-    private ModelMapper modelMapper;
+   // private ModelMapper modelMapper;
 
     // todo como evitar tanta repeticion de codigo...mapper no me funciono.
     @Override

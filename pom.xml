@@ -53,6 +53,7 @@
             <artifactId>validation-api</artifactId>
             <version>2.0.1.Final</version>
         </dependency>
+<<<<<<<<< Temporary merge branch 1
 
         <!--Log4j dependencies -->
         <dependency>
@@ -61,6 +62,13 @@
             <version>2.14.1</version>
         </dependency>
 
+=========
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>2.3.5</version>
+        </dependency>
+>>>>>>>>> Temporary merge branch 2
     </dependencies>
 
     <build>

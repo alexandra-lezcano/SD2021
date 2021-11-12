@@ -50,4 +50,13 @@ public class NeighborhoodDTO extends BaseDTO {
     public void setUser_ids(Set<Integer> user_ids) {
         this.user_ids = user_ids;
     }
+
+    @Override
+    public String toString() {
+        return "NeighborhoodDTO{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", city_id=" + city_id +
+                '}';
+    }
 }

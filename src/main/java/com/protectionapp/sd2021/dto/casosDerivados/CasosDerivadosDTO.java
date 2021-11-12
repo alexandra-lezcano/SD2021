@@ -14,8 +14,10 @@ public class CasosDerivadosDTO extends BaseDTO {
 
     private Date date;
     private String description;
-    private Set<Integer> denuncia_ids;
-    private Set<Integer> user_ids;
+    private Integer denuncia_id;
+    private Integer user_id;
+    private Set<Integer> dependencias_ids;
+
 
     @XmlElement
     public Date getDate() {
@@ -28,13 +30,13 @@ public class CasosDerivadosDTO extends BaseDTO {
     }
 
     @XmlElement
-    public Set<Integer> getDenuncia() {
-        return denuncia_ids;
+    public Integer getDenuncia() {
+        return denuncia_id;
     }
 
     @XmlElement
-    public Set<Integer> getUsers() {
-        return user_ids;
+    public Integer getUsers() {
+        return user_id;
     }
 
     @Override
@@ -47,20 +49,20 @@ public class CasosDerivadosDTO extends BaseDTO {
         super.setId(id);
     }
 
-    public void setDenuncia_ids(Set<Integer> denuncia_ids) {
-        this.denuncia_ids = denuncia_ids;
+    public void setDenuncia_ids(Integer denuncia_ids) {
+        this.denuncia_id = denuncia_ids;
     }
 
-    public Set<Integer> getDenuncia_ids() {
-        return denuncia_ids;
+    public Integer getDenuncia_ids() {
+        return denuncia_id;
     }
 
-    public void setUser_ids(Set<Integer> user_ids) {
-        this.user_ids = user_ids;
+    public void setUser_ids(Integer user_ids) {
+        this.user_id = user_ids;
     }
 
-    public Set<Integer> getUser_ids() {
-        return user_ids;
+    public Integer getUser_ids() {
+        return user_id;
     }
 
     public void setDate(Date date) {
@@ -71,13 +73,16 @@ public class CasosDerivadosDTO extends BaseDTO {
         this.description = description;
     }
 
-    public void setUsers(Set<Integer> users) {
-        this.user_ids = users;
-    }
-
-    public void setDenuncia(Set<Integer> denuncia) {
-        this.denuncia_ids = denuncia;
+    public void setUsers(Integer users) {
+        this.user_id = users;
     }
 
 
+    public Set<Integer> getDependencias_ids() {
+        return dependencias_ids;
+    }
+
+    public void setDependencias_ids(Set<Integer> dependencias_ids) {
+        this.dependencias_ids = dependencias_ids;
+    }
 }

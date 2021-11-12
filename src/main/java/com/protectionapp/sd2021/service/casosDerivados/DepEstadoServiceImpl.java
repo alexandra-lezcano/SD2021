@@ -67,4 +67,14 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
         return DEResult;
 
     }
+
+    @Override
+    public DepEstadoDTO update(DepEstadoDTO dto, Integer id) {
+        return null;
+    }
+
+    @Override
+    public DepEstadoDTO delete(Integer id) {
+        return null;
+    }
 }

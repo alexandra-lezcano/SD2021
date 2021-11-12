@@ -5,4 +5,6 @@ import com.protectionapp.sd2021.dto.user.UserResult;
 import com.protectionapp.sd2021.service.base.IBaseService;
 
 public interface IUserService extends IBaseService<UserDTO, UserResult> {
+
+
 }

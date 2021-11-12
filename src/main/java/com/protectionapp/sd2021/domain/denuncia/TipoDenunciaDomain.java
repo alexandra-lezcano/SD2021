@@ -11,6 +11,13 @@ import java.util.Set;
 public class TipoDenunciaDomain implements IBaseDomain {
     private static final long serialVersionUID = 1L;
 
+    public TipoDenunciaDomain(){}
+
+    public TipoDenunciaDomain (String titulo, String descripcion){
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
@@ -25,7 +32,7 @@ public class TipoDenunciaDomain implements IBaseDomain {
     /* Cuando decimos mappedBy significa que el otro objeto, en este caso DenunciasDomain tendra un parametro
      * el cual hara posible la relacion entre ambos objetos. Si miras la clase DenunciaDomain, encontras que
      * hay un atributo Set<TipoDenunciaDomain> tiposDenuncias */
-    @ManyToMany(mappedBy = "tiposDenuncias")
+    @ManyToMany(mappedBy = "tipos")
     private Set<DenunciaDomain> denuncias;
 
     public Integer getId() {

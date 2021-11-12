@@ -179,15 +179,6 @@ public class UserDomain implements IBaseDomain {
     }
 
     public void update(String name, String surname, String username, Integer cn, String address, String email, Integer phone) {
-       /*
-        this.name = name;
-        this.surname = surname;
-        this.username = username;
-        this.cn = cn;
-        this.address = address;
-        this.email = email;
-        this.phone = phone;*/
-
         setName(name);
         setSurname(surname);
         setUsername(username);

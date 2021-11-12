@@ -103,7 +103,7 @@ public class UserDTO extends BaseDTO {
         this.city_id = cityId;
     }
 
-    public void setRole(Integer role) {
+    public void setRole_id(Integer role) {
         this.role_id = role;
     }
 

@@ -28,13 +28,17 @@ public class NeighborhoodDomain implements IBaseDomain {
     @JoinColumn(name = "city_id", referencedColumnName = "id")
     private CityDomain city;
 
-    @ManyToMany(mappedBy = "neighborhoods", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "neighborhoods")
     private Set<UserDomain> users;
 
-    /*Relacion unidireccional entre denuncia y ciudad*/
+    /*Relacion unidireccional entre denuncia y ciudad
+
+    ERROR
+    org.springframework.http.converter.HttpMessageNotReadableException
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "barrio_id")
-    private Set<DenunciaDomain> denuncias;
+    private Set<DenunciaDomain> denuncias;*/
 
     public Integer getId() {
         return id;

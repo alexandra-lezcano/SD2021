@@ -49,55 +49,63 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
 
     @Override
     protected UserDTO convertDomainToDto(UserDomain userDomain) {
-        final UserDTO user = new UserDTO();
-        user.setName(userDomain.getName());
-        user.setSurname(userDomain.getSurname());
-        user.setUsername(userDomain.getUsername());
-        user.setCn(userDomain.getCn());
-        user.setEmail(userDomain.getEmail());
-        user.setPhone(userDomain.getPhone());
-        user.setAddress(userDomain.getAddress());
+        final UserDTO dto = new UserDTO();
+        dto.setName(userDomain.getName());
+        dto.setSurname(userDomain.getSurname());
+        dto.setUsername(userDomain.getUsername());
+        dto.setCn(userDomain.getCn());
+        dto.setEmail(userDomain.getEmail());
+        dto.setPhone(userDomain.getPhone());
+        dto.setAddress(userDomain.getAddress());
 
         /* Relacion ManyToOne */
         if (userDomain.getCity() != null) {
             Integer city_id = userDomain.getCity().getId();
-            user.setCityId(city_id);
+            dto.setCityId(city_id);
         }
 
         /* Relacion ManyToMany
         Necesito guardar una lista de ids de los barrios a mi user DTO */
         if (userDomain.getNeighborhoods() != null) {
-            user.setNeighborhoods(getNeighborhoodIdsFromDomain(userDomain));
+            Set<Integer> neighborhoodIds = new HashSet<>();
+            userDomain.getNeighborhoods().forEach(n_domain -> neighborhoodIds.add(n_domain.getId()));
+            dto.setNeighborhoods(neighborhoodIds);
+        }
+        if (userDomain.getRole() != null) {
+            dto.setRole_id(userDomain.getRole().getId());
         }
 
-        return user;
+        return dto;
     }
 
     @Override
-    protected UserDomain convertDtoToDomain(UserDTO userDTO) {
+    protected UserDomain convertDtoToDomain(UserDTO dto) {
         final UserDomain userDomain = new UserDomain();
-       /* userDomain.setName(userDTO.getName());
-        userDomain.setSurname(userDTO.getSurname());
-        userDomain.setUsername(userDTO.getUsername());
-        userDomain.setCn(userDTO.getCn());
-        userDomain.setEmail(userDTO.getEmail());
-        userDomain.setPhone(userDTO.getPhone());
-        userDomain.setAddress(userDTO.getAddress());*/
-        userDomain.update(
-                userDTO.getName(),
-                userDTO.getSurname(),
-                userDTO.getUsername(),
-                userDTO.getCn(),
-                userDTO.getAddress(),
-                userDTO.getEmail(),
-                userDTO.getPhone());
 
-        if (userDTO.getCityId() != null) {
-            userDomain.setCity(cityDao.findById(userDTO.getCityId()).get());
+        userDomain.update(
+                dto.getName(),
+                dto.getSurname(),
+                dto.getUsername(),
+                dto.getCn(),
+                dto.getAddress(),
+                dto.getEmail(),
+                dto.getPhone()
+        );
+
+        if (dto.getCityId() != null) {
+            userDomain.setCity(cityDao.findById(dto.getCityId()).get());
         }
-        if (userDTO.getNeighborhoodIds() != null) {
-            userDomain.setNeighborhoods(getNeighborhoodDomainsFromDTO(userDTO));
+
+        if (dto.getNeighborhoodIds() != null) {
+            Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
+            dto.getNeighborhoodIds().forEach(n_id -> neighborhoodDomains.add(neighborhoodDao.findById(n_id).get()));
+            userDomain.setNeighborhoods(neighborhoodDomains);
         }
+
+        if (dto.getRoleId() != null) {
+            userDomain.setRole(roleDao.findById(dto.getRoleId()).get());
+        }
+
         return userDomain;
     }
 
@@ -190,18 +198,16 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     @Override
     @Transactional
     public UserDTO delete(Integer id) {
-        return null;
+        final UserDomain deletedUserdomain = userDao.findById(id).get();
+        final UserDTO deletedUserDto = convertDomainToDto(deletedUserdomain);
+        userDao.delete(deletedUserdomain);
+        return deletedUserDto;
     }
 
+    @Transactional
     public Set<NeighborhoodDomain> getNeighborhoodDomainsFromDTO(UserDTO dto) {
         Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
         dto.getNeighborhoodIds().forEach(n_id -> neighborhoodDomains.add(neighborhoodDao.findById(n_id).get()));
         return neighborhoodDomains;
-    }
-
-    public Set<Integer> getNeighborhoodIdsFromDomain(UserDomain domain) {
-        Set<Integer> neighborhood_ids = new HashSet<>();
-        domain.getNeighborhoods().forEach(n_domain -> neighborhood_ids.add(n_domain.getId()));
-        return neighborhood_ids;
     }
 }

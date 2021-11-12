@@ -3,6 +3,7 @@ package com.protectionapp.sd2021.controller;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.dto.user.UserResult;
 import com.protectionapp.sd2021.service.user.UserServiceImpl;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -58,5 +59,10 @@ public class UserResource {
     public UserDTO updateUser(@RequestBody UserDTO newUserDTO, @PathVariable(value = "id") Integer userId) {
         return userService.update(newUserDTO, userId);
 
+    }
+
+    @DeleteMapping("/{id}")
+    public UserDTO deleteUser(@PathVariable(value = "id") Integer userId) {
+        return userService.delete(userId);
     }
 }

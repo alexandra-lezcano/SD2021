@@ -64,18 +64,8 @@ public class UserDomain implements IBaseDomain {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "neighborhood_id")
     )
+
     private Set<NeighborhoodDomain> neighborhoods;
-
-    /*Relacion unidireccional entre denuncia y usuario*/
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "denunciante_id")
-    private Set<DenunciaDomain> denuncias_denunciante;
-
-    /*Relacion many to many bidireccional entre user y denuncia*/
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<DenunciaDomain> denuncias_victima_victimario;
-
-
 
     public String getName() {
         return name;

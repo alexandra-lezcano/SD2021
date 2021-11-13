@@ -21,6 +21,7 @@ public class DenunciaDomain implements IBaseDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
+    @Column(nullable = false, unique = true)
     private Integer id;
 
     @Column(name = "fecha")
@@ -29,20 +30,14 @@ public class DenunciaDomain implements IBaseDomain {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @Column(name = "estado")
-    private String estado;
+    /*Una denuncia tiene un estado*/
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "estado_id", referencedColumnName = "id")
+    private DenunciaEstadoDomain estado;
 
     @Column(name = "codigo")
     private String codigo;
 
-    /*Crea la tabla intermedia entre user y denuncia*/
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "denuncia_detalles_victimas_victimarios",
-            joinColumns = {@JoinColumn(name = "denuncia_id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id")}
-    )
-    private Set<UserDomain> detalles_victimas_victimarios;
 
     /*Crea la tabla intermedia entre denuncia y tipo de denuncia*/
     @ManyToMany(cascade= CascadeType.ALL)
@@ -51,17 +46,24 @@ public class DenunciaDomain implements IBaseDomain {
             joinColumns = @JoinColumn(name="denuncia_id"),
             inverseJoinColumns = @JoinColumn(name="tipo_id")
     )
-
-
     private Set<TipoDenunciaDomain> tipos;
 
+    /*Una denuncia tiene una ciudad*/
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "city_id", referencedColumnName = "id")
+    private CityDomain city;
 
+    /*Una denuncia tiene un barrio*/
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "neighborhood_id", referencedColumnName = "id")
+    private NeighborhoodDomain neighborhood;
+
+    /*Una denuncia tiene varios sujetos*/
+    @OneToMany(mappedBy = "denuncia", cascade = CascadeType.ALL)
+    private Set<SujetoDomain> sujetos;
 
     public Set<TipoDenunciaDomain> getTiposDenuncias(){return this.tipos;}
     public void setTiposDenuncias(Set<TipoDenunciaDomain> tipos){this.tipos = tipos;}
-
-    public Set<UserDomain> getDetalles(){return this.detalles_victimas_victimarios;}
-    public void setDetalles(Set<UserDomain> detalles){this.detalles_victimas_victimarios = detalles;}
 
     public Integer getId() {
         return id;
@@ -71,8 +73,8 @@ public class DenunciaDomain implements IBaseDomain {
     public String getFecha(){return fecha;}
     public void setFecha(String fecha){this.fecha = fecha;}
 
-    public String getEstado(){ return estado; }
-    public void setEstado(String estado){ this.estado = estado;}
+    public DenunciaEstadoDomain getEstado(){ return estado; }
+    public void setEstado(DenunciaEstadoDomain estado){ this.estado = estado;}
 
     public String getDescripcion(){return descripcion;}
     public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
@@ -80,10 +82,27 @@ public class DenunciaDomain implements IBaseDomain {
     public String getCodigo(){return codigo;}
     public void setCodigo(String codigo) {this.codigo = codigo;}
 
-    public void update (String fecha,String descripcion, String estado, String codigo){
-        setFecha(fecha);
-        setDescripcion(descripcion);
-        setCodigo(codigo);
-        setEstado(estado);
+    public Set<SujetoDomain> getSujetos() {
+        return sujetos;
+    }
+
+    public void setSujetos(Set<SujetoDomain> sujetos) {
+        this.sujetos = sujetos;
+    }
+
+    public CityDomain getCity() {
+        return city;
+    }
+
+    public void setCity(CityDomain city) {
+        this.city = city;
+    }
+
+    public NeighborhoodDomain getNeighborhood() {
+        return neighborhood;
+    }
+
+    public void setNeighborhood(NeighborhoodDomain neighborhood) {
+        this.neighborhood = neighborhood;
     }
 }

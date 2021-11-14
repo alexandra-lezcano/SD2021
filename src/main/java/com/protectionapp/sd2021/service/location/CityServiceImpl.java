@@ -40,13 +40,11 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     @Autowired
     private IDenunciaDao denunciaDao;
 
-   // private ModelMapper modelMapper;
-
-    // todo como evitar tanta repeticion de codigo...mapper no me funciono.
     @Override
     @Transactional
     protected CityDTO convertDomainToDto(CityDomain domain) {
         final CityDTO cityDTO = new CityDTO();
+        cityDTO.setId(domain.getId());
         cityDTO.setName(domain.getName());
         cityDTO.setDescription(domain.getDescription());
 
@@ -55,12 +53,6 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
             domain.getNeighborhoods().forEach(n_domain -> neighborhood_ids.add(n_domain.getId()));
 
             cityDTO.setNeighborhoods(neighborhood_ids);
-        }
-
-        if (domain.getDenuncias() != null) {
-            Set<Integer> denuncias_ids = new HashSet<>();
-            domain.getDenuncias().forEach(d_domain -> denuncias_ids.add(d_domain.getId()));
-            cityDTO.setDenuncias(denuncias_ids);
         }
 
         if (domain.getUsers() != null) {
@@ -76,16 +68,12 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     @Transactional
     protected CityDomain convertDtoToDomain(CityDTO dto) {
         final CityDomain cityDomain = new CityDomain();
-
+        cityDomain.setId(dto.getId());
         cityDomain.setName(dto.getName());
         cityDomain.setDescription(dto.getDescription());
 
         if (dto.getNeighborhoods() != null) {
             cityDomain.setNeighborhoods(getNeighborhoodDomainsFromDTO(dto));
-        }
-
-        if (dto.getDenuncias() != null) {
-            cityDomain.setDenuncias(getDenunciaDomainFromDTO(dto));
         }
 
         if (dto.getUsers() != null) {
@@ -146,8 +134,7 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
                 dto.getName(),
                 dto.getDescription(),
                 neighborhoodDomains,
-                userDomains,
-                denunciaDomains
+                userDomains
         );
 
         cityDao.save(updatedCityDomain);

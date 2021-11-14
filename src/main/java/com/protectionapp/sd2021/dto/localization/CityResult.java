@@ -10,6 +10,10 @@ import java.util.List;
 public class CityResult extends BaseResult<CityDTO> {
     private static final long serialVersionUID = 1L;
 
+    public CityResult() {
+        super();
+    }
+
     @XmlElement
     public List<CityDTO> getCities() {
         return getList();

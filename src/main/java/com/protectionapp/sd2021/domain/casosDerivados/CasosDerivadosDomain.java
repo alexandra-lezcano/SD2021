@@ -72,13 +72,6 @@ public class CasosDerivadosDomain implements IBaseDomain {
         this.description = description;
     }
 
-    public Set<DepEstadoDomain> getDependencia_estado() {
-        return dependencia_estado;
-    }
-
-    public void setDependencia_estado(Set<DepEstadoDomain> dependencia_estado) {
-        this.dependencia_estado = dependencia_estado;
-    }
 
     public UserDomain getTrabajador_social() {
         return trabajador_social;

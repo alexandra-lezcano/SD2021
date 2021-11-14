@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/denunciaEstado")
+@RequestMapping("/denunciaEstados")
 public class DenunciaEstadoResource {
 
     @Autowired
@@ -28,5 +28,10 @@ public class DenunciaEstadoResource {
         return estadoService.save(denunciaEstadoDTO);
     }
 
+    @PutMapping("/id")
+    @ResponseStatus(HttpStatus.OK)
+    public DenunciaEstadoDTO updateEstado(@Valid @RequestBody DenunciaEstadoDTO estadoDTO, @PathVariable(value = "id") Integer id) {
+        return estadoService.update(estadoDTO, id);
+    }
 }
 

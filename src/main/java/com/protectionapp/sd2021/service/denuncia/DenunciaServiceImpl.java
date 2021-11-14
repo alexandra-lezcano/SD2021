@@ -52,13 +52,18 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     @Override
     protected DenunciaDTO convertDomainToDto(DenunciaDomain domain) {
         final DenunciaDTO denuncia = new DenunciaDTO();
+        denuncia.setId(domain.getId());
         denuncia.setEstado_id(domain.getEstado().getId());
         denuncia.setDescripcion(domain.getDescripcion());
         denuncia.setFecha(domain.getFecha());
         denuncia.setCodigo(domain.getCodigo());
         denuncia.setCity_id(domain.getCity().getId());
         denuncia.setNeighborhood_id(domain.getNeighborhood().getId());
-        denuncia.setUser_id(domain.getUser().getId());
+
+        /*Debemos tolerar que la denuncia sea creada in un trabajador social asignado*/
+        if (domain.getUser() != null) {
+            denuncia.setUser_id(domain.getUser().getId());
+        }
 
         if (domain.getTiposDenuncias() != null) {
             Set<Integer> ids = new HashSet<>();
@@ -73,9 +78,9 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
             for (SujetoDomain t : domain.getSujetos()) {
                 ids.add(t.getId());
             }
-
             denuncia.setSujeto_ids(ids);
         }
+
         return denuncia;
     }
 
@@ -89,6 +94,10 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
         denuncia.setFecha(dto.getFecha());
         denuncia.setNeighborhood(neighborhoodDao.findById(dto.getNeighborhood_id()).get());
         denuncia.setCity(cityDao.findById(dto.getCity_id()).get());
+
+        if (dto.getUser_id() != null) {
+            denuncia.setUser(userDao.findById(dto.getUser_id()).get());
+        }
 
         if (dto.getSujeto_ids() != null) {
             Set<SujetoDomain> sujetos = new HashSet<>();
@@ -107,7 +116,6 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
             }
             denuncia.setTiposDenuncias(tipos);
         }
-        denuncia.setUser(userDao.findById(dto.getUser_id()).get());
 
         return denuncia;
     }
@@ -167,6 +175,9 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
         }
         if (dto.getSujeto_ids() != null) {
             updated.setSujetos(getSujetosDomainFromDTO(dto));
+        }
+        if (dto.getUser_id() != null) {
+            updated.setUser(userDao.findById(dto.getUser_id()).get());
         }
         denunciaDao.save(updated);
         return convertDomainToDto(updated);

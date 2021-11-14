@@ -61,8 +61,8 @@ public class DenunciaDomain implements IBaseDomain {
     @OneToMany(mappedBy = "denuncia", cascade = CascadeType.ALL)
     private Set<SujetoDomain> sujetos;
 
-    /*Una denuncia tiene un trabajador social*/
-    @ManyToOne
+    /* Muchas denuncias corresponden a un trabajador social */
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserDomain user;
 

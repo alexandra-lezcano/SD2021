@@ -10,7 +10,11 @@ import java.util.List;
 public class DenunciaResult extends BaseResult<DenunciaDTO> {
 	private static final long serialVersionUID = 1L;
 
-	public void setDenuncias(List<DenunciaDTO> dtos){
+	public DenunciaResult() {
+		super();
+	}
+
+	public void setDenuncias(List<DenunciaDTO> dtos) {
 		super.setList(dtos);
 	}
 }

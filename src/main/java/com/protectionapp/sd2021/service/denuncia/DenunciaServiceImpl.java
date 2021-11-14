@@ -10,8 +10,6 @@ import com.protectionapp.sd2021.dao.user.IUserDao;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.denuncia.SujetoDomain;
 import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
-import com.protectionapp.sd2021.domain.denuncia.TipoSujetoDomain;
-import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaResult;
 import com.protectionapp.sd2021.exception.DenunciaNotFoundException;
@@ -21,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,16 +45,20 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     @Autowired
     private INeighborhoodDao neighborhoodDao;
 
+    @Autowired
+    private IUserDao userDao;
+
 
     @Override
     protected DenunciaDTO convertDomainToDto(DenunciaDomain domain) {
         final DenunciaDTO denuncia = new DenunciaDTO();
-        denuncia.setEstado(domain.getEstado().getId());
+        denuncia.setEstado_id(domain.getEstado().getId());
         denuncia.setDescripcion(domain.getDescripcion());
         denuncia.setFecha(domain.getFecha());
         denuncia.setCodigo(domain.getCodigo());
         denuncia.setCity_id(domain.getCity().getId());
         denuncia.setNeighborhood_id(domain.getNeighborhood().getId());
+        denuncia.setUser_id(domain.getUser().getId());
 
         if (domain.getTiposDenuncias() != null) {
             Set<Integer> ids = new HashSet<>();
@@ -67,12 +68,12 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
             denuncia.setTipo_ids(ids);
         }
 
-        if(domain.getSujetos() != null){
+        if (domain.getSujetos() != null) {
             Set<Integer> ids = new HashSet<>();
-            for (SujetoDomain t : domain.getSujetos()){
+            for (SujetoDomain t : domain.getSujetos()) {
                 ids.add(t.getId());
             }
-        denuncia.setUserId(domain.getUser().getId());
+
             denuncia.setSujeto_ids(ids);
         }
         return denuncia;
@@ -82,31 +83,31 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     protected DenunciaDomain convertDtoToDomain(DenunciaDTO dto) {
         final DenunciaDomain denuncia = new DenunciaDomain();
         denuncia.setID(dto.getId());
-        denuncia.setEstado(estadoDao.findById(dto.getEstado()).get());
+        denuncia.setEstado(estadoDao.findById(dto.getEstado_id()).get());
         denuncia.setCodigo(dto.getCodigo());
         denuncia.setDescripcion(dto.getDescripcion());
         denuncia.setFecha(dto.getFecha());
         denuncia.setNeighborhood(neighborhoodDao.findById(dto.getNeighborhood_id()).get());
         denuncia.setCity(cityDao.findById(dto.getCity_id()).get());
 
-        if(dto.getSujeto_ids() != null){
+        if (dto.getSujeto_ids() != null) {
             Set<SujetoDomain> sujetos = new HashSet<>();
             Set<Integer> ids = dto.getSujeto_ids();
-            for(Integer i : ids){
+            for (Integer i : ids) {
                 sujetos.add(sujetoDao.findById(i).get());
             }
             denuncia.setSujetos(sujetos);
         }
 
-        if(dto.getTipo_ids() != null){
+        if (dto.getTipo_ids() != null) {
             Set<TipoDenunciaDomain> tipos = new HashSet<>();
             Set<Integer> ids = dto.getTipo_ids();
-            for(Integer i : ids){
+            for (Integer i : ids) {
                 tipos.add(tipoDenunciaDao.findById(i).get());
             }
             denuncia.setTiposDenuncias(tipos);
         }
-        denuncia.setUser(userDao.findById(dto.getUserId()).get());
+        denuncia.setUser(userDao.findById(dto.getUser_id()).get());
 
         return denuncia;
     }
@@ -143,16 +144,28 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     @Override
     public DenunciaDTO update(DenunciaDTO dto, Integer id) {
         final DenunciaDomain updated = denunciaDao.findById(id).get();
-        if(dto.getTipo_ids() != null){
+        if (dto.getTipo_ids() != null) {
             updated.setTiposDenuncias(getTipoDenunciaDomaniFromDTO(dto));
         }
-        if(dto.getFecha() != null){updated.setFecha(dto.getFecha());}
-        if(dto.getEstado() != null){updated.setEstado(estadoDao.findById(dto.getEstado()).get());}
-        if(dto.getCodigo() != null){updated.setCodigo(dto.getCodigo());}
-        if(dto.getDescripcion() != null){updated.setDescripcion(dto.getDescripcion());}
-        if(dto.getCity_id() != null){updated.setCity(cityDao.findById(dto.getCity_id()).get());}
-        if(dto.getNeighborhood_id() != null){updated.setNeighborhood(neighborhoodDao.findById(dto.getCity_id()).get());}
-        if(dto.getSujeto_ids() != null){
+        if (dto.getFecha() != null) {
+            updated.setFecha(dto.getFecha());
+        }
+        if (dto.getEstado_id() != null) {
+            updated.setEstado(estadoDao.findById(dto.getEstado_id()).get());
+        }
+        if (dto.getCodigo() != null) {
+            updated.setCodigo(dto.getCodigo());
+        }
+        if (dto.getDescripcion() != null) {
+            updated.setDescripcion(dto.getDescripcion());
+        }
+        if (dto.getCity_id() != null) {
+            updated.setCity(cityDao.findById(dto.getCity_id()).get());
+        }
+        if (dto.getNeighborhood_id() != null) {
+            updated.setNeighborhood(neighborhoodDao.findById(dto.getCity_id()).get());
+        }
+        if (dto.getSujeto_ids() != null) {
             updated.setSujetos(getSujetosDomainFromDTO(dto));
         }
         denunciaDao.save(updated);
@@ -161,7 +174,7 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
 
     private Set<SujetoDomain> getSujetosDomainFromDTO(DenunciaDTO dto) {
         Set<SujetoDomain> domains = new HashSet<>();
-        dto.getSujeto_ids().forEach(id->domains.add(sujetoDao.findById(id).get()));
+        dto.getSujeto_ids().forEach(id -> domains.add(sujetoDao.findById(id).get()));
         return domains;
     }
 
@@ -176,7 +189,7 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
 
     public Set<TipoDenunciaDomain> getTipoDenunciaDomaniFromDTO(DenunciaDTO dto) {
         Set<TipoDenunciaDomain> domains = new HashSet<>();
-        dto.getTipo_ids().forEach(id->domains.add(tipoDenunciaDao.findById(id).get()));
+        dto.getTipo_ids().forEach(id -> domains.add(tipoDenunciaDao.findById(id).get()));
         return domains;
     }
 }

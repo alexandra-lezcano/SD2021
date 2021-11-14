@@ -32,7 +32,7 @@ public class DenunciaDomain implements IBaseDomain {
 
     /*Una denuncia tiene un estado*/
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "estado_id", referencedColumnName = "id")
+    @JoinColumn(name = "estado_id", referencedColumnName = "id")
     private DenunciaEstadoDomain estado;
 
     @Column(name = "codigo")
@@ -53,7 +53,6 @@ public class DenunciaDomain implements IBaseDomain {
     @JoinColumn(name = "city_id", referencedColumnName = "id")
     private CityDomain city;
 
-
     /*Una denuncia tiene un barrio*/
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "neighborhood_id", referencedColumnName = "id")
@@ -62,6 +61,11 @@ public class DenunciaDomain implements IBaseDomain {
     /*Una denuncia tiene varios sujetos*/
     @OneToMany(mappedBy = "denuncia", cascade = CascadeType.ALL)
     private Set<SujetoDomain> sujetos;
+
+    /*Una denuncia tiene un trabajador social*/
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private UserDomain user;
 
     public Set<TipoDenunciaDomain> getTiposDenuncias() {
         return this.tipos;
@@ -87,11 +91,11 @@ public class DenunciaDomain implements IBaseDomain {
         this.fecha = fecha;
     }
 
+    public DenunciaEstadoDomain getEstado() {
+        return estado;
+    }
 
-    public DenunciaEstadoDomain getEstado(){ return estado; }
-    public void setEstado(DenunciaEstadoDomain estado){ this.estado = estado;}
-
-    public void setEstado(String estado) {
+    public void setEstado(DenunciaEstadoDomain estado) {
         this.estado = estado;
     }
 
@@ -130,7 +134,6 @@ public class DenunciaDomain implements IBaseDomain {
     public void setUser(UserDomain user) {
         this.user = user;
     }
-
 
     public Set<SujetoDomain> getSujetos() {
         return sujetos;

@@ -31,14 +31,11 @@ public class DenunciaDTO extends BaseDTO {
     private Integer city_id;
     private Integer neighborhood_id;
     private Set<Integer> sujeto_ids;
+    private Integer user_id;
 
     @XmlElement
     public String getFecha() {
         return fecha;
-    }
-
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
     }
 
     @XmlElement
@@ -46,17 +43,9 @@ public class DenunciaDTO extends BaseDTO {
         return descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
     @XmlElement
-    public Integer getEstado() {
+    public Integer getEstado_id() {
         return estado_id;
-    }
-
-    public void setEstado(Integer estado) {
-        this.estado_id = estado;
     }
 
     @XmlElement
@@ -64,17 +53,9 @@ public class DenunciaDTO extends BaseDTO {
         return codigo;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
     @XmlElement
     public Set<Integer> getTipo_ids() {
         return tipo_ids;
-    }
-
-    public void setTipo_ids(Set<Integer> tipo_ids) {
-        this.tipo_ids = tipo_ids;
     }
 
     @XmlElement
@@ -82,9 +63,55 @@ public class DenunciaDTO extends BaseDTO {
         return sujeto_ids;
     }
 
+    @XmlElement
+    public Integer getCity_id() {
+        return city_id;
+    }
+
+    @XmlElement
+    public Integer getNeighborhood_id() {
+        return neighborhood_id;
+    }
+
+    @XmlElement
+    public Integer getUser_id() {
+        return user_id;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public void setTipo_ids(Set<Integer> tipo_ids) {
+        this.tipo_ids = tipo_ids;
+    }
+
+    public void setCity_id(Integer city_id) {
+        this.city_id = city_id;
+    }
+
+    public void setNeighborhood_id(Integer neighborhood_id) {
+        this.neighborhood_id = neighborhood_id;
+    }
+
     public void setSujeto_ids(Set<Integer> sujeto_ids) {
         this.sujeto_ids = sujeto_ids;
+    }
 
+    public void setEstado_id(Integer estado_id) {
+        this.estado_id = estado_id;
+    }
+
+    public void setUser_id(Integer user_id) {
+        this.user_id = user_id;
     }
 
     @XmlElement
@@ -93,28 +120,8 @@ public class DenunciaDTO extends BaseDTO {
         return dateFormat.parse(this.fecha);
     }
 
-    @XmlElement
-    public Integer getCity_id() {
-        return city_id;
-    }
-
-    public void setCity_id(Integer city_id) {
-        this.city_id = city_id;
-    }
-
-    @XmlElement
-    public Integer getNeighborhood_id() {
-        return neighborhood_id;
-    }
-
-    public void setNeighborhood_id(Integer neighborhood_id) {
-        this.neighborhood_id = neighborhood_id;
-    }
-
     public void setConvertedFecha(Date date, String timezone) {
         dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
         this.fecha = dateFormat.format(date);
     }
-
-
 }

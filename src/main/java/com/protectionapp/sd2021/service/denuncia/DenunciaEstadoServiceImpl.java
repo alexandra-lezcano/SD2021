@@ -4,6 +4,7 @@ import com.protectionapp.sd2021.dao.denuncia.IDenunciaDao;
 import com.protectionapp.sd2021.dao.denuncia.IDenunciaEstadoDao;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaEstadoDomain;
+import com.protectionapp.sd2021.dto.denuncia.DenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaEstadoDTO;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaEstadoResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
@@ -85,6 +86,9 @@ public class DenunciaEstadoServiceImpl extends BaseServiceImpl<DenunciaEstadoDTO
 
     @Override
     public DenunciaEstadoDTO delete(Integer id) {
-        return null;
+        final DenunciaEstadoDomain deletedDomain = estadoDao.findById(id).get();
+        final DenunciaEstadoDTO deletedDto = convertDomainToDto(deletedDomain);
+        estadoDao.delete(deletedDomain);
+        return deletedDto;
     }
 }

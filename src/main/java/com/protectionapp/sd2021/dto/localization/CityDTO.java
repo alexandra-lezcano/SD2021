@@ -10,6 +10,10 @@ import java.util.Set;
 public class CityDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
+    public CityDTO() {
+        super();
+    }
+
     private String name;
     private String description;
     private Set<Integer> users;

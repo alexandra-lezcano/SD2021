@@ -37,26 +37,29 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     @Override
     protected DenunciaDTO convertDomainToDto(DenunciaDomain domain) {
         final DenunciaDTO denuncia = new DenunciaDTO();
+        denuncia.setId(domain.getId());
         denuncia.setEstado(domain.getEstado());
         denuncia.setDescripcion(domain.getDescripcion());
         denuncia.setFecha(domain.getFecha());
         denuncia.setCodigo(domain.getCodigo());
 
-        if(domain.getTiposDenuncias() != null){
+        if (domain.getTiposDenuncias() != null) {
             Set<Integer> ids = new HashSet<>();
-            for (TipoDenunciaDomain t : domain.getTiposDenuncias()){
+            for (TipoDenunciaDomain t : domain.getTiposDenuncias()) {
                 ids.add(t.getId());
             }
             denuncia.setTipoIds(ids);
         }
 
-        if(domain.getDetalles() != null){
+      /*  if(domain.getDetalles() != null){
             Set<Integer> ids = new HashSet<>();
             for(UserDomain u : domain.getDetalles()){
                 ids.add(u.getId());
             }
             denuncia.setDetalleIds(ids);
-        }
+        }*/
+
+        denuncia.setUserId(domain.getUser().getId());
 
         return denuncia;
     }
@@ -64,11 +67,12 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     @Override
     protected DenunciaDomain convertDtoToDomain(DenunciaDTO dto) {
         final DenunciaDomain denuncia = new DenunciaDomain();
+        denuncia.setID(dto.getId());
         denuncia.setCodigo(dto.getCodigo());
         denuncia.setDescripcion(dto.getDescripcion());
         denuncia.setEstado(dto.getEstado());
         denuncia.setFecha(dto.getFecha());
-
+/*
         if (dto.getDetalleIds() != null){
             Set<UserDomain> users = new HashSet<>();
             Set<Integer> ids = dto.getDetalleIds();
@@ -76,16 +80,18 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
                 users.add(userDao.findById(i).get());
             }
             denuncia.setDetalles(users);
-        }
+        }*/
 
-        if(dto.getTipoIds() != null){
+        if (dto.getTipoIds() != null) {
             Set<TipoDenunciaDomain> tipos = new HashSet<>();
             Set<Integer> ids = dto.getTipoIds();
-            for(Integer i : ids){
+            for (Integer i : ids) {
                 tipos.add(tipoDenunciaDao.findById(i).get());
             }
             denuncia.setTiposDenuncias(tipos);
         }
+        denuncia.setUser(userDao.findById(dto.getUserId()).get());
+
         return denuncia;
     }
 
@@ -102,7 +108,7 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
 
     @Override
     @Transactional
-    public DenunciaDTO getById(Integer id) throws DenunciaNotFoundException{
+    public DenunciaDTO getById(Integer id) throws DenunciaNotFoundException {
         final DenunciaDomain denuncia = denunciaDao.findById(id).get();
         return convertDomainToDto(denuncia);
     }
@@ -121,12 +127,12 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     @Override
     public DenunciaDTO update(DenunciaDTO dto, Integer id) {
         final DenunciaDomain updated = denunciaDao.findById(id).get();
-        if(dto.getTipoIds() != null){
+        if (dto.getTipoIds() != null) {
             updated.setTiposDenuncias(getTipoDenunciaDomaniFromDTO(dto));
         }
-        if(dto.getDetalleIds() != null){
+     /*   if(dto.getDetalleIds() != null){
             updated.setDetalles(getDetallesFromDTO(dto));
-        }
+        }*/
         updated.update(
                 dto.getFecha(),
                 dto.getDescripcion(),
@@ -142,15 +148,15 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
         return null;
     }
 
-    public Set<TipoDenunciaDomain> getTipoDenunciaDomaniFromDTO(DenunciaDTO dto){
+    public Set<TipoDenunciaDomain> getTipoDenunciaDomaniFromDTO(DenunciaDTO dto) {
         Set<TipoDenunciaDomain> domains = new HashSet<>();
-        dto.getTipoIds().forEach(id->domains.add(tipoDenunciaDao.findById(id).get()));
+        dto.getTipoIds().forEach(id -> domains.add(tipoDenunciaDao.findById(id).get()));
         return domains;
     }
 
-    public  Set<UserDomain> getDetallesFromDTO(DenunciaDTO dto){
+    public Set<UserDomain> getDetallesFromDTO(DenunciaDTO dto) {
         Set<UserDomain> domains = new HashSet<>();
-        dto.getDetalleIds().forEach(id->domains.add(userDao.findById(id).get()));
+        //   dto.getDetalleIds().forEach(id->domains.add(userDao.findById(id).get()));
         return domains;
     }
 }

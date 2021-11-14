@@ -15,6 +15,10 @@ import java.util.TimeZone;
 public class DenunciaDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
+    public DenunciaDTO() {
+        super();
+    }
+
     private static final SimpleDateFormat dateFormat
             = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
@@ -22,11 +26,13 @@ public class DenunciaDTO extends BaseDTO {
     private String descripcion;
     private String estado;
     private String codigo;
-    private Set<Integer> detalle_ids;
-    private Set<Integer> tipo_ids;
+    private Set<Integer> tipoIds;
+    private Integer userId;
 
     @XmlElement
-    public String getFecha() {return fecha;}
+    public String getFecha() {
+        return fecha;
+    }
 
     public void setFecha(String fecha) {
         this.fecha = fecha;
@@ -60,14 +66,21 @@ public class DenunciaDTO extends BaseDTO {
     }
 
     @XmlElement
-    public Set<Integer> getDetalleIds(){return detalle_ids;};
+    public Set<Integer> getTipoIds() {
+        return tipoIds;
+    }
 
-    public void setDetalleIds (Set <Integer> detalles){this.detalle_ids = detalles;};
+    public void setTipoIds(Set<Integer> tipos) {
+        this.tipoIds = tipos;
+    }
 
-    @XmlElement
-    public Set<Integer> getTipoIds(){return tipo_ids;}
+    public Integer getUserId() {
+        return userId;
+    }
 
-    public void setTipoIds(Set<Integer> tipos){this.tipo_ids = tipos;}
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     @XmlElement
     public Date getConvertedFecha(String timezone) throws ParseException {
@@ -79,4 +92,6 @@ public class DenunciaDTO extends BaseDTO {
         dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
         this.fecha = dateFormat.format(date);
     }
+
+
 }

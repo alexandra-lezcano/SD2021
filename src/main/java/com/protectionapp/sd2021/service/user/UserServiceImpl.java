@@ -1,9 +1,11 @@
 package com.protectionapp.sd2021.service.user;
 
+import com.protectionapp.sd2021.dao.denuncia.IDenunciaDao;
 import com.protectionapp.sd2021.dao.location.ICityDao;
 import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
 import com.protectionapp.sd2021.dao.user.IRoleDao;
 import com.protectionapp.sd2021.dao.user.IUserDao;
+import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.user.UserDTO;
@@ -47,9 +49,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     @Autowired
     private IRoleDao roleDao;
 
+    @Autowired
+    private IDenunciaDao denunciaDao;
+
     @Override
     protected UserDTO convertDomainToDto(UserDomain userDomain) {
         final UserDTO dto = new UserDTO();
+        dto.setId(userDomain.getId());
         dto.setName(userDomain.getName());
         dto.setSurname(userDomain.getSurname());
         dto.setUsername(userDomain.getUsername());
@@ -57,22 +63,23 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         dto.setEmail(userDomain.getEmail());
         dto.setPhone(userDomain.getPhone());
         dto.setAddress(userDomain.getAddress());
+        dto.setRoleId(userDomain.getRole().getId());
+        dto.setCityId(userDomain.getCity().getId());
+        dto.setRoleId(userDomain.getRole().getId());
 
-        /* Relacion ManyToOne */
-        if (userDomain.getCity() != null) {
-            Integer city_id = userDomain.getCity().getId();
-            dto.setCityId(city_id);
-        }
 
         /* Relacion ManyToMany
         Necesito guardar una lista de ids de los barrios a mi user DTO */
         if (userDomain.getNeighborhoods() != null) {
             Set<Integer> neighborhoodIds = new HashSet<>();
             userDomain.getNeighborhoods().forEach(n_domain -> neighborhoodIds.add(n_domain.getId()));
-            dto.setNeighborhoods(neighborhoodIds);
+            dto.setNeighborhoodIds(neighborhoodIds);
         }
-        if (userDomain.getRole() != null) {
-            dto.setRole_id(userDomain.getRole().getId());
+
+        if (userDomain.getDenuncias() != null) {
+            Set<Integer> denunciasIds = new HashSet<>();
+            userDomain.getDenuncias().forEach(d_domain -> denunciasIds.add(d_domain.getId()));
+            dto.setDenunciasIds(denunciasIds);
         }
 
         return dto;
@@ -82,6 +89,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     protected UserDomain convertDtoToDomain(UserDTO dto) {
         final UserDomain userDomain = new UserDomain();
 
+        userDomain.setId(dto.getId());
         userDomain.update(
                 dto.getName(),
                 dto.getSurname(),
@@ -89,21 +97,18 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
                 dto.getCn(),
                 dto.getAddress(),
                 dto.getEmail(),
-                dto.getPhone()
+                dto.getPhone(),
+                cityDao.findById(dto.getCityId()).get(),
+                roleDao.findById(dto.getRoleId()).get()
         );
 
-        if (dto.getCityId() != null) {
-            userDomain.setCity(cityDao.findById(dto.getCityId()).get());
-        }
+        Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
+        dto.getNeighborhoodIds().forEach(n_id -> neighborhoodDomains.add(neighborhoodDao.findById(n_id).get()));
+        userDomain.setNeighborhoods(neighborhoodDomains);
 
-        if (dto.getNeighborhoodIds() != null) {
-            Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
-            dto.getNeighborhoodIds().forEach(n_id -> neighborhoodDomains.add(neighborhoodDao.findById(n_id).get()));
-            userDomain.setNeighborhoods(neighborhoodDomains);
-        }
-
-        if (dto.getRoleId() != null) {
-            userDomain.setRole(roleDao.findById(dto.getRoleId()).get());
+        Set<DenunciaDomain> denunciaDomains = new HashSet<>();
+        if (dto.getDenunciasIds() != null) {
+            dto.getDenunciasIds().forEach(d_id -> denunciaDomains.add(denunciaDao.findById(d_id).get()));
         }
 
         return userDomain;
@@ -172,15 +177,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         if (dto.getNeighborhoodIds() != null) {
             updatedUserDomain.setNeighborhoods(getNeighborhoodDomainsFromDTO(dto));
         }
-
-        if (dto.getId() != null) {
-            updatedUserDomain.setCity(cityDao.findById(dto.getCityId()).get());
-        }
-
-        if (dto.getRoleId() != null) {
-            updatedUserDomain.setRole(roleDao.findById(dto.getRoleId()).get());
-        }
-
         updatedUserDomain.update(
                 dto.getName(),
                 dto.getSurname(),
@@ -188,7 +184,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
                 dto.getCn(),
                 dto.getAddress(),
                 dto.getEmail(),
-                dto.getPhone()
+                dto.getPhone(),
+                cityDao.findById(dto.getCityId()).get(),
+                roleDao.findById(dto.getRoleId()).get()
         );
 
         userDao.save(updatedUserDomain);

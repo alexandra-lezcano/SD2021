@@ -40,13 +40,11 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     @Autowired
     private IDenunciaDao denunciaDao;
 
-   // private ModelMapper modelMapper;
-
-    // todo como evitar tanta repeticion de codigo...mapper no me funciono.
     @Override
     @Transactional
     protected CityDTO convertDomainToDto(CityDomain domain) {
         final CityDTO cityDTO = new CityDTO();
+        cityDTO.setId(domain.getId());
         cityDTO.setName(domain.getName());
         cityDTO.setDescription(domain.getDescription());
 
@@ -76,7 +74,7 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     @Transactional
     protected CityDomain convertDtoToDomain(CityDTO dto) {
         final CityDomain cityDomain = new CityDomain();
-
+        cityDomain.setId(dto.getId());
         cityDomain.setName(dto.getName());
         cityDomain.setDescription(dto.getDescription());
 

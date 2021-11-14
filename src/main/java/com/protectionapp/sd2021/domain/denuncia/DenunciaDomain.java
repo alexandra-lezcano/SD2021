@@ -35,52 +35,91 @@ public class DenunciaDomain implements IBaseDomain {
     @Column(name = "codigo")
     private String codigo;
 
-    /*Crea la tabla intermedia entre user y denuncia*/
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "denuncia_detalles_victimas_victimarios",
-            joinColumns = {@JoinColumn(name = "denuncia_id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id")}
-    )
-    private Set<UserDomain> detalles_victimas_victimarios;
 
     /*Crea la tabla intermedia entre denuncia y tipo de denuncia*/
-    @ManyToMany(cascade= CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "denuncia_tipos",
-            joinColumns = @JoinColumn(name="denuncia_id"),
-            inverseJoinColumns = @JoinColumn(name="tipo_id")
+            joinColumns = @JoinColumn(name = "denuncia_id"),
+            inverseJoinColumns = @JoinColumn(name = "tipo_id")
     )
-
-
     private Set<TipoDenunciaDomain> tipos;
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private UserDomain user;
 
-    public Set<TipoDenunciaDomain> getTiposDenuncias(){return this.tipos;}
-    public void setTiposDenuncias(Set<TipoDenunciaDomain> tipos){this.tipos = tipos;}
 
-    public Set<UserDomain> getDetalles(){return this.detalles_victimas_victimarios;}
-    public void setDetalles(Set<UserDomain> detalles){this.detalles_victimas_victimarios = detalles;}
+    public Set<TipoDenunciaDomain> getTiposDenuncias() {
+        return this.tipos;
+    }
+
+    public void setTiposDenuncias(Set<TipoDenunciaDomain> tipos) {
+        this.tipos = tipos;
+    }
 
     public Integer getId() {
         return id;
     }
-    public void setID(Integer id){this.id = id;}
 
-    public String getFecha(){return fecha;}
-    public void setFecha(String fecha){this.fecha = fecha;}
+    public void setID(Integer id) {
+        this.id = id;
+    }
 
-    public String getEstado(){ return estado; }
-    public void setEstado(String estado){ this.estado = estado;}
+    public String getFecha() {
+        return fecha;
+    }
 
-    public String getDescripcion(){return descripcion;}
-    public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
 
-    public String getCodigo(){return codigo;}
-    public void setCodigo(String codigo) {this.codigo = codigo;}
+    public String getEstado() {
+        return estado;
+    }
 
-    public void update (String fecha,String descripcion, String estado, String codigo){
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Set<TipoDenunciaDomain> getTipos() {
+        return tipos;
+    }
+
+    public void setTipos(Set<TipoDenunciaDomain> tipos) {
+        this.tipos = tipos;
+    }
+
+    public UserDomain getUser() {
+        return user;
+    }
+
+    public void setUser(UserDomain user) {
+        this.user = user;
+    }
+
+    public void update(String fecha, String descripcion, String estado, String codigo) {
         setFecha(fecha);
         setDescripcion(descripcion);
         setCodigo(codigo);

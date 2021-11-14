@@ -20,20 +20,15 @@ public class DepEstadoDomain implements IBaseDomain {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-
-
    @ManyToMany(cascade = CascadeType.ALL)
    private Set<CasosDerivadosDomain>casos_derivados ;
-
-
+  
     @Column(name = "name")
     private String name;
 
     @Column(name = "description")
     private String description;
-
-
-
+    
     public Integer getId() {
         return id;
     }

@@ -10,10 +10,15 @@ import java.util.Set;
 public class NeighborhoodDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
+    public NeighborhoodDTO() {
+        super();
+    }
+
     private String name;
     private String description;
     private Integer city_id;
     private Set<Integer> user_ids;
+    private Set<Integer> sujeto_ids;
 
     @XmlElement
     public String getName() {
@@ -35,6 +40,9 @@ public class NeighborhoodDTO extends BaseDTO {
         return user_ids;
     }
 
+    @XmlElement
+    public Set<Integer> getSujetos() {return sujeto_ids;}
+
     public void setName(String name) {
         this.name = name;
     }
@@ -50,6 +58,8 @@ public class NeighborhoodDTO extends BaseDTO {
     public void setUser_ids(Set<Integer> user_ids) {
         this.user_ids = user_ids;
     }
+
+    public void setSujetos(Set<Integer> sujetos) {this.sujeto_ids = sujetos;}
 
     @Override
     public String toString() {

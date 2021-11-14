@@ -1,7 +1,6 @@
 package com.protectionapp.sd2021.domain.user;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
-import com.protectionapp.sd2021.domain.casosDerivados.CasosDerivadosDomain;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
@@ -53,12 +52,12 @@ public class UserDomain implements IBaseDomain {
     private RoleDomain role;
 
     /*Hay muchos usuarios en una ciudad, una ciudad puede tener muchos usuarios*/
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", referencedColumnName = "id")
     private CityDomain city;
 
     /* Crea la tabla intermedia user_neighborhood, con la columna "user_id" y "neighborhood_id" */
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_neighborhood",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -66,20 +65,13 @@ public class UserDomain implements IBaseDomain {
     )
     private Set<NeighborhoodDomain> neighborhoods;
 
-    /*Relacion unidireccional entre denuncia y usuario*/
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "denunciante_id")
-    private Set<DenunciaDomain> denuncias_denunciante;
-
-    /*Relacion many to many bidireccional entre user y denuncia*/
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<DenunciaDomain> denuncias_victima_victimario;
-
     @OneToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
     //@JoinColumn(name = "user_id", referencedColumnName = "id")
     private CasosDerivadosDomain user;
 
-
+    /*Un trabajador social se ocupa de muchas denuncias*/
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<DenunciaDomain> denuncias;
 
     public String getName() {
         return name;
@@ -185,7 +177,15 @@ public class UserDomain implements IBaseDomain {
         this.city = city;
     }
 
-    public void update(String name, String surname, String username, Integer cn, String address, String email, Integer phone) {
+    public Set<DenunciaDomain> getDenuncias() {
+        return denuncias;
+    }
+
+    public void setDenuncias(Set<DenunciaDomain> denuncias) {
+        this.denuncias = denuncias;
+    }
+
+    public void update(String name, String surname, String username, Integer cn, String address, String email, Integer phone, CityDomain city, RoleDomain role) {
         setName(name);
         setSurname(surname);
         setUsername(username);
@@ -193,5 +193,7 @@ public class UserDomain implements IBaseDomain {
         setAddress(address);
         setEmail(email);
         setPhone(phone);
+        setCity(city);
+        setRole(role);
     }
 }

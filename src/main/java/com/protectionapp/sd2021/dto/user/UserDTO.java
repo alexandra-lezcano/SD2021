@@ -10,6 +10,10 @@ import java.util.Set;
 public class UserDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
+    public UserDTO() {
+        super();
+    }
+
     private String name;
     private String surname;
     private String username;
@@ -17,9 +21,10 @@ public class UserDTO extends BaseDTO {
     private String address;
     private String email;
     private Integer phone;
-    private Integer city_id;
-    private Integer role_id;
-    private Set<Integer> neighborhood_ids;
+    private Integer cityId;
+    private Integer roleId;
+    private Set<Integer> neighborhoodIds;
+    private Set<Integer> denunciasIds;
 
     @XmlElement
     public String getName() {
@@ -58,19 +63,24 @@ public class UserDTO extends BaseDTO {
 
     @XmlElement
     public Integer getCityId() {
-        return city_id;
+        return cityId;
     }
 
     @XmlElement
     public Integer getRoleId() {
-        return role_id;
+        return roleId;
     }
 
     @XmlElement
     public Set<Integer> getNeighborhoodIds() {
-        return neighborhood_ids;
+        return neighborhoodIds;
     }
 
+    @XmlElement
+    public Set<Integer> getDenunciasIds() {
+        return denunciasIds;
+    }
+    
     public void setName(String name) {
         this.name = name;
     }
@@ -100,15 +110,19 @@ public class UserDTO extends BaseDTO {
     }
 
     public void setCityId(Integer cityId) {
-        this.city_id = cityId;
+        this.cityId = cityId;
     }
 
-    public void setRole_id(Integer role) {
-        this.role_id = role;
+    public void setRoleId(Integer role) {
+        this.roleId = role;
     }
 
-    public void setNeighborhoods(Set<Integer> neighborhoods) {
-        this.neighborhood_ids = neighborhoods;
+    public void setNeighborhoodIds(Set<Integer> neighborhoods) {
+        this.neighborhoodIds = neighborhoods;
+    }
+
+    public void setDenunciasIds(Set<Integer> denunciasIds) {
+        this.denunciasIds = denunciasIds;
     }
 
     @Override
@@ -121,9 +135,10 @@ public class UserDTO extends BaseDTO {
                 ", address='" + address + '\'' +
                 ", email='" + email + '\'' +
                 ", phone=" + phone +
-                ", city_id=" + city_id +
-                ", role_id=" + role_id +
-                ", neighborhood_ids=" + neighborhood_ids +
+                ", cityId=" + cityId +
+                ", roleId=" + roleId +
+                ", neighborhoodIds=" + neighborhoodIds +
+                ", denunciasIds=" + denunciasIds +
                 '}';
     }
 }

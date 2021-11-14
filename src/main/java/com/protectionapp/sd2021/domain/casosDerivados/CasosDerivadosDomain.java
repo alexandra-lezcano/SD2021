@@ -22,7 +22,6 @@ public class CasosDerivadosDomain implements IBaseDomain {
 
     private Integer id;
 
-
     @ManyToMany(cascade= CascadeType.ALL)
     @JoinTable(
             name = "casos_derivados_dep_estado",
@@ -39,8 +38,6 @@ public class CasosDerivadosDomain implements IBaseDomain {
     //onetoone
     @OneToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
     private UserDomain trabajador_social;
-
-
 
     @Column(name = "date")
     private Date date;
@@ -71,7 +68,6 @@ public class CasosDerivadosDomain implements IBaseDomain {
     public void setDescription(String description) {
         this.description = description;
     }
-
 
     public UserDomain getTrabajador_social() {
         return trabajador_social;

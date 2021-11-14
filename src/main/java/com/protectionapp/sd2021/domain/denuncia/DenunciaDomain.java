@@ -40,11 +40,11 @@ public class DenunciaDomain implements IBaseDomain {
 
 
     /*Crea la tabla intermedia entre denuncia y tipo de denuncia*/
-    @ManyToMany(cascade= CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "denuncia_tipos",
-            joinColumns = @JoinColumn(name="denuncia_id"),
-            inverseJoinColumns = @JoinColumn(name="tipo_id")
+            joinColumns = @JoinColumn(name = "denuncia_id"),
+            inverseJoinColumns = @JoinColumn(name = "tipo_id")
     )
     private Set<TipoDenunciaDomain> tipos;
 
@@ -52,6 +52,7 @@ public class DenunciaDomain implements IBaseDomain {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", referencedColumnName = "id")
     private CityDomain city;
+
 
     /*Una denuncia tiene un barrio*/
     @ManyToOne(fetch = FetchType.LAZY)
@@ -62,25 +63,74 @@ public class DenunciaDomain implements IBaseDomain {
     @OneToMany(mappedBy = "denuncia", cascade = CascadeType.ALL)
     private Set<SujetoDomain> sujetos;
 
-    public Set<TipoDenunciaDomain> getTiposDenuncias(){return this.tipos;}
-    public void setTiposDenuncias(Set<TipoDenunciaDomain> tipos){this.tipos = tipos;}
+    public Set<TipoDenunciaDomain> getTiposDenuncias() {
+        return this.tipos;
+    }
+
+    public void setTiposDenuncias(Set<TipoDenunciaDomain> tipos) {
+        this.tipos = tipos;
+    }
 
     public Integer getId() {
         return id;
     }
-    public void setID(Integer id){this.id = id;}
 
-    public String getFecha(){return fecha;}
-    public void setFecha(String fecha){this.fecha = fecha;}
+    public void setID(Integer id) {
+        this.id = id;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
 
     public DenunciaEstadoDomain getEstado(){ return estado; }
     public void setEstado(DenunciaEstadoDomain estado){ this.estado = estado;}
 
-    public String getDescripcion(){return descripcion;}
-    public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 
-    public String getCodigo(){return codigo;}
-    public void setCodigo(String codigo) {this.codigo = codigo;}
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Set<TipoDenunciaDomain> getTipos() {
+        return tipos;
+    }
+
+    public void setTipos(Set<TipoDenunciaDomain> tipos) {
+        this.tipos = tipos;
+    }
+
+    public UserDomain getUser() {
+        return user;
+    }
+
+    public void setUser(UserDomain user) {
+        this.user = user;
+    }
+
 
     public Set<SujetoDomain> getSujetos() {
         return sujetos;

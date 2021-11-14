@@ -22,18 +22,13 @@ public class CasosDerivadosDomain implements IBaseDomain {
     private Integer id;
 
 
-  //  @ManyToMany(mappedBy = "casosDerivados",cascade = CascadeType.ALL)
-    //private Set<DepEstadoDomain> depEstado;
+    @ManyToMany(mappedBy = "casosDerivados", cascade = CascadeType.ALL)
+    private Set<DepEstadoDomain> depEstado;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "denuncia_id", referencedColumnName = "id")
-    private DenunciaDomain denuncia ;
-
-    //onetoone
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserDomain user;
-
+    private DenunciaDomain denuncia;
 
     @Column(name = "date")
     private Date date;
@@ -65,13 +60,9 @@ public class CasosDerivadosDomain implements IBaseDomain {
         this.description = description;
     }
 
-    //public void setDepEstado(Set<DepEstadoDomain> depEstado) {
-      //  this.depEstado = depEstado;
-  //  }
-
-  //  public Set<DepEstadoDomain> getDepEstado() {
-  //      return depEstado;
-    //}
+    public Set<DepEstadoDomain> getDepEstado() {
+        return depEstado;
+    }
 
     public UserDomain getUsers() {
         return user;

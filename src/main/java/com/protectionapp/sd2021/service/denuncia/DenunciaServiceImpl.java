@@ -59,9 +59,9 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
         denuncia.setCity_id(domain.getCity().getId());
         denuncia.setNeighborhood_id(domain.getNeighborhood().getId());
 
-        if(domain.getTiposDenuncias() != null){
+        if (domain.getTiposDenuncias() != null) {
             Set<Integer> ids = new HashSet<>();
-            for (TipoDenunciaDomain t : domain.getTiposDenuncias()){
+            for (TipoDenunciaDomain t : domain.getTiposDenuncias()) {
                 ids.add(t.getId());
             }
             denuncia.setTipo_ids(ids);
@@ -72,15 +72,16 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
             for (SujetoDomain t : domain.getSujetos()){
                 ids.add(t.getId());
             }
+        denuncia.setUserId(domain.getUser().getId());
             denuncia.setSujeto_ids(ids);
         }
-
         return denuncia;
     }
 
     @Override
     protected DenunciaDomain convertDtoToDomain(DenunciaDTO dto) {
         final DenunciaDomain denuncia = new DenunciaDomain();
+        denuncia.setID(dto.getId());
         denuncia.setEstado(estadoDao.findById(dto.getEstado()).get());
         denuncia.setCodigo(dto.getCodigo());
         denuncia.setDescripcion(dto.getDescripcion());
@@ -105,6 +106,8 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
             }
             denuncia.setTiposDenuncias(tipos);
         }
+        denuncia.setUser(userDao.findById(dto.getUserId()).get());
+
         return denuncia;
     }
 
@@ -121,7 +124,7 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
 
     @Override
     @Transactional
-    public DenunciaDTO getById(Integer id) throws DenunciaNotFoundException{
+    public DenunciaDTO getById(Integer id) throws DenunciaNotFoundException {
         final DenunciaDomain denuncia = denunciaDao.findById(id).get();
         return convertDomainToDto(denuncia);
     }
@@ -152,7 +155,6 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
         if(dto.getSujeto_ids() != null){
             updated.setSujetos(getSujetosDomainFromDTO(dto));
         }
-
         denunciaDao.save(updated);
         return convertDomainToDto(updated);
     }
@@ -172,7 +174,7 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
 
     }
 
-    public Set<TipoDenunciaDomain> getTipoDenunciaDomaniFromDTO(DenunciaDTO dto){
+    public Set<TipoDenunciaDomain> getTipoDenunciaDomaniFromDTO(DenunciaDTO dto) {
         Set<TipoDenunciaDomain> domains = new HashSet<>();
         dto.getTipo_ids().forEach(id->domains.add(tipoDenunciaDao.findById(id).get()));
         return domains;

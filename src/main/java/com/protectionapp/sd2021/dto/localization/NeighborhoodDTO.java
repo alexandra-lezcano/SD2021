@@ -10,6 +10,10 @@ import java.util.Set;
 public class NeighborhoodDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
+    public NeighborhoodDTO() {
+        super();
+    }
+
     private String name;
     private String description;
     private Integer city_id;

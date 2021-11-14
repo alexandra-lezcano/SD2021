@@ -19,28 +19,12 @@ public class DepEstadoDomain implements IBaseDomain {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-
-
-
-   /* @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "detalles_casos_derivados",
-            joinColumns = @JoinColumn(name = "dep_estado_id"),
-            inverseJoinColumns = @JoinColumn(name = "casos_derivados_id")
-    )
-    private Set<CasosDerivadosDomain> casosDerivados;
-*/
-
-
-
     @Column(name = "name")
     private String name;
 
     @Column(name = "description")
     private String description;
-
-
-
+    
     public Integer getId() {
         return id;
     }
@@ -64,7 +48,6 @@ public class DepEstadoDomain implements IBaseDomain {
     public void setDescription(String description) {
         this.description = description;
     }
-
 
 
 }

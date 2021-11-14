@@ -25,7 +25,7 @@ public class DenunciaEstadoServiceImpl extends BaseServiceImpl<DenunciaEstadoDTO
     @Override
     protected DenunciaEstadoDTO convertDomainToDto(DenunciaEstadoDomain domain) {
         final DenunciaEstadoDTO dto = new DenunciaEstadoDTO();
-        dto.setNombre(dto.getNombre());
+        dto.setNombre(domain.getNombre());
         dto.setId(domain.getId());
         if (domain.getDenuncias() != null) {
             Set<Integer> denunciasIds = new HashSet<>();
@@ -69,7 +69,18 @@ public class DenunciaEstadoServiceImpl extends BaseServiceImpl<DenunciaEstadoDTO
 
     @Override
     public DenunciaEstadoDTO update(DenunciaEstadoDTO dto, Integer id) {
-        return null;
+        final DenunciaEstadoDomain updated = estadoDao.findById(id).get();
+        updated.setId(dto.getId());
+        updated.setNombre(dto.getNombre());
+
+        if (dto.getDenuncias_ids() != null) {
+            Set<DenunciaDomain> denunciaDomains = new HashSet<>();
+            dto.getDenuncias_ids().forEach(denunciaId -> denunciaDomains.add(denunciaDao.findById(denunciaId).get()));
+            updated.setDenuncias(denunciaDomains);
+        }
+
+        estadoDao.save(updated);
+        return convertDomainToDto(updated);
     }
 
     @Override

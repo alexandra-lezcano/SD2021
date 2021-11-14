@@ -30,14 +30,13 @@ public class DenunciaDomain implements IBaseDomain {
     @Column(name = "descripcion")
     private String descripcion;
 
+    @Column(name = "codigo")
+    private String codigo;
+
     /*Una denuncia tiene un estado*/
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "estado_id", referencedColumnName = "id")
     private DenunciaEstadoDomain estado;
-
-    @Column(name = "codigo")
-    private String codigo;
-
 
     /*Crea la tabla intermedia entre denuncia y tipo de denuncia*/
     @ManyToMany(cascade = CascadeType.ALL)

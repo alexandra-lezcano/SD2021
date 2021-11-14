@@ -43,19 +43,16 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
         final CasosDerivadosDTO casosDerivados = new CasosDerivadosDTO();
         casosDerivados.setDate(domain.getDate());
         casosDerivados.setDescription(domain.getDescription());
+        casosDerivados.setUser(domain.getTrabajador_social().getId());
 
-       // casosDerivados.setDenuncia(domain.getDenuncia().getId());
+        Set<Integer> denuncias_ids = new HashSet<>();
+        Set<DenunciaDomain> denuncias= domain.getDenuncia();
 
-        //Guanrdo lista de users
-
-
-       // Set<Integer> depEstado = new HashSet<>();
-/*
-        for (DepEstadoDomain d : domain.getDepEstado()) {
-            depEstado.add(d.getId());
+        for (DenunciaDomain d :denuncias) {
+            denuncias_ids.add(d.getId());
         }
-        casosDerivados.setDependencias_ids(depEstado);
-*/
+        casosDerivados.setDenuncia_ids(denuncias_ids);
+
 
         return casosDerivados;
     }
@@ -67,9 +64,8 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
       domain.setDate(dto.getDate());
       domain.setDescription(dto.getDescription());
 
-      //Guardo lista de denuncias
-        Set<DenunciaDomain> denunciaDomains = new HashSet<>();
-        //Guanrdo lista de users
+
+      //ManyToMany
         Set<DepEstadoDomain> depEstadoDomains = new HashSet<>();
 
         Set<Integer>depEstado_ids = dto.getDependencias_ids();

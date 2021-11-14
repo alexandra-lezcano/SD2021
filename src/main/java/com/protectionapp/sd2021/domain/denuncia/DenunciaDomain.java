@@ -55,6 +55,9 @@ public class DenunciaDomain implements IBaseDomain {
 
     private Set<TipoDenunciaDomain> tipos;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "caso_derivado_id")
+    private CasosDerivadosDomain denuncias_caso_derivado;
 
 
     public Set<TipoDenunciaDomain> getTiposDenuncias(){return this.tipos;}

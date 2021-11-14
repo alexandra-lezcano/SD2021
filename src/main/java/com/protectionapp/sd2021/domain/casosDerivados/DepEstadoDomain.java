@@ -2,6 +2,7 @@ package com.protectionapp.sd2021.domain.casosDerivados;
 
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
+import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -21,16 +22,8 @@ public class DepEstadoDomain implements IBaseDomain {
 
 
 
-
-   /* @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "detalles_casos_derivados",
-            joinColumns = @JoinColumn(name = "dep_estado_id"),
-            inverseJoinColumns = @JoinColumn(name = "casos_derivados_id")
-    )
-    private Set<CasosDerivadosDomain> casosDerivados;
-*/
-
+   @ManyToMany(cascade = CascadeType.ALL)
+   private Set<CasosDerivadosDomain>casos_derivados ;
 
 
     @Column(name = "name")
@@ -65,6 +58,11 @@ public class DepEstadoDomain implements IBaseDomain {
         this.description = description;
     }
 
+    public Set<CasosDerivadosDomain> getCasos_derivados() {
+        return casos_derivados;
+    }
 
-
+    public void setCasos_derivados(Set<CasosDerivadosDomain> casos_derivados) {
+        this.casos_derivados = casos_derivados;
+    }
 }

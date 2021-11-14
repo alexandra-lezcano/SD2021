@@ -2,6 +2,7 @@ package com.protectionapp.sd2021.domain.casosDerivados;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
+import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import com.protectionapp.sd2021.domain.user.RoleDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
@@ -22,17 +23,23 @@ public class CasosDerivadosDomain implements IBaseDomain {
     private Integer id;
 
 
-  //  @ManyToMany(mappedBy = "casosDerivados",cascade = CascadeType.ALL)
-    //private Set<DepEstadoDomain> depEstado;
+    @ManyToMany(cascade= CascadeType.ALL)
+    @JoinTable(
+            name = "casos_derivados_dep_estado",
+            joinColumns = @JoinColumn(name="casos_derivado_id"),
+            inverseJoinColumns = @JoinColumn(name="dep_estado_id")
+    )
+    private Set<DepEstadoDomain> dependencia_estado;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "denuncia_id", referencedColumnName = "id")
-    private DenunciaDomain denuncia ;
+    private Set<DenunciaDomain> denuncia ;
 
     //onetoone
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserDomain user;
+    @OneToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+    private UserDomain trabajador_social;
+
 
 
     @Column(name = "date")
@@ -65,27 +72,20 @@ public class CasosDerivadosDomain implements IBaseDomain {
         this.description = description;
     }
 
-    //public void setDepEstado(Set<DepEstadoDomain> depEstado) {
-      //  this.depEstado = depEstado;
-  //  }
 
-  //  public Set<DepEstadoDomain> getDepEstado() {
-  //      return depEstado;
-    //}
-
-    public UserDomain getUsers() {
-        return user;
+    public UserDomain getTrabajador_social() {
+        return trabajador_social;
     }
 
-    public void setUsers(UserDomain users) {
-        this.user= users;
+    public void setTrabajador_social(UserDomain trabajador_social) {
+        this.trabajador_social = trabajador_social;
     }
 
-    public DenunciaDomain getDenuncia() {
+    public Set<DenunciaDomain> getDenuncia() {
         return denuncia;
     }
 
-    public void setDenuncia(DenunciaDomain denuncia) {
+    public void setDenuncia(Set<DenunciaDomain> denuncia) {
         this.denuncia = denuncia;
     }
 }

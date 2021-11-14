@@ -75,6 +75,10 @@ public class UserDomain implements IBaseDomain {
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<DenunciaDomain> denuncias_victima_victimario;
 
+    @OneToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+    //@JoinColumn(name = "user_id", referencedColumnName = "id")
+    private CasosDerivadosDomain user;
+
 
 
     public String getName() {

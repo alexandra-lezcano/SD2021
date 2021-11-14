@@ -63,6 +63,7 @@ public class UserDomain implements IBaseDomain {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "neighborhood_id")
     )
+
     private Set<NeighborhoodDomain> neighborhoods;
 
     /*Un trabajador social se ocupa de muchas denuncias*/

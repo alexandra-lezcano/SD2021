@@ -55,12 +55,6 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
             cityDTO.setNeighborhoods(neighborhood_ids);
         }
 
-        if (domain.getDenuncias() != null) {
-            Set<Integer> denuncias_ids = new HashSet<>();
-            domain.getDenuncias().forEach(d_domain -> denuncias_ids.add(d_domain.getId()));
-            cityDTO.setDenuncias(denuncias_ids);
-        }
-
         if (domain.getUsers() != null) {
             Set<Integer> users_ids = new HashSet<>();
             domain.getUsers().forEach(u_domain -> users_ids.add(u_domain.getId()));
@@ -80,10 +74,6 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
 
         if (dto.getNeighborhoods() != null) {
             cityDomain.setNeighborhoods(getNeighborhoodDomainsFromDTO(dto));
-        }
-
-        if (dto.getDenuncias() != null) {
-            cityDomain.setDenuncias(getDenunciaDomainFromDTO(dto));
         }
 
         if (dto.getUsers() != null) {
@@ -144,8 +134,7 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
                 dto.getName(),
                 dto.getDescription(),
                 neighborhoodDomains,
-                userDomains,
-                denunciaDomains
+                userDomains
         );
 
         cityDao.save(updatedCityDomain);

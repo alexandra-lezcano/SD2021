@@ -21,6 +21,7 @@ public class DenunciaDomain implements IBaseDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
+    @Column(nullable = false, unique = true)
     private Integer id;
 
     @Column(name = "fecha")
@@ -29,8 +30,10 @@ public class DenunciaDomain implements IBaseDomain {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @Column(name = "estado")
-    private String estado;
+    /*Una denuncia tiene un estado*/
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "estado_id", referencedColumnName = "id")
+    private DenunciaEstadoDomain estado;
 
     @Column(name = "codigo")
     private String codigo;
@@ -45,11 +48,20 @@ public class DenunciaDomain implements IBaseDomain {
     )
     private Set<TipoDenunciaDomain> tipos;
 
-
+    /*Una denuncia tiene una ciudad*/
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserDomain user;
+    @JoinColumn(name = "city_id", referencedColumnName = "id")
+    private CityDomain city;
 
+
+    /*Una denuncia tiene un barrio*/
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "neighborhood_id", referencedColumnName = "id")
+    private NeighborhoodDomain neighborhood;
+
+    /*Una denuncia tiene varios sujetos*/
+    @OneToMany(mappedBy = "denuncia", cascade = CascadeType.ALL)
+    private Set<SujetoDomain> sujetos;
 
     public Set<TipoDenunciaDomain> getTiposDenuncias() {
         return this.tipos;
@@ -75,9 +87,9 @@ public class DenunciaDomain implements IBaseDomain {
         this.fecha = fecha;
     }
 
-    public String getEstado() {
-        return estado;
-    }
+
+    public DenunciaEstadoDomain getEstado(){ return estado; }
+    public void setEstado(DenunciaEstadoDomain estado){ this.estado = estado;}
 
     public void setEstado(String estado) {
         this.estado = estado;
@@ -119,10 +131,28 @@ public class DenunciaDomain implements IBaseDomain {
         this.user = user;
     }
 
-    public void update(String fecha, String descripcion, String estado, String codigo) {
-        setFecha(fecha);
-        setDescripcion(descripcion);
-        setCodigo(codigo);
-        setEstado(estado);
+
+    public Set<SujetoDomain> getSujetos() {
+        return sujetos;
+    }
+
+    public void setSujetos(Set<SujetoDomain> sujetos) {
+        this.sujetos = sujetos;
+    }
+
+    public CityDomain getCity() {
+        return city;
+    }
+
+    public void setCity(CityDomain city) {
+        this.city = city;
+    }
+
+    public NeighborhoodDomain getNeighborhood() {
+        return neighborhood;
+    }
+
+    public void setNeighborhood(NeighborhoodDomain neighborhood) {
+        this.neighborhood = neighborhood;
     }
 }

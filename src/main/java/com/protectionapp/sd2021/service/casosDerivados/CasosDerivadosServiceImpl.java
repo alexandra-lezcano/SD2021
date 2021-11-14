@@ -49,13 +49,13 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
         //Guanrdo lista de users
 
 
-        Set<Integer> depEstado = new HashSet<>();
-
+       // Set<Integer> depEstado = new HashSet<>();
+/*
         for (DepEstadoDomain d : domain.getDepEstado()) {
             depEstado.add(d.getId());
         }
         casosDerivados.setDependencias_ids(depEstado);
-
+*/
 
         return casosDerivados;
     }
@@ -69,11 +69,7 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
 
       //Guardo lista de denuncias
         Set<DenunciaDomain> denunciaDomains = new HashSet<>();
-
-
-
         //Guanrdo lista de users
-
         Set<DepEstadoDomain> depEstadoDomains = new HashSet<>();
 
         Set<Integer>depEstado_ids = dto.getDependencias_ids();

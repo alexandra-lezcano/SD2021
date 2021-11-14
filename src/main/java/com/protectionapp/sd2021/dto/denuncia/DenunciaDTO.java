@@ -2,6 +2,7 @@ package com.protectionapp.sd2021.dto.denuncia;
 
 import com.protectionapp.sd2021.dto.base.BaseDTO;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -24,10 +25,12 @@ public class DenunciaDTO extends BaseDTO {
 
     private String fecha;
     private String descripcion;
-    private String estado;
+    private Integer estado_id;
     private String codigo;
-    private Set<Integer> tipoIds;
-    private Integer userId;
+    private Set<Integer> tipo_ids;
+    private Integer city_id;
+    private Integer neighborhood_id;
+    private Set<Integer> sujeto_ids;
 
     @XmlElement
     public String getFecha() {
@@ -48,12 +51,12 @@ public class DenunciaDTO extends BaseDTO {
     }
 
     @XmlElement
-    public String getEstado() {
-        return estado;
+    public Integer getEstado() {
+        return estado_id;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setEstado(Integer estado) {
+        this.estado_id = estado;
     }
 
     @XmlElement
@@ -66,26 +69,46 @@ public class DenunciaDTO extends BaseDTO {
     }
 
     @XmlElement
-    public Set<Integer> getTipoIds() {
-        return tipoIds;
+    public Set<Integer> getTipo_ids() {
+        return tipo_ids;
     }
 
-    public void setTipoIds(Set<Integer> tipos) {
-        this.tipoIds = tipos;
+    public void setTipo_ids(Set<Integer> tipo_ids) {
+        this.tipo_ids = tipo_ids;
     }
 
-    public Integer getUserId() {
-        return userId;
+    @XmlElement
+    public Set<Integer> getSujeto_ids() {
+        return sujeto_ids;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setSujeto_ids(Set<Integer> sujeto_ids) {
+        this.sujeto_ids = sujeto_ids;
+
     }
 
     @XmlElement
     public Date getConvertedFecha(String timezone) throws ParseException {
         dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
         return dateFormat.parse(this.fecha);
+    }
+
+    @XmlElement
+    public Integer getCity_id() {
+        return city_id;
+    }
+
+    public void setCity_id(Integer city_id) {
+        this.city_id = city_id;
+    }
+
+    @XmlElement
+    public Integer getNeighborhood_id() {
+        return neighborhood_id;
+    }
+
+    public void setNeighborhood_id(Integer neighborhood_id) {
+        this.neighborhood_id = neighborhood_id;
     }
 
     public void setConvertedFecha(Date date, String timezone) {

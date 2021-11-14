@@ -2,6 +2,7 @@ package com.protectionapp.sd2021.domain.location;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
+import com.protectionapp.sd2021.domain.denuncia.SujetoDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
 
 import javax.persistence.*;
@@ -31,14 +32,9 @@ public class NeighborhoodDomain implements IBaseDomain {
     @ManyToMany(mappedBy = "neighborhoods")
     private Set<UserDomain> users;
 
-    /*Relacion unidireccional entre denuncia y ciudad
-
-    ERROR
-    org.springframework.http.converter.HttpMessageNotReadableException
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "barrio_id")
-    private Set<DenunciaDomain> denuncias;*/
+    /*Reni: un barrio tiene varias denuncias*/
+    @OneToMany(mappedBy = "neighborhood")
+    private Set<DenunciaDomain> denuncias;
 
     public Integer getId() {
         return id;
@@ -78,5 +74,13 @@ public class NeighborhoodDomain implements IBaseDomain {
 
     public void setUsers(Set<UserDomain> users) {
         this.users = users;
+    }
+
+    public Set<DenunciaDomain> getDenuncias() {
+        return denuncias;
+    }
+
+    public void setDenuncias(Set<DenunciaDomain> denuncias) {
+        this.denuncias = denuncias;
     }
 }

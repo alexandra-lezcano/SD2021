@@ -2,6 +2,7 @@ package com.protectionapp.sd2021.domain.location;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
+import com.protectionapp.sd2021.domain.denuncia.SujetoDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
 
 import javax.persistence.*;
@@ -30,10 +31,10 @@ public class CityDomain implements IBaseDomain {
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
     private Set<NeighborhoodDomain> neighborhoods;
 
-    /*Relacion unidireccional entre denuncia y ciudad*/
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ciudad_id")
+    /*Reni: una ciudad tiene varias denuncias*/
+    @OneToMany(mappedBy = "city")
     private Set<DenunciaDomain> denuncias;
+
 
     public Integer getId() {
         return id;
@@ -79,11 +80,11 @@ public class CityDomain implements IBaseDomain {
         return denuncias;
     }
 
-    public void setDenuncias(Set<DenunciaDomain> denuncias) {
-        this.denuncias = denuncias;
+    public void setDenuncias(Set<DenunciaDomain> sujetos) {
+        this.denuncias = sujetos;
     }
 
-    public void updateDomain(String name, String description, Set<NeighborhoodDomain> neighborhoods, Set<UserDomain> users, Set<DenunciaDomain> denuncias) {
+    public void updateDomain(String name, String description, Set<NeighborhoodDomain> neighborhoods, Set<UserDomain> users) {
         this.name = name;
         this.description = description;
         if (neighborhoods != null) {
@@ -94,8 +95,5 @@ public class CityDomain implements IBaseDomain {
             this.users = users;
         }
 
-        if (denuncias != null) {
-            this.denuncias = denuncias;
-        }
     }
 }

@@ -63,8 +63,11 @@ public class UserDomain implements IBaseDomain {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "neighborhood_id")
     )
-
     private Set<NeighborhoodDomain> neighborhoods;
+
+    @OneToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+    //@JoinColumn(name = "user_id", referencedColumnName = "id")
+    private CasosDerivadosDomain user;
 
     /*Un trabajador social se ocupa de muchas denuncias*/
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

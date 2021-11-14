@@ -2,6 +2,7 @@ package com.protectionapp.sd2021.domain.casosDerivados;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
+import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import com.protectionapp.sd2021.domain.user.RoleDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
@@ -21,9 +22,22 @@ public class CasosDerivadosDomain implements IBaseDomain {
 
     private Integer id;
 
-  /*  @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToMany(cascade= CascadeType.ALL)
+    @JoinTable(
+            name = "casos_derivados_dep_estado",
+            joinColumns = @JoinColumn(name="casos_derivado_id"),
+            inverseJoinColumns = @JoinColumn(name="dep_estado_id")
+    )
+    private Set<DepEstadoDomain> dependencia_estado;
+
+
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "denuncia_id", referencedColumnName = "id")
-    private DenunciaDomain denuncia;*/
+    private Set<DenunciaDomain> denuncia ;
+
+    //onetoone
+    @OneToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+    private UserDomain trabajador_social;
 
     @Column(name = "date")
     private Date date;
@@ -53,5 +67,21 @@ public class CasosDerivadosDomain implements IBaseDomain {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public UserDomain getTrabajador_social() {
+        return trabajador_social;
+    }
+
+    public void setTrabajador_social(UserDomain trabajador_social) {
+        this.trabajador_social = trabajador_social;
+    }
+
+    public Set<DenunciaDomain> getDenuncia() {
+        return denuncia;
+    }
+
+    public void setDenuncia(Set<DenunciaDomain> denuncia) {
+        this.denuncia = denuncia;
     }
 }

@@ -57,9 +57,9 @@ public class DenunciaDomain implements IBaseDomain {
     @JoinColumn(name = "neighborhood_id", referencedColumnName = "id")
     private NeighborhoodDomain neighborhood;
 
-    /*Una denuncia tiene varios sujetos*/
-    @OneToMany(mappedBy = "denuncia", cascade = CascadeType.ALL)
-    private Set<SujetoDomain> sujetos;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "caso_derivado_id")
+    private CasosDerivadosDomain denuncias_caso_derivado;
 
     /* Muchas denuncias corresponden a un trabajador social */
     @ManyToOne(fetch = FetchType.LAZY)

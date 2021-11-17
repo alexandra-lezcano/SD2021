@@ -88,4 +88,12 @@ public class CasosDerivadosDomain implements IBaseDomain {
     public void setDenuncia(Set<DenunciaDomain> denuncia) {
         this.denuncia = denuncia;
     }
+
+    public void setDependencia_estado(Set<DepEstadoDomain> dependencia_estado) {
+        this.dependencia_estado = dependencia_estado;
+    }
+
+    public Set<DepEstadoDomain> getDependencia_estado() {
+        return dependencia_estado;
+    }
 }

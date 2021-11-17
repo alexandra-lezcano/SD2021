@@ -63,7 +63,7 @@ public class DenunciaEstadoServiceImpl extends BaseServiceImpl<DenunciaEstadoDTO
         return convertDomainToDto(estado);
     }
 
-    @Override
+   // @Override
     public DenunciaEstadoResult getAll(Pageable pageable) {
         return null;
     }

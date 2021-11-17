@@ -2,15 +2,15 @@ package com.protectionapp.sd2021.dto.casosDerivados;
 
 import com.protectionapp.sd2021.dto.base.BaseDTO;
 
-import java.util.Set;
+import java.util.Date;
 
 public class DepEstadoDTO extends BaseDTO {
 
     private static final long serialVersionUID = 1L;
 
+
     private String description;
     private String name;
-    private Set<Integer> casos_derivados_ids;
 
 
 
@@ -29,24 +29,4 @@ public class DepEstadoDTO extends BaseDTO {
     public void setName(String name) {
         this.name = name;
     }
-
-    @Override
-    public void setId(Integer id) {
-        super.setId(id);
-    }
-
-    @Override
-    public Integer getId() {
-        return super.getId();
-    }
-
-    public Set<Integer> getCasos_derivados_ids() {
-        return casos_derivados_ids;
-    }
-
-    public void setCasos_derivados_ids(Set<Integer> casos_derivados_ids) {
-        this.casos_derivados_ids = casos_derivados_ids;
-    }
-
-
 }

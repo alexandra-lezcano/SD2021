@@ -25,7 +25,7 @@ public class DenunciaDomain implements IBaseDomain {
     private Integer id;
 
     @Column(name = "fecha")
-    private String fecha;
+    private Date fecha;
 
     @Column(name = "descripcion")
     private String descripcion;
@@ -57,9 +57,9 @@ public class DenunciaDomain implements IBaseDomain {
     @JoinColumn(name = "neighborhood_id", referencedColumnName = "id")
     private NeighborhoodDomain neighborhood;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "caso_derivado_id")
-    private CasosDerivadosDomain denuncias_caso_derivado;
+    /*Una denuncia tiene varios sujetos*/
+    @OneToMany(mappedBy = "denuncia", cascade = CascadeType.ALL)
+    private Set<SujetoDomain> sujetos;
 
     /* Muchas denuncias corresponden a un trabajador social */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -82,11 +82,11 @@ public class DenunciaDomain implements IBaseDomain {
         this.id = id;
     }
 
-    public String getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 

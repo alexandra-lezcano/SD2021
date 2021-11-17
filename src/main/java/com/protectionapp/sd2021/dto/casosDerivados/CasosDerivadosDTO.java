@@ -14,7 +14,7 @@ public class CasosDerivadosDTO extends BaseDTO {
 
     private Date date;
     private String description;
-    private Set<Integer> denuncia_ids;
+    private Integer denuncia_id;
     private Integer user_id;
     private Set<Integer> dependencias_ids;
 
@@ -29,6 +29,10 @@ public class CasosDerivadosDTO extends BaseDTO {
         return description;
     }
 
+    @XmlElement
+    public Integer getDenuncia() {
+        return denuncia_id;
+    }
 
     @XmlElement
     public Integer getUsers() {
@@ -45,19 +49,19 @@ public class CasosDerivadosDTO extends BaseDTO {
         super.setId(id);
     }
 
-    public void setDenuncia_ids(Set<Integer> denuncia_ids) {
-        this.denuncia_ids = denuncia_ids;
-    }
-    @XmlElement
-    public Set<Integer> getDenuncia_ids() {
-        return denuncia_ids;
+    public void setDenuncia_ids(Integer denuncia_ids) {
+        this.denuncia_id = denuncia_ids;
     }
 
-    public void setUser_id(Integer user_ids) {
+    public Integer getDenuncia_ids() {
+        return denuncia_id;
+    }
+
+    public void setUser_ids(Integer user_ids) {
         this.user_id = user_ids;
     }
 
-    public Integer getUser_id() {
+    public Integer getUser_ids() {
         return user_id;
     }
 
@@ -69,7 +73,7 @@ public class CasosDerivadosDTO extends BaseDTO {
         this.description = description;
     }
 
-    public void setUser(Integer users) {
+    public void setUsers(Integer users) {
         this.user_id = users;
     }
 

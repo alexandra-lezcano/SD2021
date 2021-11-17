@@ -41,32 +41,21 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
     @Override
     protected CasosDerivadosDTO convertDomainToDto(CasosDerivadosDomain domain) {
         final CasosDerivadosDTO casosDerivados = new CasosDerivadosDTO();
-        casosDerivados.setId(domain.getId());
         casosDerivados.setDate(domain.getDate());
         casosDerivados.setDescription(domain.getDescription());
 
-        if(domain.getTrabajador_social()!=null) {
-            casosDerivados.setUser(domain.getTrabajador_social().getId());
+       // casosDerivados.setDenuncia(domain.getDenuncia().getId());
+
+        //Guanrdo lista de users
+
+
+       // Set<Integer> depEstado = new HashSet<>();
+/*
+        for (DepEstadoDomain d : domain.getDepEstado()) {
+            depEstado.add(d.getId());
         }
-
-
-        //guardo los ids de las denuncias
-        if(domain.getDenuncia()!=null) {
-            Set<Integer> denuncias_ids = new HashSet<>();
-            Set<DenunciaDomain> denuncias = domain.getDenuncia();
-            for (DenunciaDomain d : denuncias) {
-                denuncias_ids.add(d.getId());
-            }
-            casosDerivados.setDenuncia_ids(denuncias_ids);
-        }
-
-        //guardo las depEstado de mi caso derivado
-        if(domain.getDependencia_estado()!=null){
-            Set<Integer> dependenciasIds= new HashSet<Integer>();
-            domain.getDependencia_estado().forEach(d->dependenciasIds.add(d.getId()));
-            casosDerivados.setDependencias_ids(dependenciasIds);
-        }
-
+        casosDerivados.setDependencias_ids(depEstado);
+*/
 
         return casosDerivados;
     }
@@ -78,20 +67,15 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
       domain.setDate(dto.getDate());
       domain.setDescription(dto.getDescription());
 
-      if(dto.getDenuncia_ids()!=null) {
-          domain.setTrabajador_social(userDao.findById(dto.getUser_id()).get());
-      }
+      //Guardo lista de denuncias
+        Set<DenunciaDomain> denunciaDomains = new HashSet<>();
+        //Guanrdo lista de users
+        Set<DepEstadoDomain> depEstadoDomains = new HashSet<>();
 
-      //ManyToMany
-        if(dto.getDependencias_ids()!=null) {
-            Set<DepEstadoDomain> depEstadoDomains = new HashSet<>();
-            Set<Integer> depEstado_ids = dto.getDependencias_ids();
-
-            for (Integer nId : depEstado_ids) {
-                depEstadoDomains.add(depEstadoDao.findById(nId).get());
-            }
-            domain.setDependencia_estado(depEstadoDomains);
-
+        Set<Integer>depEstado_ids = dto.getDependencias_ids();
+        ;
+        for (Integer nId :depEstado_ids) {
+            depEstadoDomains.add(depEstadoDao.findById(nId).get());
         }
 
         return domain;

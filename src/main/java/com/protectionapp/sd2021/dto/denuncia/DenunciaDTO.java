@@ -23,7 +23,7 @@ public class DenunciaDTO extends BaseDTO {
     private static final SimpleDateFormat dateFormat
             = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-    private String fecha;
+    private Date fecha;
     private String descripcion;
     private Integer estado_id;
     private String codigo;
@@ -34,7 +34,7 @@ public class DenunciaDTO extends BaseDTO {
     private Integer user_id;
 
     @XmlElement
-    public String getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
@@ -78,7 +78,7 @@ public class DenunciaDTO extends BaseDTO {
         return user_id;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
@@ -114,14 +114,4 @@ public class DenunciaDTO extends BaseDTO {
         this.user_id = user_id;
     }
 
-    @XmlElement
-    public Date getConvertedFecha(String timezone) throws ParseException {
-        dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
-        return dateFormat.parse(this.fecha);
-    }
-
-    public void setConvertedFecha(Date date, String timezone) {
-        dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
-        this.fecha = dateFormat.format(date);
-    }
 }

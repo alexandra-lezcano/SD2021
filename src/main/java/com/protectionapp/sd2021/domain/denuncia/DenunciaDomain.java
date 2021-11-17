@@ -25,7 +25,7 @@ public class DenunciaDomain implements IBaseDomain {
     private Integer id;
 
     @Column(name = "fecha")
-    private String fecha;
+    private Date fecha;
 
     @Column(name = "descripcion")
     private String descripcion;
@@ -82,11 +82,11 @@ public class DenunciaDomain implements IBaseDomain {
         this.id = id;
     }
 
-    public String getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 

@@ -10,6 +10,10 @@ import java.util.Set;
 @XmlRootElement(name = "casosEstado")
 public class CasosDerivadosDTO extends BaseDTO {
 
+    public CasosDerivadosDTO() {
+        super();
+    }
+
     private static final long serialVersionUID = 1L;
 
     private Date date;
@@ -39,30 +43,27 @@ public class CasosDerivadosDTO extends BaseDTO {
         return user_id;
     }
 
-    @Override
-    public Integer getId() {
-        return super.getId();
+    @XmlElement
+    public Integer getUser_ids() {
+        return user_id;
     }
 
-    @Override
-    public void setId(Integer id) {
-        super.setId(id);
+    @XmlElement
+    public Integer getDenuncia_ids() {
+        return denuncia_id;
+    }
+
+    @XmlElement
+    public Set<Integer> getDependencias_ids() {
+        return dependencias_ids;
     }
 
     public void setDenuncia_ids(Integer denuncia_ids) {
         this.denuncia_id = denuncia_ids;
     }
 
-    public Integer getDenuncia_ids() {
-        return denuncia_id;
-    }
-
     public void setUser_ids(Integer user_ids) {
         this.user_id = user_ids;
-    }
-
-    public Integer getUser_ids() {
-        return user_id;
     }
 
     public void setDate(Date date) {
@@ -75,11 +76,6 @@ public class CasosDerivadosDTO extends BaseDTO {
 
     public void setUsers(Integer users) {
         this.user_id = users;
-    }
-
-
-    public Set<Integer> getDependencias_ids() {
-        return dependencias_ids;
     }
 
     public void setDependencias_ids(Set<Integer> dependencias_ids) {

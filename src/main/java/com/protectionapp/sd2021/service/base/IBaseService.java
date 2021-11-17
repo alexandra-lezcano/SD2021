@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 public interface IBaseService<DTO extends BaseDTO, R extends BaseResult> {
 
     /* R E S T
-       Servicios para la api:
+
      * Save - Post
      * getById & getAll - Get
      * update - Put

@@ -27,4 +27,19 @@ public class SujetoResource {
     public SujetoDto postSujeto(@Valid @RequestBody SujetoDto sujetoDto){
         return sujetoService.save(sujetoDto);
     }
+
+    /*Put en construccion*/
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public SujetoDto updateSujeto(@Valid @RequestBody SujetoDto sujetoDto, @PathVariable(value = "id") Integer id) {
+        return sujetoService.update(sujetoDto, id);
+    }
+
+    /*Delete en construccion*/
+    @DeleteMapping("/{id}")
+    public SujetoDto deleteSujeto(@PathVariable(name = "id") Integer id) {
+        return sujetoService.delete(id);
+    }
+
+
 }

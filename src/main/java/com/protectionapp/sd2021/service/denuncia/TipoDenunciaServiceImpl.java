@@ -33,10 +33,11 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
         dto.setTitulo(domain.getTitulo());
         dto.setDescripcion(domain.getDescripcion());
 
+        Set<Integer> denunciasIds = new HashSet<>();
         if (domain.getDenuncias() != null) {
-            Set<Integer> denunciasIds = new HashSet<>();
             domain.getDenuncias().forEach(denunciaDomain -> denunciasIds.add(denunciaDomain.getId()));
         }
+        dto.setDenunciaIds(denunciasIds);
         return dto;
     }
 
@@ -46,11 +47,13 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
         domain.setId(dto.getId());
         domain.setTitulo(dto.getTitulo());
         domain.setDescripcion(dto.getDescripcion());
-
+        System.out.println(dto.getDescripcion());
+        Set<DenunciaDomain> denuncias = new HashSet<>();
         if (dto.getDenunciaIds() != null) {
-            Set<DenunciaDomain> denuncias = new HashSet<>();
             dto.getDenunciaIds().forEach(denunciaId -> denuncias.add(denunciaDao.findById(denunciaId).get()));
         }
+
+        domain.setDenuncias(denuncias);
         return domain;
     }
 
@@ -72,31 +75,51 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
     public TipoDenunciaResult getAll(Pageable pageable) {
         final List<TipoDenunciaDTO> tipos = new ArrayList<>();
         Page<TipoDenunciaDomain> resutls = tipoDenunciaDao.findAll(pageable);
-        resutls.forEach(tipo-> tipos.add(convertDomainToDto(tipo)));
+        resutls.forEach(tipo -> tipos.add(convertDomainToDto(tipo)));
+
         final TipoDenunciaResult result = new TipoDenunciaResult();
         result.setTipoDenunciaList(tipos);
+        return result;
+    }
+
+    public TipoDenunciaResult getllAllNotPaginated() {
+        final TipoDenunciaResult result = new TipoDenunciaResult();
+        final Iterable<TipoDenunciaDomain> allDomains = tipoDenunciaDao.findAll();
+        System.out.println("[ITERABLE] ALL DOMAINS " + allDomains.toString());
+        final List<TipoDenunciaDTO> allDtos = new ArrayList<>();
+
+        if (allDomains != null) {
+            allDomains.forEach(tipoDenunciaDomain -> allDtos.add(convertDomainToDto(tipoDenunciaDomain)));
+        }
+        System.out.println("[List] ALL DTOS " + allDtos.toString());
+
+        result.setTipoDenunciaList(allDtos);
+
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getTipoDenunciasList().toString());
         return result;
     }
 
     @Override
     public TipoDenunciaDTO update(TipoDenunciaDTO dto, Integer id) {
         final TipoDenunciaDomain updated = tipoDenunciaDao.findById(id).get();
-        if(dto.getTitulo() != null){
+        if (dto.getTitulo() != null) {
             updated.setTitulo(dto.getTitulo());
         }
-        if(dto.getDescripcion() != null){
+        if (dto.getDescripcion() != null) {
             updated.setDescripcion(dto.getDescripcion());
         }
 
-        if(dto.getDenunciaIds() != null){
+        if (dto.getDenunciaIds() != null) {
             updated.setDenuncias(getDenunciasFromDto(dto));
         }
+
+        tipoDenunciaDao.save(updated);
         return convertDomainToDto(updated);
     }
 
     private Set<DenunciaDomain> getDenunciasFromDto(TipoDenunciaDTO dto) {
         Set<DenunciaDomain> ret = new HashSet<>();
-        dto.getDenunciaIds().forEach(id->ret.add(denunciaDao.findById(id).get()));
+        dto.getDenunciaIds().forEach(id -> ret.add(denunciaDao.findById(id).get()));
         return ret;
     }
 

@@ -8,8 +8,13 @@ import java.util.List;
 
 
 @XmlRootElement(name = "depEstadoResult")
-    public class DepEstadoResult extends BaseResult<DepEstadoDTO> {
-        private static final long serialVersionUID = 1L;
+public class DepEstadoResult extends BaseResult<DepEstadoDTO> {
+    private static final long serialVersionUID = 1L;
+
+    public DepEstadoResult() {
+        super();
+    }
+
     @XmlElement
     public List<DepEstadoDTO> getDepEstado() {
         return getList();

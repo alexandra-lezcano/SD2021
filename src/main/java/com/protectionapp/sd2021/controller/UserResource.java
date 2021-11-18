@@ -43,7 +43,7 @@ public class UserResource {
      *  2- tolerancia a fallos */
     @GetMapping(path = "page/{page_num}")
     @ResponseBody
-    public UserResult getUsers(@PathVariable(value = "page_num") Integer pageNum) {
+    public UserResult getAll(@PathVariable(value = "page_num") Integer pageNum) {
         return userService.getAll(PageRequest.of(pageNum, 5));
     }
 

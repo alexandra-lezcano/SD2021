@@ -17,4 +17,9 @@ public class DenunciaResult extends BaseResult<DenunciaDTO> {
 	public void setDenuncias(List<DenunciaDTO> dtos) {
 		super.setList(dtos);
 	}
+
+	@XmlElement
+	public List<DenunciaDTO> getDenuncias() {
+		return super.getList();
+	}
 }

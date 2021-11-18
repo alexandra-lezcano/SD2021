@@ -44,12 +44,12 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
         casosDerivados.setDate(domain.getDate());
         casosDerivados.setDescription(domain.getDescription());
 
-       // casosDerivados.setDenuncia(domain.getDenuncia().getId());
+        // casosDerivados.setDenuncia(domain.getDenuncia().getId());
 
         //Guanrdo lista de users
 
 
-       // Set<Integer> depEstado = new HashSet<>();
+        // Set<Integer> depEstado = new HashSet<>();
 /*
         for (DepEstadoDomain d : domain.getDepEstado()) {
             depEstado.add(d.getId());
@@ -62,19 +62,19 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
 
     @Override
     protected CasosDerivadosDomain convertDtoToDomain(CasosDerivadosDTO dto) {
-      final CasosDerivadosDomain domain = new CasosDerivadosDomain();
-      domain.setId(dto.getId());
-      domain.setDate(dto.getDate());
-      domain.setDescription(dto.getDescription());
+        final CasosDerivadosDomain domain = new CasosDerivadosDomain();
+        domain.setId(dto.getId());
+        domain.setDate(dto.getDate());
+        domain.setDescription(dto.getDescription());
 
-      //Guardo lista de denuncias
+        //Guardo lista de denuncias
         Set<DenunciaDomain> denunciaDomains = new HashSet<>();
         //Guanrdo lista de users
         Set<DepEstadoDomain> depEstadoDomains = new HashSet<>();
 
-        Set<Integer>depEstado_ids = dto.getDependencias_ids();
+        Set<Integer> depEstado_ids = dto.getDependencias_ids();
         ;
-        for (Integer nId :depEstado_ids) {
+        for (Integer nId : depEstado_ids) {
             depEstadoDomains.add(depEstadoDao.findById(nId).get());
         }
 
@@ -91,34 +91,27 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
         final CasosDerivadosResult cDResult = new CasosDerivadosResult();
         cDResult.setCasosDerivados(cD);
 
-      return  cDResult;
+        return cDResult;
     }
 
+    //todo fix this
     @Override
     public CasosDerivadosDTO update(CasosDerivadosDTO dto, Integer id) {
+        final CasosDerivadosDomain casoDerivado = casosDerivadosDao.findById(id).get();
+        casoDerivado.setDate(dto.getDate());
+        casoDerivado.setDescription((dto.getDescription()));
 
-if(casosDerivadosDao.findById(id)!=null ) {
-    final CasosDerivadosDomain casoDerivado = casosDerivadosDao.findById(id).get();
-
-    casoDerivado.setDate(dto.getDate());
-    casoDerivado.setDescription((dto.getDescription()));
-
-//cambiamos lista de  users
-    Set<UserDomain> userDomains = new HashSet<>();
-
-    final CasosDerivadosDomain nuevo = casosDerivadosDao.save(casoDerivado);
-    return convertDomainToDto(nuevo);
-}
-return null;
-
-
-
+        if (dto.getUsers() != null) {
+            Set<UserDomain> userDomains = new HashSet<>();
+        }
+        final CasosDerivadosDomain nuevo = casosDerivadosDao.save(casoDerivado);
+        return convertDomainToDto(nuevo);
     }
 
     @Override
     public CasosDerivadosDTO delete(Integer id) {
-        final  CasosDerivadosDTO deleted=update(null,id);
-        return  deleted;
+        final CasosDerivadosDTO deleted = update(null, id);
+        return deleted;
     }
 
 
@@ -138,7 +131,6 @@ return null;
         return convertDomainToDto(cD);
 
     }
-
 
 
     @Override

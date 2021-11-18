@@ -37,4 +37,12 @@ public class TipoSujetoDomain implements IBaseDomain {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
+    public Set<SujetoDomain> getSujetos() {
+        return sujetos;
+    }
+
+    public void setSujetos(Set<SujetoDomain> sujetos) {
+        this.sujetos = sujetos;
+    }
 }

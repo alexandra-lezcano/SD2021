@@ -2,8 +2,10 @@ package com.protectionapp.sd2021.dto.casosDerivados;
 
 import com.protectionapp.sd2021.dto.base.BaseDTO;
 
-import java.util.Date;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "depEstado")
 public class DepEstadoDTO extends BaseDTO {
 
     private static final long serialVersionUID = 1L;
@@ -13,7 +15,7 @@ public class DepEstadoDTO extends BaseDTO {
     private String name;
 
 
-
+    @XmlElement
     public String getDescription() {
         return description;
     }
@@ -22,6 +24,7 @@ public class DepEstadoDTO extends BaseDTO {
         this.description = description;
     }
 
+    @XmlElement
     public String getName() {
         return name;
     }

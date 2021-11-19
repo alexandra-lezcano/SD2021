@@ -97,7 +97,7 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
         return domain;
 
     }
-
+//com
     @Override
     public CasosDerivadosResult getAll(Pageable pageable) {
 

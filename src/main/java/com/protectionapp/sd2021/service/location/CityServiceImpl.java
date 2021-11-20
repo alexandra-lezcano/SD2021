@@ -12,7 +12,6 @@ import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.localization.CityResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
-//import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -107,8 +106,25 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
         cityDomains.forEach(cityDomain -> cities.add(convertDomainToDto(cityDomain))); //bello lambda
 
         final CityResult cityResult = new CityResult();
-        cityResult.setCities(cities);
+        cityResult.setCitys(cities);
         return cityResult;
+    }
+
+    public CityResult getllAllNotPaginated() {
+        final CityResult result = new CityResult();
+        final Iterable<CityDomain> allDomains = cityDao.findAll();
+        System.out.println("[ITERABLE] ALL DOMAINS " + allDomains.toString());
+        final List<CityDTO> allDtos = new ArrayList<>();
+
+        if (allDomains != null) {
+            allDomains.forEach(cityDomain -> allDtos.add(convertDomainToDto(cityDomain)));
+        }
+        System.out.println("[List] ALL DTOS " + allDtos.toString());
+
+        result.setCitys(allDtos);
+
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getCitys().toString());
+        return result;
     }
 
     @Override

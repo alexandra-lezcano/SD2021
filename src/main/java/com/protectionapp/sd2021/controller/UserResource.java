@@ -1,5 +1,6 @@
 package com.protectionapp.sd2021.controller;
 
+import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.dto.user.UserResult;
 import com.protectionapp.sd2021.service.user.UserServiceImpl;
@@ -47,6 +48,14 @@ public class UserResource {
         return userService.getAll(PageRequest.of(pageNum, 5));
     }
 
+    @RequestMapping(
+            method = RequestMethod.GET,
+            produces = "application/JSON"
+    )
+    public UserResult getllAllNotPaginated() {
+        return userService.getllAllNotPaginated();
+    }
+
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -56,13 +65,13 @@ public class UserResource {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDTO updateUser(@RequestBody UserDTO newUserDTO, @PathVariable(value = "id") Integer userId) {
+    public UserDTO update(@RequestBody UserDTO newUserDTO, @PathVariable(value = "id") Integer userId) {
         return userService.update(newUserDTO, userId);
 
     }
 
     @DeleteMapping("/{id}")
-    public UserDTO deleteUser(@PathVariable(value = "id") Integer userId) {
+    public UserDTO delete(@PathVariable(value = "id") Integer userId) {
         return userService.delete(userId);
     }
 }

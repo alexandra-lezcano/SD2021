@@ -4,7 +4,10 @@ import com.protectionapp.sd2021.dao.denuncia.IDenunciaDao;
 import com.protectionapp.sd2021.dao.denuncia.ISujetoDao;
 import com.protectionapp.sd2021.dao.denuncia.ITipoSujetoDao;
 import com.protectionapp.sd2021.domain.denuncia.SujetoDomain;
+import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
 import com.protectionapp.sd2021.domain.denuncia.TipoSujetoDomain;
+import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
+import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.dto.denuncia.TipoSujetoDTO;
 import com.protectionapp.sd2021.dto.denuncia.TipoSujetoResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
@@ -69,7 +72,24 @@ public class TipoSujetoServiceImpl extends BaseServiceImpl<TipoSujetoDTO, TipoSu
         Page<TipoSujetoDomain> results = tipoSujetoDao.findAll(pageable);
         results.forEach(tipo->tipos.add(convertDomainToDto(tipo)));
         final TipoSujetoResult result = new TipoSujetoResult();
-        result.setTipoSujetoList(tipos);
+        result.setTipoSujetos(tipos);
+        return result;
+    }
+
+    public TipoSujetoResult getllAllNotPaginated() {
+        final TipoSujetoResult result = new TipoSujetoResult();
+        final Iterable<TipoSujetoDomain> allDomains = tipoSujetoDao.findAll();
+        System.out.println("[ITERABLE] ALL DOMAINS " + allDomains.toString());
+        final List<TipoSujetoDTO> allDtos = new ArrayList<>();
+
+        if (allDomains != null) {
+            allDomains.forEach(tipoSujetoDomain -> allDtos.add(convertDomainToDto(tipoSujetoDomain)));
+        }
+        System.out.println("[List] ALL DTOS " + allDtos.toString());
+
+        result.setTipoSujetos(allDtos);
+
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getTipoSujetos().toString());
         return result;
     }
 

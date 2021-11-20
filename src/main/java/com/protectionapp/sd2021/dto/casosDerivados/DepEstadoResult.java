@@ -15,11 +15,11 @@ public class DepEstadoResult extends BaseResult<DepEstadoDTO> {
     }
 
     @XmlElement
-    public List<DepEstadoDTO> getDepEstadoList() {
+    public List<DepEstadoDTO> getDepEstados() {
         return getList();
     }
 
-    public void setDepEstado(List<DepEstadoDTO> dtos) {
+    public void setDepEstados(List<DepEstadoDTO> dtos) {
         super.setList(dtos);
     }
 

@@ -13,7 +13,7 @@ public class CasosDerivadosResult extends BaseResult<CasosDerivadosDTO> {
     public CasosDerivadosResult(){ super(); }
 
     @XmlElement
-    public List<CasosDerivadosDTO> getCasosDerivadosList() {
+    public List<CasosDerivadosDTO> getCasosDerivados() {
         return getList();
     }
 

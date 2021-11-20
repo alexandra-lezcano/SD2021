@@ -63,7 +63,7 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
         results.forEach(dE -> depEstados.add(convertDomainToDto(dE)));
 
         final DepEstadoResult DEResult = new DepEstadoResult();
-        DEResult.setDepEstado(depEstados);
+        DEResult.setDepEstados(depEstados);
         return DEResult;
 
     }

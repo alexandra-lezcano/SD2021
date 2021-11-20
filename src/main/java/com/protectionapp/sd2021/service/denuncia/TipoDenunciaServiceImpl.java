@@ -4,7 +4,6 @@ import com.protectionapp.sd2021.dao.denuncia.IDenunciaDao;
 import com.protectionapp.sd2021.dao.denuncia.ITipoDenunciaDao;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
-import com.protectionapp.sd2021.dto.denuncia.DenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
@@ -78,7 +77,7 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
         resutls.forEach(tipo -> tipos.add(convertDomainToDto(tipo)));
 
         final TipoDenunciaResult result = new TipoDenunciaResult();
-        result.setTipoDenunciaList(tipos);
+        result.setTipoDenuncias(tipos);
         return result;
     }
 
@@ -93,9 +92,9 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
         }
         System.out.println("[List] ALL DTOS " + allDtos.toString());
 
-        result.setTipoDenunciaList(allDtos);
+        result.setTipoDenuncias(allDtos);
 
-        System.out.println("[RESULT LIST] ALL DTOS " + result.getTipoDenunciasList().toString());
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getTipoDenuncias().toString());
         return result;
     }
 

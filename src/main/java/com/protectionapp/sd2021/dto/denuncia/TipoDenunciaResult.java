@@ -6,20 +6,15 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
-@XmlRootElement(name = "tipoDenunciResult")
+@XmlRootElement(name = "tipoDenunciaResult")
 public class TipoDenunciaResult extends BaseResult<TipoDenunciaDTO> {
     private static final long serialVersionUID = 1L;
 
-    public TipoDenunciaResult() {
-        super();
-    }
-
-    public void setTipoDenunciaList(List<TipoDenunciaDTO> dtos) {
+    public void setTipoDenuncias(List<TipoDenunciaDTO> dtos) {
         super.setList(dtos);
     }
 
-    @XmlElement
-    public List<TipoDenunciaDTO> getTipoDenunciasList() {
+    public List<TipoDenunciaDTO> getTipoDenuncias() {
         return super.getList();
     }
 }

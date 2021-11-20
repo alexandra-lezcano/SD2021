@@ -1,6 +1,7 @@
 package com.protectionapp.sd2021.domain.user;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
+import com.protectionapp.sd2021.domain.casosDerivados.CasosDerivadosDomain;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
@@ -63,8 +64,12 @@ public class UserDomain implements IBaseDomain {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "neighborhood_id")
     )
-
     private Set<NeighborhoodDomain> neighborhoods;
+
+    @OneToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+    //@JoinColumn(name = "user_id", referencedColumnName = "id")
+    private CasosDerivadosDomain user;
+
 
     /*Un trabajador social se ocupa de muchas denuncias*/
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

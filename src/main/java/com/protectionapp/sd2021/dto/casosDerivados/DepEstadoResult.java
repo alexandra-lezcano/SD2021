@@ -6,20 +6,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
+
 @XmlRootElement(name = "depEstadoResult")
 public class DepEstadoResult extends BaseResult<DepEstadoDTO> {
     private static final long serialVersionUID = 1L;
-
-    public DepEstadoResult() {
-        super();
-    }
-
     @XmlElement
-    public List<DepEstadoDTO> getDepEstados() {
+    public List<DepEstadoDTO> getDepEstado() {
         return getList();
     }
 
-    public void setDepEstados(List<DepEstadoDTO> dtos) {
+    public void setDepEstado(List<DepEstadoDTO> dtos) {
         super.setList(dtos);
     }
 

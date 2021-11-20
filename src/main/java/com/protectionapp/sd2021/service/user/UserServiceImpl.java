@@ -183,9 +183,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         }
         System.out.println("[List] ALL DTOS " + allDtos.toString());
 
-        result.setUsersList(allDtos);
+        result.setUsers(allDtos);
 
-        System.out.println("[RESULT LIST] ALL DTOS " + result.getUsersList().toString());
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getUsers().toString());
         return result;
     }
 

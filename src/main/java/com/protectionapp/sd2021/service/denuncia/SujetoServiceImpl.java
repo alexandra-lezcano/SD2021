@@ -72,7 +72,7 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
         Page<SujetoDomain> results = sujetoDao.findAll(pageable);
         results.forEach(sujeto->sujetos.add(convertDomainToDto(sujeto)));
         final SujetoResult sujetoResult = new SujetoResult();
-        sujetoResult.setSujetoList(sujetos);
+        sujetoResult.setSujetos(sujetos);
         return sujetoResult;
     }
 
@@ -87,9 +87,9 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
         }
         System.out.println("[List] ALL DTOS " + allDtos.toString());
 
-        result.setSujetoList(allDtos);
+        result.setSujetos(allDtos);
 
-        System.out.println("[RESULT LIST] ALL DTOS " + result.getSujetoList().toString());
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getSujetos().toString());
         return result;
     }
 

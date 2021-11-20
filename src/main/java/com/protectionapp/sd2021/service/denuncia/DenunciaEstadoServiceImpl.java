@@ -72,7 +72,7 @@ public class DenunciaEstadoServiceImpl extends BaseServiceImpl<DenunciaEstadoDTO
         resutls.forEach(estado -> estados.add(convertDomainToDto(estado)));
 
         final DenunciaEstadoResult result = new DenunciaEstadoResult();
-        result.setDenunciaEstadoList(estados);
+        result.setDenunciaEstados(estados);
         return result;
     }
 
@@ -86,9 +86,9 @@ public class DenunciaEstadoServiceImpl extends BaseServiceImpl<DenunciaEstadoDTO
         }
         System.out.println("[List] ALL DTOS " + allDtos.toString());
 
-        result.setDenunciaEstadoList(allDtos);
+        result.setDenunciaEstados(allDtos);
 
-        System.out.println("[RESULT LIST] ALL DTOS " + result.getDenunciaEstadoList().toString());
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getDenunciaEstados().toString());
         return result;
     }
 

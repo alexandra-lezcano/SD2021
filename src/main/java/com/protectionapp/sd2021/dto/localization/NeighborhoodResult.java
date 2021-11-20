@@ -15,11 +15,9 @@ public class NeighborhoodResult extends BaseResult<NeighborhoodDTO> {
     }
 
     @XmlElement
-    public List<NeighborhoodDTO> getNeighborhoodsList() {
+    public List<NeighborhoodDTO> getNeighborhoods() {
         return getList();
     }
-
-    public void setNeighborhoodList(List<NeighborhoodDTO> dtos){ super.setList(dtos);}
 
     public void setNeighborhoods(List<NeighborhoodDTO> dtos) {
         super.setList(dtos);

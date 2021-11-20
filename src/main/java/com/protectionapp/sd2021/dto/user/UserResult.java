@@ -19,11 +19,9 @@ public class UserResult extends BaseResult<UserDTO> {
     /* Implemento mis propios metodos para manejar listas ayudandome
      * de los metodos del padre*/
     @XmlElement
-    public List<UserDTO> getUsersList() {
+    public List<UserDTO> getUsers() {
         return getList();
     }
-
-    public void setUsersList(List<UserDTO> dtos) { super.setList(dtos); }
 
     public void setUsers(List<UserDTO> dtos) {
         super.setList(dtos);

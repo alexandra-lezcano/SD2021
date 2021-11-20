@@ -91,7 +91,7 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
 
         result.setNeighborhoods(allDtos);
 
-        System.out.println("[RESULT LIST] ALL DTOS " + result.getNeighborhoodsList().toString());
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getNeighborhoods().toString());
         return result;
     }
 

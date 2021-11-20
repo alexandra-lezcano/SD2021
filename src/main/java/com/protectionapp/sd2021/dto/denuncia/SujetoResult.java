@@ -11,7 +11,7 @@ public class SujetoResult extends BaseResult<SujetoDto> {
 
     public SujetoResult(){super();}
 
-    public void setSujetoList(List<SujetoDto> dtos){super.setList(dtos);}
+    public void setSujetos(List<SujetoDto> dtos){super.setList(dtos);}
 
-    public List<SujetoDto> getSujetoList(){return super.getList();}
+    public List<SujetoDto> getSujetos(){return super.getList();}
 }

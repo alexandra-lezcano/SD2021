@@ -11,8 +11,8 @@ public class TipoSujetoResult extends BaseResult<TipoSujetoDTO> {
 
     public TipoSujetoResult(){super();}
 
-    public void setTipoSujetoList(List<TipoSujetoDTO> dtos){super.setList(dtos);}
+    public void setTipoSujetos(List<TipoSujetoDTO> dtos){super.setList(dtos);}
 
     @XmlElement
-    public List<TipoSujetoDTO> getTipoSujetoList(){return super.getList();}
+    public List<TipoSujetoDTO> getTipoSujetos(){return super.getList();}
 }

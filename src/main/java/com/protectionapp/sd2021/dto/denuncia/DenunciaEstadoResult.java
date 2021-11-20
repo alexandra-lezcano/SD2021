@@ -12,9 +12,9 @@ public class DenunciaEstadoResult extends BaseResult<DenunciaEstadoDTO> {
     
     public DenunciaEstadoResult() { super(); }
 
-    public void setDenunciaEstadoList(List<DenunciaEstadoDTO> dtos){super.setList(dtos);}
+    public void setDenunciaEstados(List<DenunciaEstadoDTO> dtos){super.setList(dtos);}
 
     @XmlElement
-    public List<DenunciaEstadoDTO> getDenunciaEstadoList(){return super.getList(); }
+    public List<DenunciaEstadoDTO> getDenunciaEstados(){return super.getList(); }
 
 }

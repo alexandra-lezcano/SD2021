@@ -72,7 +72,7 @@ public class TipoSujetoServiceImpl extends BaseServiceImpl<TipoSujetoDTO, TipoSu
         Page<TipoSujetoDomain> results = tipoSujetoDao.findAll(pageable);
         results.forEach(tipo->tipos.add(convertDomainToDto(tipo)));
         final TipoSujetoResult result = new TipoSujetoResult();
-        result.setTipoSujetoList(tipos);
+        result.setTipoSujetos(tipos);
         return result;
     }
 
@@ -87,9 +87,9 @@ public class TipoSujetoServiceImpl extends BaseServiceImpl<TipoSujetoDTO, TipoSu
         }
         System.out.println("[List] ALL DTOS " + allDtos.toString());
 
-        result.setTipoSujetoList(allDtos);
+        result.setTipoSujetos(allDtos);
 
-        System.out.println("[RESULT LIST] ALL DTOS " + result.getTipoSujetoList().toString());
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getTipoSujetos().toString());
         return result;
     }
 

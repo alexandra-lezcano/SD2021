@@ -1,9 +1,6 @@
 package com.protectionapp.sd2021.controller;
 
-import com.protectionapp.sd2021.dto.denuncia.DenunciaDTO;
-import com.protectionapp.sd2021.dto.denuncia.DenunciaResult;
-import com.protectionapp.sd2021.dto.denuncia.TipoSujetoDTO;
-import com.protectionapp.sd2021.dto.denuncia.TipoSujetoResult;
+import com.protectionapp.sd2021.dto.denuncia.*;
 import com.protectionapp.sd2021.exception.DenunciaNotFoundException;
 import com.protectionapp.sd2021.service.denuncia.TipoSujetoServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +21,18 @@ public class TipoSujetoResource {
         return tipoSujetoService.getById(id);
     }
 
-    @GetMapping(path = "page/{num}")
-    public TipoSujetoResult getTiposSujetos(@PathVariable(value = "num") Integer num){
-        return tipoSujetoService.getAll(PageRequest.of(num, 5));
+    @GetMapping(path = "page/{page_num}")
+    @ResponseBody
+    public TipoSujetoResult getAll(@PathVariable(value = "page_num") Integer pageNum) {
+        return tipoSujetoService.getAll(PageRequest.of(pageNum, 5));
+    }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            produces = "application/JSON"
+    )
+    public TipoSujetoResult getllAllNotPaginated() {
+        return tipoSujetoService.getllAllNotPaginated();
     }
 
     /*Post en construccion*/

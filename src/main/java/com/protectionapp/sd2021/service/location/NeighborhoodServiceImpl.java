@@ -78,6 +78,22 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
         return n_result;
     }
 
+    public NeighborhoodResult getllAllNotPaginated() {
+        final NeighborhoodResult result = new NeighborhoodResult();
+        final Iterable<NeighborhoodDomain> allDomains = neighborhoodDao.findAll();
+        System.out.println("[ITERABLE] ALL DOMAINS " + allDomains.toString());
+        final List<NeighborhoodDTO> allDtos = new ArrayList<>();
+
+        if (allDomains != null) {
+            allDomains.forEach(neighborhoodDomain -> allDtos.add(convertDomainToDto(neighborhoodDomain)));
+        }
+        System.out.println("[List] ALL DTOS " + allDtos.toString());
+
+        result.setNeighborhoods(allDtos);
+
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getNeighborhoodsList().toString());
+        return result;
+    }
 
     @Override
     public NeighborhoodDTO update(NeighborhoodDTO dto, Integer id) {

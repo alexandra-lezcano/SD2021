@@ -4,15 +4,17 @@ import com.protectionapp.sd2021.dao.denuncia.IDenunciaDao;
 import com.protectionapp.sd2021.dao.denuncia.IDenunciaEstadoDao;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaEstadoDomain;
-import com.protectionapp.sd2021.dto.denuncia.DenunciaDTO;
-import com.protectionapp.sd2021.dto.denuncia.DenunciaEstadoDTO;
-import com.protectionapp.sd2021.dto.denuncia.DenunciaEstadoResult;
+import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
+import com.protectionapp.sd2021.dto.denuncia.*;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -65,7 +67,29 @@ public class DenunciaEstadoServiceImpl extends BaseServiceImpl<DenunciaEstadoDTO
 
     @Override
     public DenunciaEstadoResult getAll(Pageable pageable) {
-        return null;
+        final List<DenunciaEstadoDTO> estados = new ArrayList<>();
+        Page<DenunciaEstadoDomain> resutls = estadoDao.findAll(pageable);
+        resutls.forEach(estado -> estados.add(convertDomainToDto(estado)));
+
+        final DenunciaEstadoResult result = new DenunciaEstadoResult();
+        result.setDenunciaEstadoList(estados);
+        return result;
+    }
+
+    public DenunciaEstadoResult getAllNotPaginated(){
+        final DenunciaEstadoResult result = new DenunciaEstadoResult();
+        final Iterable<DenunciaEstadoDomain> all = estadoDao.findAll();
+        System.out.println("[ITERABLE] ALL DOMAINS " + all.toString());
+        final List<DenunciaEstadoDTO> allDtos = new ArrayList<>();
+        if(all != null){
+            all.forEach(denunciaEstadoDomain -> allDtos.add(convertDomainToDto(denunciaEstadoDomain)));
+        }
+        System.out.println("[List] ALL DTOS " + allDtos.toString());
+
+        result.setDenunciaEstadoList(allDtos);
+
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getDenunciaEstadoList().toString());
+        return result;
     }
 
     @Override

@@ -12,6 +12,8 @@ import com.protectionapp.sd2021.domain.denuncia.SujetoDomain;
 import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaResult;
+import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
+import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.exception.DenunciaNotFoundException;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -202,5 +204,22 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
         Set<TipoDenunciaDomain> domains = new HashSet<>();
         dto.getTipo_ids().forEach(id -> domains.add(tipoDenunciaDao.findById(id).get()));
         return domains;
+    }
+
+    public DenunciaResult getllAllNotPaginated() {
+        final DenunciaResult result = new DenunciaResult();
+        final Iterable<DenunciaDomain> allDomains = denunciaDao.findAll();
+        System.out.println("[ITERABLE] ALL DOMAINS " + allDomains.toString());
+        final List<DenunciaDTO> allDtos = new ArrayList<>();
+
+        if (allDomains != null) {
+            allDomains.forEach(denunciaDomain -> allDtos.add(convertDomainToDto(denunciaDomain)));
+        }
+        System.out.println("[List] ALL DTOS " + allDtos.toString());
+
+        result.setDenuncias(allDtos);
+
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getDenuncias().toString());
+        return result;
     }
 }

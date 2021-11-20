@@ -6,6 +6,7 @@ import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.service.denuncia.TipoDenunciaServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,17 +27,22 @@ public class TipoDenunciaResource {
 
     @GetMapping(path = "page/{page_num}")
     @ResponseBody
-    public TipoDenunciaResult getAll(@PathVariable(value = "page_num") Integer pageNum) {
+    public TipoDenunciaResult getAllx(@PathVariable(value = "page_num") Integer pageNum) {
         return tipoDenunciaService.getAll(PageRequest.of(pageNum, 5));
     }
 
-    @RequestMapping(
+    @GetMapping(path = "/")
+    public TipoDenunciaResult getAll(Pageable page) {
+        return tipoDenunciaService.getAll(page);
+    }
+
+   /* @RequestMapping(
             method = RequestMethod.GET,
             produces = "application/JSON"
     )
     public TipoDenunciaResult getllAllNotPaginated() {
         return tipoDenunciaService.getllAllNotPaginated();
-    }
+    }*/
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)

@@ -15,11 +15,11 @@ public class CityResult extends BaseResult<CityDTO> {
     }
 
     @XmlElement
-    public List<CityDTO> getCitys() {
+    public List<CityDTO> getCities() {
         return getList();
     }
 
-      public void setCitys(List<CityDTO> dtos) {
+    public void setCities(List<CityDTO> dtos) {
         super.setList(dtos);
     }
 }

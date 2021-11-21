@@ -106,7 +106,7 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
         cityDomains.forEach(cityDomain -> cities.add(convertDomainToDto(cityDomain))); //bello lambda
 
         final CityResult cityResult = new CityResult();
-        cityResult.setCitys(cities);
+        cityResult.setCities(cities);
         return cityResult;
     }
 
@@ -121,9 +121,9 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
         }
         System.out.println("[List] ALL DTOS " + allDtos.toString());
 
-        result.setCitys(allDtos);
+        result.setCities(allDtos);
 
-        System.out.println("[RESULT LIST] ALL DTOS " + result.getCitys().toString());
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getCities().toString());
         return result;
     }
 

@@ -1,6 +1,5 @@
 package com.protectionapp.sd2021.dao.denuncia;
 
-import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaEstadoDomain;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -7,7 +7,6 @@ import com.protectionapp.sd2021.domain.casosDerivados.DepEstadoDomain;
 import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoDTO;
 import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
-import com.protectionapp.sd2021.service.casosDerivados.IDepEstadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +42,7 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
         }
         return depEstado;
     }
+
     @Override
 
     protected DepEstadoDomain convertDtoToDomain(DepEstadoDTO dto) {
@@ -84,7 +84,7 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
         results.forEach(dE -> depEstados.add(convertDomainToDto(dE)));
 
         final DepEstadoResult DEResult = new DepEstadoResult();
-        DEResult.setDepEstado(depEstados);
+        DEResult.setDepEstados(depEstados);
         return DEResult;
 
     }

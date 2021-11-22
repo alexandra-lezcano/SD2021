@@ -9,12 +9,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/tipoDenuncias")
 public class TipoDenunciaResource {
+
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Autowired
     private TipoDenunciaServiceImpl tipoDenunciaService;
@@ -28,6 +32,7 @@ public class TipoDenunciaResource {
     @GetMapping(path = "page/{page_num}")
     @ResponseBody
     public TipoDenunciaResult getAllx(@PathVariable(value = "page_num") Integer pageNum) {
+        logger.info("TEST alex - get page " + pageNum);
         return tipoDenunciaService.getAll(PageRequest.of(pageNum, 5));
     }
 

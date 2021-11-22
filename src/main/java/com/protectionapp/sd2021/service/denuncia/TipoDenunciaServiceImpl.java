@@ -7,11 +7,17 @@ import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +30,11 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
 
     @Autowired
     private IDenunciaDao denunciaDao;
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    private String cacheKey = "api_tipo_denuncia_";
 
     @Override
     protected TipoDenunciaDTO convertDomainToDto(TipoDenunciaDomain domain) {
@@ -57,24 +68,40 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
     }
 
     @Override
+    @Transactional
     public TipoDenunciaDTO save(TipoDenunciaDTO dto) {
         final TipoDenunciaDomain tipoDenunciaDomain = convertDtoToDomain(dto);
         final TipoDenunciaDomain domain = tipoDenunciaDao.save(tipoDenunciaDomain);
 
+        // Los dto vienen con id=null cuando el cliente quiere guardar un nuevo objeto
+        if (dto.getId() == null) {
+            Integer nuevoId = domain.getId();
+            dto.setId(nuevoId);
+            cacheManager.getCache(Configurations.CACHE_NOMBRE).put(cacheKey + nuevoId, dto);
+        } // me parece que no debo guardar domains en cache...
         return convertDomainToDto(domain);
     }
 
     @Override
+    @Transactional
+    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_tipo_denuncia_'+#id")
+    // buscar en cache el objeto asociado al id, si no es encontrado entonces se ejecuta el metodo
     public TipoDenunciaDTO getById(Integer id) {
         final TipoDenunciaDomain tipo = tipoDenunciaDao.findById(id).get();
         return convertDomainToDto(tipo);
     }
 
     @Override
+    @Transactional
     public TipoDenunciaResult getAll(Pageable pageable) {
         final List<TipoDenunciaDTO> tipos = new ArrayList<>();
         Page<TipoDenunciaDomain> resutls = tipoDenunciaDao.findAll(pageable);
-        resutls.forEach(tipo -> tipos.add(convertDomainToDto(tipo)));
+
+        resutls.forEach(tipo -> {
+            TipoDenunciaDTO tipoDto = convertDomainToDto(tipo);
+            tipos.add(tipoDto);
+            cacheManager.getCache(Configurations.CACHE_NOMBRE).put(cacheKey + tipoDto.getId(), tipoDto);
+        });
 
         final TipoDenunciaResult result = new TipoDenunciaResult();
         result.setTipoDenuncias(tipos);
@@ -99,6 +126,9 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
     }
 
     @Override
+    @Transactional
+    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_tipo_denuncia_'+#id")
+    // actualiza el cache con la respuesta del metodo
     public TipoDenunciaDTO update(TipoDenunciaDTO dto, Integer id) {
         final TipoDenunciaDomain updated = tipoDenunciaDao.findById(id).get();
         if (dto.getTitulo() != null) {
@@ -123,6 +153,8 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_tipo_denuncia_'+#id")
     public TipoDenunciaDTO delete(Integer id) {
         final TipoDenunciaDomain deletedDomain = tipoDenunciaDao.findById(id).get();
         final TipoDenunciaDTO deletedDto = convertDomainToDto(deletedDomain);

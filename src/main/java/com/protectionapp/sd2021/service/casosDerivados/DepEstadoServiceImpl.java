@@ -4,8 +4,11 @@ import com.protectionapp.sd2021.dao.casosDerivados.ICasosDerivadosDao;
 import com.protectionapp.sd2021.dao.casosDerivados.IDepEstadoDao;
 import com.protectionapp.sd2021.domain.casosDerivados.CasosDerivadosDomain;
 import com.protectionapp.sd2021.domain.casosDerivados.DepEstadoDomain;
+import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
+import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
 import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoDTO;
 import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoResult;
+import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -91,11 +94,38 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
 
     @Override
     public DepEstadoDTO update(DepEstadoDTO dto, Integer id) {
-        return null;
+        final DepEstadoDomain updated = depEstadoDao.findById(id).get();
+        if (dto.getCasos_derivados_ids() != null) {
+            updated.setCasos_derivados(getCasosDerFromDto(dto));
+        }
+        if (dto.getDescription() != null) {
+            updated.setDescription(dto.getDescription());
+        }
+
+        if (dto.getName() != null) {
+            updated.setName(dto.getName());
+        }
+
+        depEstadoDao.save(updated);
+        return convertDomainToDto(updated);
+
+
+    }
+
+    private Set<CasosDerivadosDomain> getCasosDerFromDto(DepEstadoDTO dto) {
+        Set<CasosDerivadosDomain> ret = new HashSet<>();
+        dto.getCasos_derivados_ids().forEach(id -> ret.add(casosDerivadosDao.findById(id).get()));
+        return ret;
     }
 
     @Override
     public DepEstadoDTO delete(Integer id) {
-        return null;
+
+        final DepEstadoDomain deletedDomain = depEstadoDao.findById(id).get();
+        final DepEstadoDTO deletedDto = convertDomainToDto(deletedDomain);
+        depEstadoDao.delete(deletedDomain);
+        return deletedDto;
+
+
     }
 }

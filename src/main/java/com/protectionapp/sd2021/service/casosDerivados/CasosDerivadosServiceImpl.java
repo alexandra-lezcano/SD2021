@@ -11,16 +11,16 @@ import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.casosDerivados.CasosDerivadosDTO;
 import com.protectionapp.sd2021.dto.casosDerivados.CasosDerivadosResult;
+import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoDTO;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO, CasosDerivadosDomain, CasosDerivadosResult> implements ICasosDerivadosService {
@@ -42,6 +42,9 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
     protected CasosDerivadosDTO convertDomainToDto(CasosDerivadosDomain domain) {
         final CasosDerivadosDTO casosDerivados = new CasosDerivadosDTO();
         casosDerivados.setId(domain.getId());
+
+    //  casosDerivados.setDate(domain.getDate());
+
         casosDerivados.setDate(domain.getDate());
         casosDerivados.setDescription(domain.getDescription());
 
@@ -75,7 +78,7 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
     protected CasosDerivadosDomain convertDtoToDomain(CasosDerivadosDTO dto) {
         final CasosDerivadosDomain domain = new CasosDerivadosDomain();
         domain.setId(dto.getId());
-        domain.setDate(dto.getDate());
+       // domain.setDate(dto.getDate());
         domain.setDescription(dto.getDescription());
 
         if(dto.getDenuncia_ids()!=null) {
@@ -133,8 +136,10 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
 
     @Override
     public CasosDerivadosDTO delete(Integer id) {
-        final  CasosDerivadosDTO deleted=update(null,id);
-        return  deleted;
+        final CasosDerivadosDomain deletedDomain = casosDerivadosDao.findById(id).get();
+        final CasosDerivadosDTO deletedDto = convertDomainToDto(deletedDomain);
+        casosDerivadosDao.delete(deletedDomain);
+        return deletedDto;
     }
 
 

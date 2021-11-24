@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fuente: https://github.com/ragnor/simple-spring-memcached/wiki/Getting-Started -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="
+	       http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	       http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-4.3.xsd
+           http://www.springframework.org/schema/cache
+           http://www.springframework.org/schema/cache/spring-cache-4.3.xsd">
+
+    <!-- Documentacion: -->
+    <!-- https://docs.spring.io/spring-framework/docs/4.2.x/spring-framework-reference/html/xsd-configuration.html#xsd-config-body-schemas-cache -->
+    <!-- https://docs.spring.io/spring-framework/docs/4.2.x/spring-framework-reference/html/cache.html#cache-annotation-enable -->
+
+    <cache:annotation-driven/>
+    <context:component-scan base-package="com.protectionapp.sd2021"/>
+    <context:property-placeholder location="classpath:protectionapp.properties"/>
+
+    <!-- Viene de la dependencia spring-cache@4.1.3 - ver pom.xml -->
+    <bean name="cacheManager" class="com.google.code.ssm.spring.ExtendedSSMCacheManager">
+        <property name="caches">
+            <set>
+                <bean class="com.google.code.ssm.spring.SSMCache">
+                    <constructor-arg name="cache" index="0" ref="defaultMemcachedClient"/>
+                    <constructor-arg name="expiration" index="1" value="${cache.expiracion}"/>
+                    <constructor-arg name="allowClear" index="2" value="${cache.evictor.permitir.limpieza}"/>
+                </bean>
+            </set>
+        </property>
+    </bean>
+
+    <bean name="defaultMemcachedClient" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="${cache.nombre}"/>
+        <property name="cacheClientFactory">
+            <bean name="cacheClientFactory" class="com.google.code.ssm.providers.xmemcached.MemcacheClientFactoryImpl"/>
+        </property>
+        <property name="addressProvider">
+            <bean class="com.google.code.ssm.config.DefaultAddressProvider">
+                <property name="address" value="${cache.direccion}"/>
+            </bean>
+        </property>
+        <property name="configuration">
+            <bean class="com.google.code.ssm.providers.CacheConfiguration">
+                <property name="consistentHashing" value="${cache.consistent.hashing}"/>
+            </bean>
+        </property>
+    </bean>
+</beans>

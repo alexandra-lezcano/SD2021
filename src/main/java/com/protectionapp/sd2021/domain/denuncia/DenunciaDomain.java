@@ -4,7 +4,6 @@ import com.protectionapp.sd2021.domain.base.IBaseDomain;
 import com.protectionapp.sd2021.domain.casosDerivados.CasosDerivadosDomain;
 import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -47,6 +46,15 @@ public class DenunciaDomain implements IBaseDomain {
     )
     private Set<TipoDenunciaDomain> tipos;
 
+    /*Tabla intermedia entre sujeto y denuncia*/
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "denuncia_sujetos",
+            joinColumns = @JoinColumn(name = "denuncia_id"),
+            inverseJoinColumns = @JoinColumn(name = "sujeto_id")
+    )
+    private Set<SujetoDomain> sujetos;
+
     /*Una denuncia tiene una ciudad*/
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", referencedColumnName = "id")
@@ -57,9 +65,6 @@ public class DenunciaDomain implements IBaseDomain {
     @JoinColumn(name = "neighborhood_id", referencedColumnName = "id")
     private NeighborhoodDomain neighborhood;
 
-    /*Una denuncia tiene varios sujetos*/
-    @OneToMany(mappedBy = "denuncia", cascade = CascadeType.ALL)
-    private Set<SujetoDomain> sujetos;
 
     /* Muchas denuncias corresponden a un trabajador social */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -120,14 +125,6 @@ public class DenunciaDomain implements IBaseDomain {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Set<TipoDenunciaDomain> getTipos() {
-        return tipos;
-    }
-
-    public void setTipos(Set<TipoDenunciaDomain> tipos) {
-        this.tipos = tipos;
     }
 
     public UserDomain getUser() {

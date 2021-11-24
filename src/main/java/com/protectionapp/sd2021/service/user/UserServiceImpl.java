@@ -66,10 +66,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         dto.setEmail(userDomain.getEmail());
         dto.setPhone(userDomain.getPhone());
         dto.setAddress(userDomain.getAddress());
-        dto.setRoleId(userDomain.getRole().getId());
-        dto.setCityId(userDomain.getCity().getId());
-        dto.setRoleId(userDomain.getRole().getId());
 
+        if (userDomain.getRole() != null) dto.setRoleId(userDomain.getRole().getId());
+        if (userDomain.getCity() != null) dto.setCityId(userDomain.getCity().getId());
 
         /* Relacion ManyToMany
         Necesito guardar una lista de ids de los barrios a mi user DTO */
@@ -100,19 +99,24 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
                 dto.getCn(),
                 dto.getAddress(),
                 dto.getEmail(),
-                dto.getPhone(),
-                cityDao.findById(dto.getCityId()).get(),
-                roleDao.findById(dto.getRoleId()).get()
+                dto.getPhone()
         );
 
+        if (dto.getRoleId() != null) roleDao.findById(dto.getRoleId()).get();
+        if (dto.getCityId() != null) cityDao.findById(dto.getCityId()).get();
+
+
         Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
-        dto.getNeighborhoodIds().forEach(n_id -> neighborhoodDomains.add(neighborhoodDao.findById(n_id).get()));
+        if (dto.getNeighborhoodIds() != null) {
+            dto.getNeighborhoodIds().forEach(n_id -> neighborhoodDomains.add(neighborhoodDao.findById(n_id).get()));
+        }
         userDomain.setNeighborhoods(neighborhoodDomains);
 
         Set<DenunciaDomain> denunciaDomains = new HashSet<>();
         if (dto.getDenunciasIds() != null) {
             dto.getDenunciasIds().forEach(d_id -> denunciaDomains.add(denunciaDao.findById(d_id).get()));
         }
+        userDomain.setDenuncias(denunciaDomains);
 
         return userDomain;
     }
@@ -204,10 +208,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
                 dto.getCn(),
                 dto.getAddress(),
                 dto.getEmail(),
-                dto.getPhone(),
-                cityDao.findById(dto.getCityId()).get(),
-                roleDao.findById(dto.getRoleId()).get()
+                dto.getPhone()
         );
+
+        if (dto.getRoleId() != null) roleDao.findById(dto.getRoleId()).get();
+        if (dto.getCityId() != null) cityDao.findById(dto.getCityId()).get();
 
         userDao.save(updatedUserDomain);
         return convertDomainToDto(updatedUserDomain);

@@ -66,7 +66,7 @@ public class UserDomain implements IBaseDomain {
     )
     private Set<NeighborhoodDomain> neighborhoods;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     //@JoinColumn(name = "user_id", referencedColumnName = "id")
     private CasosDerivadosDomain user;
 
@@ -187,7 +187,7 @@ public class UserDomain implements IBaseDomain {
         this.denuncias = denuncias;
     }
 
-    public void update(String name, String surname, String username, Integer cn, String address, String email, Integer phone, CityDomain city, RoleDomain role) {
+    public void update(String name, String surname, String username, Integer cn, String address, String email, Integer phone) {
         setName(name);
         setSurname(surname);
         setUsername(username);
@@ -195,7 +195,5 @@ public class UserDomain implements IBaseDomain {
         setAddress(address);
         setEmail(email);
         setPhone(phone);
-        setCity(city);
-        setRole(role);
     }
 }

@@ -100,7 +100,7 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
         resutls.forEach(tipo -> {
             TipoDenunciaDTO tipoDto = convertDomainToDto(tipo);
             tipos.add(tipoDto);
-            cacheManager.getCache(Configurations.CACHE_NOMBRE).put(cacheKey + tipoDto.getId(), tipoDto);
+            // cacheManager.getCache(Configurations.CACHE_NOMBRE).put(cacheKey + tipoDto.getId(), tipoDto);
         });
 
         final TipoDenunciaResult result = new TipoDenunciaResult();

@@ -7,6 +7,7 @@ import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 
 import javax.persistence.*;
+import javax.validation.constraints.Null;
 import java.util.Set;
 
 @Entity
@@ -48,6 +49,7 @@ public class UserDomain implements IBaseDomain {
 
     /* Crea una columna llamada "role_id" que hace referencia a "id" dentro de RoleDomain
      * Quien sea duenho del FK tendra un @JoinColumn */
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private RoleDomain role;
@@ -58,6 +60,7 @@ public class UserDomain implements IBaseDomain {
     private CityDomain city;
 
     /* Crea la tabla intermedia user_neighborhood, con la columna "user_id" y "neighborhood_id" */
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_neighborhood",
@@ -65,6 +68,7 @@ public class UserDomain implements IBaseDomain {
             inverseJoinColumns = @JoinColumn(name = "neighborhood_id")
     )
     private Set<NeighborhoodDomain> neighborhoods;
+
 
     @OneToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
     //@JoinColumn(name = "user_id", referencedColumnName = "id")

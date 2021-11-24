@@ -9,6 +9,7 @@ import com.protectionapp.sd2021.domain.user.UserDomain;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.Null;
 import java.util.Date;
 import java.util.Set;
 
@@ -37,6 +38,7 @@ public class CasosDerivadosDomain implements IBaseDomain {
     private Set<DenunciaDomain> denuncia ;
 
     //onetoone
+    @Null
     @OneToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
     private UserDomain trabajador_social;
 

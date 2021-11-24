@@ -4,8 +4,11 @@ import com.protectionapp.sd2021.dao.denuncia.IDenunciaDao;
 import com.protectionapp.sd2021.dao.denuncia.ISujetoDao;
 import com.protectionapp.sd2021.dao.denuncia.ITipoSujetoDao;
 import com.protectionapp.sd2021.domain.denuncia.SujetoDomain;
+import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
 import com.protectionapp.sd2021.dto.denuncia.SujetoDto;
 import com.protectionapp.sd2021.dto.denuncia.SujetoResult;
+import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
+import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -69,8 +72,25 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
         Page<SujetoDomain> results = sujetoDao.findAll(pageable);
         results.forEach(sujeto->sujetos.add(convertDomainToDto(sujeto)));
         final SujetoResult sujetoResult = new SujetoResult();
-        sujetoResult.setSujetoList(sujetos);
+        sujetoResult.setSujetos(sujetos);
         return sujetoResult;
+    }
+
+    public SujetoResult getllAllNotPaginated() {
+        final SujetoResult result = new SujetoResult();
+        final Iterable<SujetoDomain> allDomains = sujetoDao.findAll();
+        System.out.println("[ITERABLE] ALL DOMAINS " + allDomains.toString());
+        final List<SujetoDto> allDtos = new ArrayList<>();
+
+        if (allDomains != null) {
+            allDomains.forEach(sujetoDomain -> allDtos.add(convertDomainToDto(sujetoDomain)));
+        }
+        System.out.println("[List] ALL DTOS " + allDtos.toString());
+
+        result.setSujetos(allDtos);
+
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getSujetos().toString());
+        return result;
     }
 
     @Override

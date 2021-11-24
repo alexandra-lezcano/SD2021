@@ -11,16 +11,12 @@ import java.util.List;
 public class DepEstadoResult extends BaseResult<DepEstadoDTO> {
     private static final long serialVersionUID = 1L;
 
-    public DepEstadoResult() {
-        super();
-    }
-
     @XmlElement
-    public List<DepEstadoDTO> getDepEstado() {
+    public List<DepEstadoDTO> getDepEstados() {
         return getList();
     }
 
-    public void setDepEstado(List<DepEstadoDTO> dtos) {
+    public void setDepEstados(List<DepEstadoDTO> dtos) {
         super.setList(dtos);
     }
 

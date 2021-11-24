@@ -10,6 +10,8 @@ import java.util.List;
 public class CasosDerivadosResult extends BaseResult<CasosDerivadosDTO> {
     private static final long serialVersionUID = 1L;
 
+    public CasosDerivadosResult(){ super(); }
+
     @XmlElement
     public List<CasosDerivadosDTO> getCasosDerivados() {
         return getList();

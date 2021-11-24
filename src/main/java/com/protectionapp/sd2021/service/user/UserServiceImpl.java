@@ -6,8 +6,11 @@ import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
 import com.protectionapp.sd2021.dao.user.IRoleDao;
 import com.protectionapp.sd2021.dao.user.IUserDao;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
+import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
+import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
+import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.dto.user.UserResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
@@ -167,6 +170,23 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         final UserResult userResult = new UserResult();
         userResult.setUsers(users);
         return userResult;
+    }
+
+    public UserResult getllAllNotPaginated() {
+        final UserResult result = new UserResult();
+        final Iterable<UserDomain> allDomains = userDao.findAll();
+        System.out.println("[ITERABLE] ALL DOMAINS " + allDomains.toString());
+        final List<UserDTO> allDtos = new ArrayList<>();
+
+        if (allDomains != null) {
+            allDomains.forEach(tipoDenunciaDomain -> allDtos.add(convertDomainToDto(tipoDenunciaDomain)));
+        }
+        System.out.println("[List] ALL DTOS " + allDtos.toString());
+
+        result.setUsers(allDtos);
+
+        System.out.println("[RESULT LIST] ALL DTOS " + result.getUsers().toString());
+        return result;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.protectionapp.sd2021.controller;
 
 import com.protectionapp.sd2021.dto.denuncia.DenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaResult;
+import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.exception.DenunciaNotFoundException;
 import com.protectionapp.sd2021.service.denuncia.DenunciaServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,18 @@ public class DenunciaResource {
 
     /*Ver cantidad de resultados por pagina aca tambien*/
     @GetMapping(path = "page/{num}")
-    public DenunciaResult getDenuncias(@PathVariable(value = "num") Integer num) throws DenunciaNotFoundException {
+    public DenunciaResult getAll(@PathVariable(value = "num") Integer num) throws DenunciaNotFoundException {
         return denunciaService.getAll(PageRequest.of(num, 5));
     }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            produces = "application/JSON"
+    )
+    public DenunciaResult getllAllNotPaginated() {
+        return denunciaService.getllAllNotPaginated();
+    }
+
 
     /*Post en construccion*/
     @PostMapping()

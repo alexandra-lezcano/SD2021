@@ -11,6 +11,8 @@ import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.localization.CityResult;
+import com.protectionapp.sd2021.dto.localization.NeighborhoodDTO;
+import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,6 +40,9 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
 
     @Autowired
     private IDenunciaDao denunciaDao;
+
+    @Autowired
+    private INeighborhoodService neighborhoodService;
 
     @Override
     @Transactional
@@ -182,4 +187,15 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
         return denunciasDomains;
     }
 
+    @Override
+    @Transactional
+    public NeighborhoodResult getNeighborhoodByCityId(Integer city_id) {
+        final NeighborhoodResult neighborhoodResult = new NeighborhoodResult();
+        final List<NeighborhoodDomain> neighborhoodDomainList = neighborhoodDao.findAllByCity_Id(city_id);
+        final List<NeighborhoodDTO> neighborhoodDTOList = new ArrayList<>();
+        neighborhoodDomainList.forEach(neighborhoodDomain -> neighborhoodDTOList.add(neighborhoodService.getById(neighborhoodDomain.getId())));
+
+        neighborhoodResult.setNeighborhoods(neighborhoodDTOList);
+        return neighborhoodResult;
+    }
 }

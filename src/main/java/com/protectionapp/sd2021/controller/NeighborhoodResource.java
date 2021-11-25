@@ -42,6 +42,7 @@ public class NeighborhoodResource {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public NeighborhoodDTO save(@Valid @RequestBody NeighborhoodDTO neighborhoodDTO) {
+        System.out.println(neighborhoodDTO);
         return neighborhoodService.save(neighborhoodDTO);
     }
 

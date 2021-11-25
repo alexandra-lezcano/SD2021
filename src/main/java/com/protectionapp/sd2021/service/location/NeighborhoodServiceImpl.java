@@ -2,9 +2,7 @@ package com.protectionapp.sd2021.service.location;
 
 import com.protectionapp.sd2021.dao.location.ICityDao;
 import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
-import com.protectionapp.sd2021.domain.casosDerivados.DepEstadoDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
-import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoDTO;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodDTO;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, NeighborhoodDomain, NeighborhoodResult> {
+public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, NeighborhoodDomain, NeighborhoodResult> implements INeighborhoodService {
     // POST /neighborhoods { name: san pedro, description: big!, city_id: 1}
     // PUT /neighborhoods/1 { name: san pedro, description: peligroso y grande }
     // GET /neighborhoods/1 <---  { name: san pedro, description: peligroso y grande, city_id: 1 }
@@ -31,7 +29,7 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     @Override
     protected NeighborhoodDTO convertDomainToDto(NeighborhoodDomain domain) {
         final NeighborhoodDTO neighborhoodDTO = new NeighborhoodDTO();
-        neighborhoodDTO.setId(domain.getId());
+neighborhoodDTO.setId(domain.getId());
         neighborhoodDTO.setName(domain.getName());
         neighborhoodDTO.setDescription(domain.getDescription());
 

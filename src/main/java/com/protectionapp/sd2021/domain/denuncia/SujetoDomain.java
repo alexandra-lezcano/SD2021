@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name="sujetos")
@@ -38,9 +39,8 @@ public class SujetoDomain implements IBaseDomain {
     private TipoSujetoDomain tipo;
 
     /*Un sujeto tiene una denuncia*/
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "denuncia_id", referencedColumnName = "id")
-    private DenunciaDomain denuncia;
+    @ManyToMany(mappedBy = "sujetos")
+    private Set<DenunciaDomain> denuncias;
 
     public Integer getId() {
         return id;
@@ -90,12 +90,12 @@ public class SujetoDomain implements IBaseDomain {
         this.direccion = direccion;
     }
 
-    public DenunciaDomain getDenuncia() {
-        return denuncia;
+    public Set<DenunciaDomain> getDenuncias() {
+        return denuncias;
     }
 
-    public void setDenuncia(DenunciaDomain denuncia) {
-        this.denuncia = denuncia;
+    public void setDenuncias(Set<DenunciaDomain> denuncia) {
+        this.denuncias = denuncia;
     }
 
     public TipoSujetoDomain getTipo() {

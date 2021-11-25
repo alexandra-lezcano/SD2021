@@ -3,6 +3,7 @@ package com.protectionapp.sd2021.service.denuncia;
 import com.protectionapp.sd2021.dao.denuncia.IDenunciaDao;
 import com.protectionapp.sd2021.dao.denuncia.ISujetoDao;
 import com.protectionapp.sd2021.dao.denuncia.ITipoSujetoDao;
+import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.denuncia.SujetoDomain;
 import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
 import com.protectionapp.sd2021.dto.denuncia.SujetoDto;
@@ -16,7 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, SujetoResult> implements ISujetoService {
@@ -35,9 +38,20 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
         dto.setCi(domain.getCi());
         dto.setTelefono(domain.getTelefono());
         dto.setDireccion(domain.getDireccion());
-        dto.setDenuncia_id(domain.getDenuncia().getId());
+        dto.setCorreo(domain.getCorreo());
+        Set<Integer> denunciasIds = new HashSet<>();
+        if (domain.getDenuncias() != null) {
+            domain.getDenuncias().forEach(denunciaDomain -> denunciasIds.add(denunciaDomain.getId()));
+        }
+        dto.setDenuncias(denunciasIds);
         dto.setTipo_id(domain.getTipo().getId());
         return dto;
+    }
+
+    private Set<DenunciaDomain> getDenunciasFromDto(SujetoDto dto) {
+        Set<DenunciaDomain> ret = new HashSet<>();
+        dto.getDenuncias().forEach(id -> ret.add(denunciaDao.findById(id).get()));
+        return ret;
     }
 
     @Override
@@ -47,8 +61,14 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
         domain.setCi(dto.getCi());
         domain.setNombre(dto.getNombre());
         domain.setTelefono(dto.getTelefono());
+        domain.setCorreo(dto.getCorreo());
         domain.setDireccion(dto.getDireccion());
-        domain.setDenuncia(denunciaDao.findById(dto.getDenuncia_id()).get());
+        Set<DenunciaDomain> denuncias = new HashSet<>();
+        if (dto.getDenuncias() != null) {
+            dto.getDenuncias().forEach(denunciaId -> denuncias.add(denunciaDao.findById(denunciaId).get()));
+        }
+
+        domain.setDenuncias(denuncias);
         domain.setTipo(tipoSujetoDao.findById(dto.getTipo_id()).get());
         return domain;
     }
@@ -111,8 +131,8 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
         if(dto.getDireccion()!=null){
             updated.setDireccion(dto.getDireccion());
         }
-        if(dto.getDenuncia_id()!=null){
-            updated.setDenuncia(denunciaDao.findById(dto.getDenuncia_id()).get());
+        if (dto.getDenuncias() != null) {
+            updated.setDenuncias(getDenunciasFromDto(dto));
         }
         if(dto.getTipo_id()!=null){
             updated.setTipo(tipoSujetoDao.findById(dto.getTipo_id()).get());

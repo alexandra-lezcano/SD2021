@@ -16,7 +16,11 @@ import com.protectionapp.sd2021.dto.localization.CityResult;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodDTO;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -45,6 +49,9 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
 
     @Autowired
     private INeighborhoodService neighborhoodService;
+
+    private String cacheKey = "api_city_";
+
 
     @Override
     @Transactional
@@ -100,6 +107,8 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     // todo THROW IF ID DOESNT EXIST
     @Override
     @Transactional
+    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
+
     public CityDTO getById(Integer id) {
         final CityDomain city = cityDao.findById(id).get();
         return convertDomainToDto(city);
@@ -136,6 +145,8 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
 
     @Override
     @Transactional
+    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
+
     public CityDTO update(CityDTO dto, Integer id) {
         final CityDomain updatedCityDomain = cityDao.findById(id).get();
 
@@ -166,6 +177,7 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
 
     @Override
     @Transactional
+    @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
     public CityDTO delete(Integer id) {
         final CityDomain deletedDomain = cityDao.findById(id).get();
         final CityDTO deletedDto = convertDomainToDto(deletedDomain);

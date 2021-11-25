@@ -6,7 +6,11 @@ import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodDTO;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +29,8 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
 
     @Autowired
     private ICityDao cityDao;
+
+    private String cacheKey = "api_neighborhood_";
 
     @Override
     protected NeighborhoodDTO convertDomainToDto(NeighborhoodDomain domain) {
@@ -62,6 +68,8 @@ System.out.println(dto.getName());
     }
 
     @Override
+    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
+
     public NeighborhoodDTO getById(Integer id) {
         final NeighborhoodDomain domain = neighborhoodDao.findById(id).get();
         return convertDomainToDto(domain);
@@ -96,6 +104,7 @@ System.out.println(dto.getName());
     }
 
     @Override
+    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
     public NeighborhoodDTO update(NeighborhoodDTO dto, Integer id) {
         final NeighborhoodDomain updatedDomain = neighborhoodDao.findById(id).get();
         updatedDomain.setName(dto.getName());
@@ -109,6 +118,8 @@ System.out.println(dto.getName());
     }
 
     @Override
+    @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
+
     public NeighborhoodDTO delete(Integer id) {
         final NeighborhoodDomain deletedDomain = neighborhoodDao.findById(id).get();
         final NeighborhoodDTO deletedDto = convertDomainToDto(deletedDomain);

@@ -2,7 +2,9 @@ package com.protectionapp.sd2021.service.location;
 
 import com.protectionapp.sd2021.dao.location.ICityDao;
 import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
+import com.protectionapp.sd2021.domain.casosDerivados.DepEstadoDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
+import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoDTO;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodDTO;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
@@ -29,7 +31,7 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     @Override
     protected NeighborhoodDTO convertDomainToDto(NeighborhoodDomain domain) {
         final NeighborhoodDTO neighborhoodDTO = new NeighborhoodDTO();
-neighborhoodDTO.setId(domain.getId());
+        neighborhoodDTO.setId(domain.getId());
         neighborhoodDTO.setName(domain.getName());
         neighborhoodDTO.setDescription(domain.getDescription());
 
@@ -110,6 +112,9 @@ System.out.println(dto.getName());
 
     @Override
     public NeighborhoodDTO delete(Integer id) {
-        return null;
+        final NeighborhoodDomain deletedDomain = neighborhoodDao.findById(id).get();
+        final NeighborhoodDTO deletedDto = convertDomainToDto(deletedDomain);
+        neighborhoodDao.delete(deletedDomain);
+        return deletedDto;
     }
 }

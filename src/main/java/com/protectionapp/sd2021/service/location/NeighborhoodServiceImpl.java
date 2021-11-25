@@ -29,7 +29,7 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     @Override
     protected NeighborhoodDTO convertDomainToDto(NeighborhoodDomain domain) {
         final NeighborhoodDTO neighborhoodDTO = new NeighborhoodDTO();
-
+neighborhoodDTO.setId(domain.getId());
         neighborhoodDTO.setName(domain.getName());
         neighborhoodDTO.setDescription(domain.getDescription());
 
@@ -42,10 +42,10 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     @Override
     protected NeighborhoodDomain convertDtoToDomain(NeighborhoodDTO dto) {
         final NeighborhoodDomain neighborhoodDomain = new NeighborhoodDomain();
-
+neighborhoodDomain.setId(dto.getId());
         neighborhoodDomain.setName(dto.getName());
         neighborhoodDomain.setDescription(dto.getDescription());
-
+System.out.println(dto.getName());
         if (dto.getCity_id() != null) {
             neighborhoodDomain.setCity(cityDao.findById(dto.getCity_id()).get());
         }

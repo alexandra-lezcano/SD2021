@@ -4,6 +4,7 @@ import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.localization.CityResult;
+import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
 import com.protectionapp.sd2021.service.location.CityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -57,6 +58,10 @@ public class CityResource {
         return cityService.delete(id);
     }
 
-
+    @GetMapping("/{id}/neighborhoods")
+    @ResponseBody
+    public NeighborhoodResult getNeighborhoods(@PathVariable(value = "id") Integer cityId) {
+        return cityService.getNeighborhoodByCityId(cityId);
+    }
 
 }

@@ -13,7 +13,11 @@ import com.protectionapp.sd2021.dto.casosDerivados.CasosDerivadosDTO;
 import com.protectionapp.sd2021.dto.casosDerivados.CasosDerivadosResult;
 import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoDTO;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -114,6 +118,8 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
     }
 
     @Override
+    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_casos_derivados_'+#id")
+
     public CasosDerivadosDTO update(CasosDerivadosDTO dto, Integer id) {
 
         if(casosDerivadosDao.findById(id)!=null ) {
@@ -135,6 +141,8 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
     }
 
     @Override
+    @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_casos_derivados_'+#id")
+
     public CasosDerivadosDTO delete(Integer id) {
         final CasosDerivadosDomain deletedDomain = casosDerivadosDao.findById(id).get();
         final CasosDerivadosDTO deletedDto = convertDomainToDto(deletedDomain);
@@ -153,6 +161,8 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
     }
 
     @Override
+    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_casos_derivados_'+#id")
+
     public CasosDerivadosDTO getById(Integer id) {
 
         final CasosDerivadosDomain cD = casosDerivadosDao.findById(id).get();

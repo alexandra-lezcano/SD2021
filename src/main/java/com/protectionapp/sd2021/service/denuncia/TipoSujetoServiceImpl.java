@@ -11,7 +11,11 @@ import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.dto.denuncia.TipoSujetoDTO;
 import com.protectionapp.sd2021.dto.denuncia.TipoSujetoResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -61,6 +65,8 @@ public class TipoSujetoServiceImpl extends BaseServiceImpl<TipoSujetoDTO, TipoSu
     }
 
     @Override
+    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_tipo_sujeto_'+#id")
+
     public TipoSujetoDTO getById(Integer id) {
         final TipoSujetoDomain tipo = tipoSujetoDao.findById(id).get();
         return convertDomainToDto(tipo);
@@ -94,6 +100,8 @@ public class TipoSujetoServiceImpl extends BaseServiceImpl<TipoSujetoDTO, TipoSu
     }
 
     @Override
+    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_tipo_sujeto_'+#id")
+
     public TipoSujetoDTO update(TipoSujetoDTO dto, Integer id) {
         final TipoSujetoDomain updated = tipoSujetoDao.findById(id).get();
         if(dto.getNombre()!=null){
@@ -106,6 +114,7 @@ public class TipoSujetoServiceImpl extends BaseServiceImpl<TipoSujetoDTO, TipoSu
     }
 
     @Override
+    @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_tipo_sujeto_'+#id")
     public TipoSujetoDTO delete(Integer id) {
         final TipoSujetoDomain deletedDomain = tipoSujetoDao.findById(id).get();
         final TipoSujetoDTO deletedDto = convertDomainToDto(deletedDomain);

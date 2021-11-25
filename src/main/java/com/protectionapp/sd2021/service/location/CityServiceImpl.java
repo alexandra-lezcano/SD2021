@@ -5,10 +5,12 @@ import com.protectionapp.sd2021.dao.denuncia.IDenunciaDao;
 import com.protectionapp.sd2021.dao.location.ICityDao;
 import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
 import com.protectionapp.sd2021.dao.user.IUserDao;
+import com.protectionapp.sd2021.domain.casosDerivados.DepEstadoDomain;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
+import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoDTO;
 import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.localization.CityResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
@@ -160,7 +162,10 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     @Override
     @Transactional
     public CityDTO delete(Integer id) {
-        return null;
+        final CityDomain deletedDomain = cityDao.findById(id).get();
+        final CityDTO deletedDto = convertDomainToDto(deletedDomain);
+       cityDao.delete(deletedDomain);
+        return deletedDto;
     }
 
     // Una opcion para evitar rep de codigo...

@@ -4,6 +4,7 @@ import com.protectionapp.sd2021.dto.base.BaseDTO;
 import javax.xml.bind.annotation.XmlElement;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Set;
 
 @XmlRootElement(name = "sujetos")
 public class SujetoDto extends BaseDTO {
@@ -19,7 +20,7 @@ public class SujetoDto extends BaseDTO {
 	private String correo;
 	private String direccion;
 	private Integer tipo_id;
-	private Integer denuncia_id;
+	private Set<Integer> denuncias;
 
 	@XmlElement
 	public String getCi() {
@@ -52,8 +53,8 @@ public class SujetoDto extends BaseDTO {
 	}
 
 	@XmlElement
-	public Integer getDenuncia_id() {
-		return denuncia_id;
+	public Set<Integer> getDenuncias() {
+		return denuncias;
 	}
 
 	public void setCi(String ci) {
@@ -80,7 +81,7 @@ public class SujetoDto extends BaseDTO {
 		this.tipo_id = tipo_id;
 	}
 
-	public void setDenuncia_id(Integer denuncia_id) {
-		this.denuncia_id = denuncia_id;
+	public void setDenuncias(Set<Integer> denuncia_id) {
+		this.denuncias = denuncia_id;
 	}
 }

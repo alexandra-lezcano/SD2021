@@ -41,10 +41,6 @@ public class TipoDenunciaDomain implements IBaseDomain {
         this.id = id;
     }
 
-    public String getTitlulo() {
-        return titulo;
-    }
-
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }

@@ -32,9 +32,8 @@ public class CasosDerivadosDomain implements IBaseDomain {
     )
     private Set<DepEstadoDomain> dependencia_estado;
 
-
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "denuncia_id", referencedColumnName = "id")
+    /*Un caso puede tener varias denuncias*/
+    @OneToMany(mappedBy = "caso_derivado", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<DenunciaDomain> denuncia ;
 
     //onetoone

@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Set;
 
 import com.protectionapp.sd2021.domain.user.UserDomain;
+import org.springframework.lang.Nullable;
 
 @Entity
 @Table(name = "denuncias")
@@ -71,9 +72,11 @@ public class DenunciaDomain implements IBaseDomain {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserDomain user;
 
+    /*Una denuncia se asigna a un caso*/
+    @Nullable
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "caso_derivado_id")
-    private CasosDerivadosDomain denuncias_caso_derivado;
+    private CasosDerivadosDomain caso_derivado;
 
     public Set<TipoDenunciaDomain> getTiposDenuncias() {
         return this.tipos;

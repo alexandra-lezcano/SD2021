@@ -3,12 +3,14 @@ package com.protectionapp.sd2021.service.location;
 import com.protectionapp.sd2021.dao.location.ICityDao;
 import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
-import com.protectionapp.sd2021.dto.localization.CityDTO;
-import com.protectionapp.sd2021.dto.localization.CityResult;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodDTO;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,10 +30,12 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     @Autowired
     private ICityDao cityDao;
 
+    private String cacheKey = "api_neighborhood_";
+
     @Override
     protected NeighborhoodDTO convertDomainToDto(NeighborhoodDomain domain) {
         final NeighborhoodDTO neighborhoodDTO = new NeighborhoodDTO();
-        neighborhoodDTO.setId(domain.getId());
+neighborhoodDTO.setId(domain.getId());
         neighborhoodDTO.setName(domain.getName());
         neighborhoodDTO.setDescription(domain.getDescription());
 
@@ -44,10 +48,10 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     @Override
     protected NeighborhoodDomain convertDtoToDomain(NeighborhoodDTO dto) {
         final NeighborhoodDomain neighborhoodDomain = new NeighborhoodDomain();
-        neighborhoodDomain.setId(dto.getId());
+neighborhoodDomain.setId(dto.getId());
         neighborhoodDomain.setName(dto.getName());
         neighborhoodDomain.setDescription(dto.getDescription());
-        System.out.println(dto.getName());
+System.out.println(dto.getName());
         if (dto.getCity_id() != null) {
             neighborhoodDomain.setCity(cityDao.findById(dto.getCity_id()).get());
         }
@@ -64,6 +68,8 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     }
 
     @Override
+    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
+
     public NeighborhoodDTO getById(Integer id) {
         final NeighborhoodDomain domain = neighborhoodDao.findById(id).get();
         return convertDomainToDto(domain);
@@ -98,6 +104,7 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     }
 
     @Override
+    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
     public NeighborhoodDTO update(NeighborhoodDTO dto, Integer id) {
         final NeighborhoodDomain updatedDomain = neighborhoodDao.findById(id).get();
         updatedDomain.setName(dto.getName());
@@ -111,7 +118,12 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     }
 
     @Override
+    @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
+
     public NeighborhoodDTO delete(Integer id) {
-        return null;
+        final NeighborhoodDomain deletedDomain = neighborhoodDao.findById(id).get();
+        final NeighborhoodDTO deletedDto = convertDomainToDto(deletedDomain);
+        neighborhoodDao.delete(deletedDomain);
+        return deletedDto;
     }
 }

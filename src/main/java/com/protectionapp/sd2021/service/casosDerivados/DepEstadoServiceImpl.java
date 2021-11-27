@@ -10,7 +10,11 @@ import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoDTO;
 import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoResult;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,7 +33,7 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
     @Autowired
     private ICasosDerivadosDao casosDerivadosDao;
 
-
+    private String cacheKey = "api_dep_estado_";
     @Override
 
     protected DepEstadoDTO convertDomainToDto(DepEstadoDomain domain) {
@@ -74,6 +78,8 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
 
     @Override
     @Transactional
+    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_dep_estado_'+#id")
+
     public DepEstadoDTO getById(Integer id) {
         final DepEstadoDomain dE = depEstadoDao.findById(id).get();
         return convertDomainToDto(dE);
@@ -93,6 +99,8 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
     }
 
     @Override
+    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_dep_estado_'+#id")
+
     public DepEstadoDTO update(DepEstadoDTO dto, Integer id) {
         final DepEstadoDomain updated = depEstadoDao.findById(id).get();
         if (dto.getCasos_derivados_ids() != null) {
@@ -119,6 +127,9 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_tipo_denuncia_'+#id")
+
     public DepEstadoDTO delete(Integer id) {
 
         final DepEstadoDomain deletedDomain = depEstadoDao.findById(id).get();

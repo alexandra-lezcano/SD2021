@@ -4,7 +4,6 @@ import com.protectionapp.sd2021.dao.denuncia.IDenunciaDao;
 import com.protectionapp.sd2021.dao.denuncia.IDenunciaEstadoDao;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaEstadoDomain;
-import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
 import com.protectionapp.sd2021.dto.denuncia.*;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,19 +75,16 @@ public class DenunciaEstadoServiceImpl extends BaseServiceImpl<DenunciaEstadoDTO
         return result;
     }
 
-    public DenunciaEstadoResult getAllNotPaginated(){
+    public DenunciaEstadoResult getAllNotPaginated() {
         final DenunciaEstadoResult result = new DenunciaEstadoResult();
         final Iterable<DenunciaEstadoDomain> all = estadoDao.findAll();
-        System.out.println("[ITERABLE] ALL DOMAINS " + all.toString());
         final List<DenunciaEstadoDTO> allDtos = new ArrayList<>();
-        if(all != null){
+        if (all != null) {
             all.forEach(denunciaEstadoDomain -> allDtos.add(convertDomainToDto(denunciaEstadoDomain)));
         }
-        System.out.println("[List] ALL DTOS " + allDtos.toString());
 
         result.setDenunciaEstados(allDtos);
 
-        System.out.println("[RESULT LIST] ALL DTOS " + result.getDenunciaEstados().toString());
         return result;
     }
 

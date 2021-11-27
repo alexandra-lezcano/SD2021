@@ -11,11 +11,17 @@ import com.protectionapp.sd2021.dto.denuncia.SujetoResult;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +35,10 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
     private IDenunciaDao denunciaDao;
     @Autowired
     private ISujetoDao sujetoDao;
+    @Autowired
+    private CacheManager cacheManager;
+
+    private final String cacheKey = "api_sujeto_";
 
     @Override
     protected SujetoDto convertDomainToDto(SujetoDomain domain) {
@@ -74,13 +84,21 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
     }
 
     @Override
+    @Transactional
     public SujetoDto save(SujetoDto dto) {
         final SujetoDomain sujeto = convertDtoToDomain(dto);
         final SujetoDomain domain = sujetoDao.save(sujeto);
+        if (dto.getId() == null) {
+            Integer id = domain.getId();
+            dto.setId(id);
+            cacheManager.getCache(Configurations.CACHE_NOMBRE).put(cacheKey + id, dto);
+        }
         return convertDomainToDto(domain);
     }
 
     @Override
+    @Transactional
+    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_sujeto_'+#id")
     public SujetoDto getById(Integer id) {
         final SujetoDomain sujeto = sujetoDao.findById(id).get();
         return convertDomainToDto(sujeto);
@@ -90,7 +108,7 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
     public SujetoResult getAll(Pageable pageable) {
         final List<SujetoDto> sujetos = new ArrayList<>();
         Page<SujetoDomain> results = sujetoDao.findAll(pageable);
-        results.forEach(sujeto->sujetos.add(convertDomainToDto(sujeto)));
+        results.forEach(sujeto -> sujetos.add(convertDomainToDto(sujeto)));
         final SujetoResult sujetoResult = new SujetoResult();
         sujetoResult.setSujetos(sujetos);
         return sujetoResult;
@@ -99,42 +117,40 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
     public SujetoResult getllAllNotPaginated() {
         final SujetoResult result = new SujetoResult();
         final Iterable<SujetoDomain> allDomains = sujetoDao.findAll();
-        System.out.println("[ITERABLE] ALL DOMAINS " + allDomains.toString());
         final List<SujetoDto> allDtos = new ArrayList<>();
 
         if (allDomains != null) {
             allDomains.forEach(sujetoDomain -> allDtos.add(convertDomainToDto(sujetoDomain)));
         }
-        System.out.println("[List] ALL DTOS " + allDtos.toString());
 
         result.setSujetos(allDtos);
-
-        System.out.println("[RESULT LIST] ALL DTOS " + result.getSujetos().toString());
         return result;
     }
 
     @Override
+    @Transactional
+    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_sujeto_'+#id")
     public SujetoDto update(SujetoDto dto, Integer id) {
         final SujetoDomain updated = sujetoDao.findById(id).get();
-        if(dto.getCi() != null){
+        if (dto.getCi() != null) {
             updated.setCi(dto.getCi());
         }
-        if(dto.getNombre()!=null){
+        if (dto.getNombre() != null) {
             updated.setNombre(dto.getNombre());
         }
-        if(dto.getCorreo()!=null){
+        if (dto.getCorreo() != null) {
             updated.setCorreo(dto.getCorreo());
         }
-        if(dto.getTelefono()!=null){
+        if (dto.getTelefono() != null) {
             updated.setTelefono(dto.getTelefono());
         }
-        if(dto.getDireccion()!=null){
+        if (dto.getDireccion() != null) {
             updated.setDireccion(dto.getDireccion());
         }
         if (dto.getDenuncias() != null) {
             updated.setDenuncias(getDenunciasFromDto(dto));
         }
-        if(dto.getTipo_id()!=null){
+        if (dto.getTipo_id() != null) {
             updated.setTipo(tipoSujetoDao.findById(dto.getTipo_id()).get());
         }
         sujetoDao.save(updated);
@@ -142,6 +158,8 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_sujeto_'+#id")
     public SujetoDto delete(Integer id) {
         final SujetoDomain deletedDomain = sujetoDao.findById(id).get();
         final SujetoDto deletedDto = convertDomainToDto(deletedDomain);

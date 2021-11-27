@@ -16,7 +16,12 @@ import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.exception.DenunciaNotFoundException;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -49,6 +54,11 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
 
     @Autowired
     private IUserDao userDao;
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    private final String cacheKey = "api_denuncia_";
 
 
     @Override
@@ -124,17 +134,20 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
 
     @Override
     public DenunciaDTO save(DenunciaDTO dto) {
-        //obtiene el bean/domain de la denuncia
         final DenunciaDomain denunciaDomain = convertDtoToDomain(dto);
-
-        //guarda el bean en la DB
         final DenunciaDomain denuncia = denunciaDao.save(denunciaDomain);
 
+        if (dto.getId() == null) {
+            Integer id = denuncia.getId();
+            dto.setId(id);
+            cacheManager.getCache(Configurations.CACHE_NOMBRE).put(cacheKey + id, dto);
+        }
         return convertDomainToDto(denuncia);
     }
 
     @Override
     @Transactional
+    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_denuncia_'+#id")
     public DenunciaDTO getById(Integer id) throws DenunciaNotFoundException {
         final DenunciaDomain denuncia = denunciaDao.findById(id).get();
         return convertDomainToDto(denuncia);
@@ -152,6 +165,8 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     }
 
     @Override
+    @Transactional
+    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_denuncia_'+#id")
     public DenunciaDTO update(DenunciaDTO dto, Integer id) {
         final DenunciaDomain updated = denunciaDao.findById(id).get();
         if (dto.getTipo_ids() != null) {
@@ -192,6 +207,8 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_denuncia_'+#id")
     public DenunciaDTO delete(Integer id) {
         final DenunciaDomain deletedDomain = denunciaDao.findById(id).get();
         final DenunciaDTO deteledDto = convertDomainToDto(deletedDomain);
@@ -209,17 +226,12 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     public DenunciaResult getllAllNotPaginated() {
         final DenunciaResult result = new DenunciaResult();
         final Iterable<DenunciaDomain> allDomains = denunciaDao.findAll();
-        System.out.println("[ITERABLE] ALL DOMAINS " + allDomains.toString());
         final List<DenunciaDTO> allDtos = new ArrayList<>();
 
         if (allDomains != null) {
             allDomains.forEach(denunciaDomain -> allDtos.add(convertDomainToDto(denunciaDomain)));
         }
-        System.out.println("[List] ALL DTOS " + allDtos.toString());
-
         result.setDenuncias(allDtos);
-
-        System.out.println("[RESULT LIST] ALL DTOS " + result.getDenuncias().toString());
         return result;
     }
 }

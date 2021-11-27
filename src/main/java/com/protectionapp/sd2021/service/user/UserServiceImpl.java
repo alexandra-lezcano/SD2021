@@ -102,8 +102,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
                 dto.getPhone()
         );
 
-        if (dto.getRoleId() != null) roleDao.findById(dto.getRoleId()).get();
-        if (dto.getCityId() != null) cityDao.findById(dto.getCityId()).get();
+        // deberia utilizar role service y city service ? pero el service me devuelve dtos no domains
+        if (dto.getRoleId() != null) userDomain.setRole(roleDao.findById(dto.getRoleId()).get());
+        if (dto.getCityId() != null) userDomain.setCity(cityDao.findById(dto.getCityId()).get());
 
 
         Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
@@ -211,8 +212,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
                 dto.getPhone()
         );
 
-        if (dto.getRoleId() != null) roleDao.findById(dto.getRoleId()).get();
-        if (dto.getCityId() != null) cityDao.findById(dto.getCityId()).get();
+        if (dto.getRoleId() != null) updatedUserDomain.setRole(roleDao.findById(dto.getRoleId()).get());
+        if (dto.getCityId() != null) updatedUserDomain.setCity(cityDao.findById(dto.getCityId()).get());
 
         userDao.save(updatedUserDomain);
         return convertDomainToDto(updatedUserDomain);

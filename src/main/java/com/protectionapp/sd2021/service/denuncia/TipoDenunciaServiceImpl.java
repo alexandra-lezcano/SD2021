@@ -17,7 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +34,7 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
     @Autowired
     private CacheManager cacheManager;
 
-    private String cacheKey = "api_tipo_denuncia_";
+    private final String cacheKey = "api_tipo_denuncia_";
 
     @Override
     protected TipoDenunciaDTO convertDomainToDto(TipoDenunciaDomain domain) {
@@ -57,7 +57,7 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
         domain.setId(dto.getId());
         domain.setTitulo(dto.getTitulo());
         domain.setDescripcion(dto.getDescripcion());
-        System.out.println(dto.getDescripcion());
+
         Set<DenunciaDomain> denuncias = new HashSet<>();
         if (dto.getDenunciaIds() != null) {
             dto.getDenunciaIds().forEach(denunciaId -> denuncias.add(denunciaDao.findById(denunciaId).get()));
@@ -78,7 +78,7 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
             Integer nuevoId = domain.getId();
             dto.setId(nuevoId);
             cacheManager.getCache(Configurations.CACHE_NOMBRE).put(cacheKey + nuevoId, dto);
-        } // me parece que no debo guardar domains en cache...
+        }
         return convertDomainToDto(domain);
     }
 
@@ -101,6 +101,7 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
             TipoDenunciaDTO tipoDto = convertDomainToDto(tipo);
             tipos.add(tipoDto);
             // cacheManager.getCache(Configurations.CACHE_NOMBRE).put(cacheKey + tipoDto.getId(), tipoDto);
+            // evito utilizar put aca para que no se actualice del cache cada vez que pido un objeto
         });
 
         final TipoDenunciaResult result = new TipoDenunciaResult();
@@ -111,17 +112,12 @@ public class TipoDenunciaServiceImpl extends BaseServiceImpl<TipoDenunciaDTO, Ti
     public TipoDenunciaResult getllAllNotPaginated() {
         final TipoDenunciaResult result = new TipoDenunciaResult();
         final Iterable<TipoDenunciaDomain> allDomains = tipoDenunciaDao.findAll();
-        System.out.println("[ITERABLE] ALL DOMAINS " + allDomains.toString());
         final List<TipoDenunciaDTO> allDtos = new ArrayList<>();
 
         if (allDomains != null) {
             allDomains.forEach(tipoDenunciaDomain -> allDtos.add(convertDomainToDto(tipoDenunciaDomain)));
         }
-        System.out.println("[List] ALL DTOS " + allDtos.toString());
-
         result.setTipoDenuncias(allDtos);
-
-        System.out.println("[RESULT LIST] ALL DTOS " + result.getTipoDenuncias().toString());
         return result;
     }
 

@@ -15,4 +15,7 @@ public interface INeighborhoodDao extends JpaRepository<NeighborhoodDomain, Inte
     public Page<NeighborhoodDomain> findAll(Pageable pageable);
 
     public List<NeighborhoodDomain> findAllByCity_Id(Integer city_id);
+
+    boolean existsByCity_Neighborhoods_Id(Integer id);
+
 }

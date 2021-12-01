@@ -12,7 +12,13 @@ public class Configurations {
     @Value("${items.por.pagina}")
     private Integer ITEMS_PAGINA;
 
+    @Value("${transactions.test}")
+    private boolean transactionTest;
     public Integer getItemsPaginacion() {
         return ITEMS_PAGINA;
+    }
+
+    public boolean isTransactionTest() {
+        return transactionTest;
     }
 }

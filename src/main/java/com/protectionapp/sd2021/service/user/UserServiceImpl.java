@@ -1,42 +1,34 @@
 package com.protectionapp.sd2021.service.user;
 
-import com.protectionapp.sd2021.dao.denuncia.IDenunciaDao;
-import com.protectionapp.sd2021.dao.location.ICityDao;
-import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
 import com.protectionapp.sd2021.dao.user.IRoleDao;
 import com.protectionapp.sd2021.dao.user.IUserDao;
-import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
-import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
-import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
-import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
-import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
+import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.dto.user.UserResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import com.protectionapp.sd2021.service.denuncia.IDenunciaService;
+import com.protectionapp.sd2021.service.location.ICityService;
+import com.protectionapp.sd2021.service.location.INeighborhoodService;
+import com.protectionapp.sd2021.utils.Configurations;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional; // para todos los metodos que van a la db
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/* De arriba para abajo: el servicio recibe DTO y genera un DAO para la db
- * De abajo para arriba: el servicio recibe DAO y genera DTO para responder un request
- * * "arriba": requests que vienen de internet al controller
- * * "abajo": la base de datos
- *
- * Los dtos (@XmlRootElement) son objetos seriabliables que los controllers
- * envian y reciben por la web
- *
- * Los daos (@CrudRepository) son los encargados de realizar transacciones con la DB
- *
- * Los domains (@Entity) son representaciones de tablas en la DB
- * */
 @Service
 public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserResult> implements IUserService {
     /*IOC - Inyeccion de Control evita que tenga que crear manualmente un UserDAO   */
@@ -44,16 +36,24 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     private IUserDao userDao;
 
     @Autowired
-    private ICityDao cityDao;
+    private ICityService cityService;
 
     @Autowired
-    private INeighborhoodDao neighborhoodDao;
+    private INeighborhoodService neighborhoodService;
 
     @Autowired
     private IRoleDao roleDao;
 
     @Autowired
-    private IDenunciaDao denunciaDao;
+    private IDenunciaService denunciaService;
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    @Autowired
+    private Configurations configurations;
+
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Override
     protected UserDTO convertDomainToDto(UserDomain userDomain) {
@@ -90,83 +90,54 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     @Override
     protected UserDomain convertDtoToDomain(UserDTO dto) {
         final UserDomain userDomain = new UserDomain();
-
         userDomain.setId(dto.getId());
-        userDomain.update(
-                dto.getName(),
-                dto.getSurname(),
-                dto.getUsername(),
-                dto.getCn(),
-                dto.getAddress(),
-                dto.getEmail(),
-                dto.getPhone()
-        );
+        userDomain.update(dto.getName(),dto.getSurname(),dto.getUsername(),dto.getCn(),dto.getAddress(),dto.getEmail(),dto.getPhone());
 
-        // deberia utilizar role service y city service ? pero el service me devuelve dtos no domains
+        neighborhoodService.addNeighborhoodToUser(dto, userDomain); // transaction requires new - COMENZA ACA tal vez getAll falla porque esto requiere una nueva transaccion
+        cityService.addCityToUser(dto, userDomain); // transaction not supported
+        denunciaService.addDenunciaToUser(dto, userDomain); // transaction mandatory
+
         if (dto.getRoleId() != null) userDomain.setRole(roleDao.findById(dto.getRoleId()).get());
-        if (dto.getCityId() != null) userDomain.setCity(cityDao.findById(dto.getCityId()).get());
-
-
-        Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
-        if (dto.getNeighborhoodIds() != null) {
-            dto.getNeighborhoodIds().forEach(n_id -> neighborhoodDomains.add(neighborhoodDao.findById(n_id).get()));
-        }
-        userDomain.setNeighborhoods(neighborhoodDomains);
-
-        Set<DenunciaDomain> denunciaDomains = new HashSet<>();
-        if (dto.getDenunciasIds() != null) {
-            dto.getDenunciasIds().forEach(d_id -> denunciaDomains.add(denunciaDao.findById(d_id).get()));
-        }
-        userDomain.setDenuncias(denunciaDomains);
 
         return userDomain;
     }
 
-    /**
-     * Metodos que vienen de IBaseService
-     **/
 
-    /* Obtener el bean de user a traves del metodo convertDtoToDomain
-     * Delegar al UserDao (@Autowired) la tarea de guardar el bean en la DB
-     * Retornar un DTO guardado en la DB
-     * ** Los response retornan dto ** */
     @Override
     @Transactional
     public UserDTO save(UserDTO dto) {
         final UserDomain userDomain = convertDtoToDomain(dto);
         final UserDomain user = userDao.save(userDomain);
 
+        if (dto.getId() == null) {
+            Integer id = userDomain.getId();
+            dto.setId(id);
+            cacheManager.getCache(Configurations.CACHE_NOMBRE).put("api_user_" + id, dto);
+        }
         return convertDomainToDto(user);
     }
 
-    /* userDao (@CrudRepository) nos devuelve un bean buscando por id
-     * Recordar que los daos son la capa encargada de realizar transacciones
-     * con la DB y que CrudRepository ya implementa todos los metodos
-     * necesarios para realizar transacciones */
     @Override
     @Transactional
+    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_user_'+#id")
     public UserDTO getById(Integer id) {
         final UserDomain user = userDao.findById(id).get();
         return convertDomainToDto(user);
     }
 
-    /* Pageable es un objeto de spring que nos ayuda al hacer paginacion
-     * Mirar UserResource.getAll(page_num) para que esto tenga sentido. Tambien
-     * ver el objeto de Spring llamado PageRequest, esto esta relacionado a
-     * JPA(Hibernate)
-     *
-     * Pageables tiene: qué número de pagina quiero mostrar y cuántos objetos
-     * deben ser motrados en esa página. Entonces el DAO sabe cuántos objetos
-     * más deben ser traidos desde la DB, y asi .findAll(pageable) retorna
-     * una *Pagina* con todos los Domains necesarios. Despues nosotros recorremos
-     * la *Pagina* de Domains, los convertimos a DTOs y respondemos con un
-     * UserResult.
-     *
-     * El CLIENTE va a consumir ese UserResult cada vez que el usuario use
-     * paginacion
-     * */
+    /* findAll() tiene su propia transaccion, pero la transaccion del metodo en si no se crea
+    o.s.t.s.AbstractPlatformTransactionManager:
+    Creating new transaction with name [org.springframework.data.jpa.repository.support.SimpleJpaRepository.findAll]:
+    PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly
+
+    Si cambio a @Transactional el metodo getAll es el padre de la transaccion
+    o.s.t.s.AbstractPlatformTransactionManager:
+    Creating new transaction with name [com.protectionapp.sd2021.service.user.UserServiceImpl.getAll]:
+    PROPAGATION_REQUIRED,ISOLATION_DEFAULT
+    */
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.NEVER)
+    //@Transactional
     public UserResult getAll(Pageable pageable) {
         final List<UserDTO> users = new ArrayList<>();
         Page<UserDomain> results = userDao.findAll(pageable);
@@ -186,22 +157,17 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         if (allDomains != null) {
             allDomains.forEach(tipoDenunciaDomain -> allDtos.add(convertDomainToDto(tipoDenunciaDomain)));
         }
-        System.out.println("[List] ALL DTOS " + allDtos.toString());
 
         result.setUsers(allDtos);
-
-        System.out.println("[RESULT LIST] ALL DTOS " + result.getUsers().toString());
         return result;
     }
 
     @Override
     @Transactional
+    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_user_'+#id")
     public UserDTO update(UserDTO dto, Integer id) {
         final UserDomain updatedUserDomain = userDao.findById(id).get();
 
-        if (dto.getNeighborhoodIds() != null) {
-            updatedUserDomain.setNeighborhoods(getNeighborhoodDomainsFromDTO(dto));
-        }
         updatedUserDomain.update(
                 dto.getName(),
                 dto.getSurname(),
@@ -213,7 +179,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         );
 
         if (dto.getRoleId() != null) updatedUserDomain.setRole(roleDao.findById(dto.getRoleId()).get());
-        if (dto.getCityId() != null) updatedUserDomain.setCity(cityDao.findById(dto.getCityId()).get());
+
+        neighborhoodService.addNeighborhoodToUser(dto, updatedUserDomain); // transaction requires_new
+        cityService.addCityToUser(dto, updatedUserDomain); // transaction not_supported
+        denunciaService.addDenunciaToUser(dto, updatedUserDomain); // transaction mandatory
 
         userDao.save(updatedUserDomain);
         return convertDomainToDto(updatedUserDomain);
@@ -221,6 +190,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
 
     @Override
     @Transactional
+    @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_user_'+#id")
     public UserDTO delete(Integer id) {
         final UserDomain deletedUserdomain = userDao.findById(id).get();
         final UserDTO deletedUserDto = convertDomainToDto(deletedUserdomain);
@@ -228,10 +198,17 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         return deletedUserDto;
     }
 
+
+    @Override
     @Transactional
-    public Set<NeighborhoodDomain> getNeighborhoodDomainsFromDTO(UserDTO dto) {
-        Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
-        dto.getNeighborhoodIds().forEach(n_id -> neighborhoodDomains.add(neighborhoodDao.findById(n_id).get()));
-        return neighborhoodDomains;
+    public void rollbackPropagationNever(UserDTO userDTO, CityDTO cityDTO) {
+        userDTO.setCityId(cityDTO.getId());
+        save(userDTO);
+
+        if(configurations.isTransactionTest()){
+            logger.info("[TEST] Propagation.NEVER will rollback");
+            final CityDTO city = cityService.update(cityDTO,cityDTO.getId()); // Propagation.NEVER
+            logger.info("[TEST] check user is not saved");
+        }
     }
 }

@@ -4,14 +4,12 @@ import com.protectionapp.sd2021.dao.casosDerivados.ICasosDerivadosDao;
 import com.protectionapp.sd2021.dao.casosDerivados.IDepEstadoDao;
 import com.protectionapp.sd2021.domain.casosDerivados.CasosDerivadosDomain;
 import com.protectionapp.sd2021.domain.casosDerivados.DepEstadoDomain;
-import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
-import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
 import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoDTO;
 import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoResult;
-import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -32,8 +30,11 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
     private IDepEstadoDao depEstadoDao;
     @Autowired
     private ICasosDerivadosDao casosDerivadosDao;
+    @Autowired
+    private CacheManager cacheManager;
 
     private String cacheKey = "api_dep_estado_";
+
     @Override
 
     protected DepEstadoDTO convertDomainToDto(DepEstadoDomain domain) {
@@ -72,7 +73,11 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
     public DepEstadoDTO save(DepEstadoDTO dto) {
         final DepEstadoDomain depEstadoDomain = convertDtoToDomain(dto);
         final DepEstadoDomain depEstado = depEstadoDao.save(depEstadoDomain);
-
+        if (dto.getId() == null) {
+            Integer nuevoId = depEstado.getId();
+            dto.setId(nuevoId);
+            cacheManager.getCache(Configurations.CACHE_NOMBRE).put(cacheKey + nuevoId, dto);
+        }
         return convertDomainToDto(depEstado);
     }
 

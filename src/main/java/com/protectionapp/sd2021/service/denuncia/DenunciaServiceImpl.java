@@ -10,10 +10,10 @@ import com.protectionapp.sd2021.dao.user.IUserDao;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.denuncia.SujetoDomain;
 import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
+import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaResult;
-import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
-import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
+import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.exception.DenunciaNotFoundException;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import com.protectionapp.sd2021.utils.Configurations;
@@ -26,7 +26,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -133,6 +134,7 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     }
 
     @Override
+    @Transactional
     public DenunciaDTO save(DenunciaDTO dto) {
         final DenunciaDomain denunciaDomain = convertDtoToDomain(dto);
         final DenunciaDomain denuncia = denunciaDao.save(denunciaDomain);
@@ -233,5 +235,15 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
         }
         result.setDenuncias(allDtos);
         return result;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void addDenunciaToUser(UserDTO dto, UserDomain domain) {
+        Set<DenunciaDomain> denunciaDomains = new HashSet<>();
+        if (dto.getDenunciasIds() != null) {
+            dto.getDenunciasIds().forEach(d_id -> denunciaDomains.add(denunciaDao.findById(d_id).get()));
+        }
+        domain.setDenuncias(denunciaDomains);
     }
 }

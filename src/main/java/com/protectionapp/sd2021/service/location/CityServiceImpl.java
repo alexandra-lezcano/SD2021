@@ -13,6 +13,7 @@ import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.localization.CityResult;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodDTO;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
+import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -52,11 +54,13 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     @Autowired
     private CacheManager cacheManager;
 
+    @Autowired
+    private Configurations configurations;
+
     private final String cacheKey = "api_city_";
 
 
     @Override
-    @Transactional
     protected CityDTO convertDomainToDto(CityDomain domain) {
         final CityDTO cityDTO = new CityDTO();
         cityDTO.setId(domain.getId());
@@ -80,7 +84,6 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     }
 
     @Override
-    @Transactional
     protected CityDomain convertDtoToDomain(CityDTO dto) {
         final CityDomain cityDomain = new CityDomain();
         cityDomain.setId(dto.getId());
@@ -99,7 +102,7 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.SUPPORTS)
     public CityDTO save(CityDTO dto) {
         final CityDomain cityDomain = convertDtoToDomain(dto);
         final CityDomain city = cityDao.save(cityDomain);
@@ -145,7 +148,7 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.NEVER)
     @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
     public CityDTO update(CityDTO dto, Integer id) {
         final CityDomain updatedCityDomain = cityDao.findById(id).get();
@@ -216,5 +219,14 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
 
         neighborhoodResult.setNeighborhoods(neighborhoodDTOList);
         return neighborhoodResult;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void addCityToUser(UserDTO dto, UserDomain domain) {
+     /*   if(configurations.isTransactionTest()){
+            throw new RuntimeException("Test Rollback");
+        }*/
+        if (dto.getCityId() != null) domain.setCity(cityDao.findById(dto.getCityId()).get());
     }
 }

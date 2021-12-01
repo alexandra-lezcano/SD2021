@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -52,6 +53,7 @@ public class DenunciaEstadoServiceImpl extends BaseServiceImpl<DenunciaEstadoDTO
     }
 
     @Override
+    @Transactional
     public DenunciaEstadoDTO save(DenunciaEstadoDTO dto) {
         final DenunciaEstadoDomain estadoDomain = convertDtoToDomain(dto);
         final DenunciaEstadoDomain estado = estadoDao.save(estadoDomain);
@@ -59,6 +61,7 @@ public class DenunciaEstadoServiceImpl extends BaseServiceImpl<DenunciaEstadoDTO
     }
 
     @Override
+    @Transactional
     public DenunciaEstadoDTO getById(Integer id) {
         final DenunciaEstadoDomain estado = estadoDao.findById(id).get();
         return convertDomainToDto(estado);
@@ -89,6 +92,7 @@ public class DenunciaEstadoServiceImpl extends BaseServiceImpl<DenunciaEstadoDTO
     }
 
     @Override
+    @Transactional
     public DenunciaEstadoDTO update(DenunciaEstadoDTO dto, Integer id) {
         final DenunciaEstadoDomain updated = estadoDao.findById(id).get();
         updated.setId(dto.getId());
@@ -105,6 +109,7 @@ public class DenunciaEstadoServiceImpl extends BaseServiceImpl<DenunciaEstadoDTO
     }
 
     @Override
+    @Transactional
     public DenunciaEstadoDTO delete(Integer id) {
         final DenunciaEstadoDomain deletedDomain = estadoDao.findById(id).get();
         final DenunciaEstadoDTO deletedDto = convertDomainToDto(deletedDomain);

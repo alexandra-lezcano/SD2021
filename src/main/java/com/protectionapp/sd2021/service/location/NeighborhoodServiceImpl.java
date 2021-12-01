@@ -3,8 +3,10 @@ package com.protectionapp.sd2021.service.location;
 import com.protectionapp.sd2021.dao.location.ICityDao;
 import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
+import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodDTO;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
+import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +18,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, NeighborhoodDomain, NeighborhoodResult> implements INeighborhoodService {
@@ -128,5 +133,16 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
         final NeighborhoodDTO deletedDto = convertDomainToDto(deletedDomain);
         neighborhoodDao.delete(deletedDomain);
         return deletedDto;
+    }
+
+    @Override
+    //@Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void addNeighborhoodToUser(UserDTO dto, UserDomain domain) {
+        Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
+        if (dto.getNeighborhoodIds() != null) {
+            dto.getNeighborhoodIds().forEach(n_id -> neighborhoodDomains.add(neighborhoodDao.findById(n_id).get()));
+        }
+        domain.setNeighborhoods(neighborhoodDomains);
     }
 }

@@ -69,7 +69,6 @@ System.out.println(dto.getName());
 
     @Override
     @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
-
     public NeighborhoodDTO getById(Integer id) {
         final NeighborhoodDomain domain = neighborhoodDao.findById(id).get();
         return convertDomainToDto(domain);

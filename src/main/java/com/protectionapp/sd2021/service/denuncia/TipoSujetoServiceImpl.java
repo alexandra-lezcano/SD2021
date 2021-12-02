@@ -75,8 +75,8 @@ public class TipoSujetoServiceImpl extends BaseServiceImpl<TipoSujetoDTO, TipoSu
     @Override
     public TipoSujetoResult getAll(Pageable pageable) {
         final List<TipoSujetoDTO> tipos = new ArrayList<>();
-        Page<TipoSujetoDomain> results = tipoSujetoDao.findAll(pageable);
-        results.forEach(tipo->tipos.add(convertDomainToDto(tipo)));
+        Page<TipoSujetoDomain> tipoDomains = tipoSujetoDao.findAll(pageable);
+        tipoDomains.forEach(tipo->tipos.add(convertDomainToDto(tipo)));
         final TipoSujetoResult result = new TipoSujetoResult();
         result.setTipoSujetos(tipos);
         return result;

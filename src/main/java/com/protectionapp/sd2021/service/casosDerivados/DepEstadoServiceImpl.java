@@ -81,6 +81,7 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
     @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_dep_estado_'+#id")
 
     public DepEstadoDTO getById(Integer id) {
+        System.out.println(id);
         final DepEstadoDomain dE = depEstadoDao.findById(id).get();
         return convertDomainToDto(dE);
     }

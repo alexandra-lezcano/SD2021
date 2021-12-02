@@ -71,7 +71,7 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
         if(domain.getDependencia_estado()!=null){
             Set<Integer> dependenciasIds= new HashSet<Integer>();
             domain.getDependencia_estado().forEach(d->dependenciasIds.add(d.getId()));
-            casosDerivados.setDependencias_ids(dependenciasIds);
+          casosDerivados.setDependencias_ids(dependenciasIds);
         }
 
 

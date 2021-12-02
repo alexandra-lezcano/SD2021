@@ -5,19 +5,19 @@ import com.protectionapp.sd2021.dao.denuncia.IDenunciaDao;
 import com.protectionapp.sd2021.dao.location.ICityDao;
 import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
 import com.protectionapp.sd2021.dao.user.IUserDao;
-import com.protectionapp.sd2021.domain.casosDerivados.DepEstadoDomain;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
-import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoDTO;
 import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.localization.CityResult;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodDTO;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
+import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -25,7 +25,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -50,11 +51,16 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     @Autowired
     private INeighborhoodService neighborhoodService;
 
-    private String cacheKey = "api_city_";
+    @Autowired
+    private CacheManager cacheManager;
+
+    @Autowired
+    private Configurations configurations;
+
+    private final String cacheKey = "api_city_";
 
 
     @Override
-    @Transactional
     protected CityDTO convertDomainToDto(CityDomain domain) {
         final CityDTO cityDTO = new CityDTO();
         cityDTO.setId(domain.getId());
@@ -78,7 +84,6 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     }
 
     @Override
-    @Transactional
     protected CityDomain convertDtoToDomain(CityDTO dto) {
         final CityDomain cityDomain = new CityDomain();
         cityDomain.setId(dto.getId());
@@ -97,18 +102,21 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.SUPPORTS)
     public CityDTO save(CityDTO dto) {
         final CityDomain cityDomain = convertDtoToDomain(dto);
         final CityDomain city = cityDao.save(cityDomain);
+        if (dto.getId() == null) {
+            Integer id = city.getId();
+            dto.setId(id);
+            cacheManager.getCache(Configurations.CACHE_NOMBRE).put(cacheKey + id, dto);
+        }
         return convertDomainToDto(city);
     }
 
-    // todo THROW IF ID DOESNT EXIST
     @Override
     @Transactional
     @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
-
     public CityDTO getById(Integer id) {
         final CityDomain city = cityDao.findById(id).get();
         return convertDomainToDto(city);
@@ -129,47 +137,45 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     public CityResult getllAllNotPaginated() {
         final CityResult result = new CityResult();
         final Iterable<CityDomain> allDomains = cityDao.findAll();
-        System.out.println("[ITERABLE] ALL DOMAINS " + allDomains.toString());
         final List<CityDTO> allDtos = new ArrayList<>();
 
         if (allDomains != null) {
             allDomains.forEach(cityDomain -> allDtos.add(convertDomainToDto(cityDomain)));
         }
-        System.out.println("[List] ALL DTOS " + allDtos.toString());
-
         result.setCities(allDtos);
 
-        System.out.println("[RESULT LIST] ALL DTOS " + result.getCities().toString());
         return result;
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.NEVER)
     @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
-
     public CityDTO update(CityDTO dto, Integer id) {
         final CityDomain updatedCityDomain = cityDao.findById(id).get();
 
-        Set<NeighborhoodDomain> neighborhoodDomains = null;
+        Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
         if (dto.getNeighborhoods() != null) {
             neighborhoodDomains = getNeighborhoodDomainsFromDTO(dto);
         }
 
-        Set<DenunciaDomain> denunciaDomains = null;
+        Set<DenunciaDomain> denunciaDomains = new HashSet<>();
         if (dto.getDenuncias() != null) {
             denunciaDomains = getDenunciaDomainFromDTO(dto);
         }
 
-        Set<UserDomain> userDomains = null;
+        Set<UserDomain> userDomains = new HashSet<>();
         if (dto.getUsers() != null) {
             userDomains = getUserDomainsFromDTO(dto);
         }
+
         updatedCityDomain.updateDomain(
                 dto.getName(),
                 dto.getDescription(),
                 neighborhoodDomains,
                 userDomains
         );
+
+        updatedCityDomain.setDenuncias(denunciaDomains);
 
         cityDao.save(updatedCityDomain);
         return convertDomainToDto(updatedCityDomain);
@@ -181,11 +187,10 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     public CityDTO delete(Integer id) {
         final CityDomain deletedDomain = cityDao.findById(id).get();
         final CityDTO deletedDto = convertDomainToDto(deletedDomain);
-       cityDao.delete(deletedDomain);
+        cityDao.delete(deletedDomain);
         return deletedDto;
     }
 
-    // Una opcion para evitar rep de codigo...
     public Set<NeighborhoodDomain> getNeighborhoodDomainsFromDTO(CityDTO cityDTO) {
         Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
         cityDTO.getNeighborhoods().forEach(n_id -> neighborhoodDomains.add(neighborhoodDao.findById(n_id).get()));
@@ -214,5 +219,14 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
 
         neighborhoodResult.setNeighborhoods(neighborhoodDTOList);
         return neighborhoodResult;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void addCityToUser(UserDTO dto, UserDomain domain) {
+     /*   if(configurations.isTransactionTest()){
+            throw new RuntimeException("Test Rollback");
+        }*/
+        if (dto.getCityId() != null) domain.setCity(cityDao.findById(dto.getCityId()).get());
     }
 }

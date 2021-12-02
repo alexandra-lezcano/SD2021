@@ -20,11 +20,17 @@ import org.springframework.context.annotation.ImportResource;
 @SpringBootApplication
 public class Sd2021Application {
     private static final Logger logger = LogManager.getLogger(Sd2021Application.class);
+    /* Si quiero testear llamada desde un servicio */
+    private static final boolean isServiceCall = true;
+    /* Si quiero que una llamada desde servicio falle*/
     private static final boolean isTestForRollback = true;
+    /* Adicionalmente dentro de protectionapp.properties tengo la opcion de elegir si
+    *  quiero que un metodo falle o no */
 
     /* Crear un userDTO y cityDTO, testear servicio con Transaction - Propagation.NEVER
     *  Invocar metodo directamente y desde un servicio transaccional
-    *  Servicio: cityService.update */
+    *  Servicio: cityService.update
+    *  Test para CASOS DE  ESCRITURA */
     public static void testTransactionNever(ApplicationContext applicationContext){
         logger.info("[TEST] Transaction Propagation.NEVER");
 
@@ -37,17 +43,24 @@ public class Sd2021Application {
         cityDTO.setName("test city");
         CityDTO cityDTOSaved = cityService.save(cityDTO); // guardar primero la ciudad para obtener su id
 
-        logger.info("[TEST] config funciona? "+ isTestForRollback);
-        if(isTestForRollback){
-            logger.info("[TEST] Transaction Propagation.NEVER - invocar metodo desde un servicio transactional");
-            userService.rollbackPropagationNever(userDTO, cityDTOSaved);
+        /*Test case: llamada desde metodo
+        * case 1- rollback
+        * case 2- llamada exitosa */
+        if(isServiceCall){
+            if(isTestForRollback){ // - para este test, setear -> transactions.test=true
+                logger.info("[TEST] Transaction Propagation.NEVER - invocar metodo desde un servicio transactional");
+                userService.rollbackPropagationNever(userDTO, cityDTOSaved);
+            }
+            logger.info("[TEST] Transaction Propagation.NEVER - invocar metodo desde un servicio SIN transaccion");
+            userService.methodCallPropagationNever(userDTO, cityDTOSaved);
 
+            /*Test case: llamada directa
+            * case 1- exitoso - para este test, setear -> transactions.test=false
+            * case 2- fallido - para este test, setear -> transactions.test=true */
         } else{
-            logger.info("[TEST] Transaction Propagation.NEVER - invocar metodo directamente");
-
+            logger.info("[TEST] Transaction Propagation.NEVER - invocar directamente");
             cityDTOSaved.setName("updated city");
             cityService.update(cityDTOSaved, cityDTOSaved.getId());
-
             userDTO.setCityId(cityDTOSaved.getId());
             userService.save(userDTO);
         }

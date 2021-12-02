@@ -16,6 +16,8 @@ import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import com.protectionapp.sd2021.utils.Configurations;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -57,8 +59,9 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     @Autowired
     private Configurations configurations;
 
-    private final String cacheKey = "api_city_";
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
+    private final String cacheKey = "api_city_";
 
     @Override
     protected CityDTO convertDomainToDto(CityDomain domain) {
@@ -147,11 +150,13 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
         return result;
     }
 
+    /* Al ser llamado directamente - no se crea transaccion
+    *  Al ser llamado desde metodo - si metodo padre tiene transaccion entonces falla  */
     @Override
     @Transactional(propagation = Propagation.NEVER)
     @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
     public CityDTO update(CityDTO dto, Integer id) {
-        final CityDomain updatedCityDomain = cityDao.findById(id).get();
+        final CityDomain updatedCityDomain = cityDao.findById(id).get(); // find by id tiene su propia transaccion
 
         Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
         if (dto.getNeighborhoods() != null) {
@@ -177,7 +182,13 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
 
         updatedCityDomain.setDenuncias(denunciaDomains);
 
-        cityDao.save(updatedCityDomain);
+        if(configurations.isTransactionTest()){
+            logger.info("[TEST] Fallar llamada directa");
+            throw new RuntimeException("Fallar llamada directa");
+
+        }
+        logger.info("[TEST] Llamada directa exitosa");
+        cityDao.save(updatedCityDomain); // save tiene su propia transaccion
         return convertDomainToDto(updatedCityDomain);
     }
 

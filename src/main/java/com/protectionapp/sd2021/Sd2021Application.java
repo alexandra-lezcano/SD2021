@@ -4,7 +4,6 @@ import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.service.location.ICityService;
 import com.protectionapp.sd2021.service.user.IUserService;
-import com.protectionapp.sd2021.utils.Configurations;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
@@ -21,7 +20,7 @@ import org.springframework.context.annotation.ImportResource;
 @SpringBootApplication
 public class Sd2021Application {
     private static final Logger logger = LogManager.getLogger(Sd2021Application.class);
-    private static final Configurations config = new Configurations();
+    private static final boolean isTestForRollback = true;
 
     /* Crear un userDTO y cityDTO, testear servicio con Transaction - Propagation.NEVER
     *  Invocar metodo directamente y desde un servicio transaccional
@@ -38,7 +37,8 @@ public class Sd2021Application {
         cityDTO.setName("test city");
         CityDTO cityDTOSaved = cityService.save(cityDTO); // guardar primero la ciudad para obtener su id
 
-        if(config.isTransactionTest()){
+        logger.info("[TEST] config funciona? "+ isTestForRollback);
+        if(isTestForRollback){
             logger.info("[TEST] Transaction Propagation.NEVER - invocar metodo desde un servicio transactional");
             userService.rollbackPropagationNever(userDTO, cityDTOSaved);
 

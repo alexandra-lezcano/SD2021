@@ -17,6 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.core.SpringVersion;
 
 /*  Levantar la app usando el Tomcat que viene por defecto
  *  Habilitar cache
@@ -34,8 +35,8 @@ public class Sd2021Application {
     /* Si quiero testear llamada desde un servicio */
     private static final boolean isServiceCall = true;
     /* Si quiero que una llamada desde servicio falle*/
-    private static final boolean isTestForRollback = true;
 
+    private static final boolean isTestForRollback = false;
     /* Adicionalmente dentro de protectionapp.properties tengo la opcion de elegir si
     *  quiero que un metodo falle o no */
 
@@ -63,8 +64,12 @@ public class Sd2021Application {
                 logger.info("[TEST] Transaction Propagation.NEVER - invocar metodo desde un servicio transactional");
                 userService.rollbackPropagationNever(userDTO, cityDTOSaved);
             }
+            // Para que llamada desde servicio sea exitosa:
+            // isServiceCall = true;
+            // isTestForRollback = false;
             logger.info("[TEST] Transaction Propagation.NEVER - invocar metodo desde un servicio SIN transaccion");
             userService.methodCallPropagationNever(userDTO, cityDTOSaved);
+
 
             /*Test case: llamada directa
             * case 1- exitoso - para este test, setear -> transactions.test=false

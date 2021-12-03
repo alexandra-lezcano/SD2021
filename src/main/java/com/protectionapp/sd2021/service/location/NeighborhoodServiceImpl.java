@@ -8,7 +8,10 @@ import com.protectionapp.sd2021.dto.localization.NeighborhoodDTO;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import com.protectionapp.sd2021.service.casosDerivados.DepEstadoServiceImpl;
 import com.protectionapp.sd2021.utils.Configurations;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -36,8 +39,12 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     @Autowired
     private CacheManager cacheManager;
 
+    private static final Logger logger = LogManager.getLogger(DepEstadoServiceImpl.class);
+
     private String cacheKey = "api_neighborhood_";
 
+    @Autowired
+    private Configurations configurations;
     @Override
     protected NeighborhoodDTO convertDomainToDto(NeighborhoodDomain domain) {
         final NeighborhoodDTO neighborhoodDTO = new NeighborhoodDTO();
@@ -66,7 +73,7 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public NeighborhoodDTO save(NeighborhoodDTO dto) {
         final NeighborhoodDomain domain = convertDtoToDomain(dto);
         final NeighborhoodDomain neighborhoodDomain = neighborhoodDao.save(domain);
@@ -79,9 +86,14 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     }
 
     @Override
-    @Transactional
-    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
+  // @Transactional
+   // @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public NeighborhoodDTO getById(Integer id) {
+        if(configurations.isTransactionTest()){
+            logger.info("TEST: Aparecera un error pero no hace rollback");
+            throw new RuntimeException("Error para probar el test fallido");
+        }
         final NeighborhoodDomain domain = neighborhoodDao.findById(id).get();
         return convertDomainToDto(domain);
     }
@@ -111,8 +123,10 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     }
 
     @Override
+  //  @Transactional
+   // @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
+
     @Transactional
-    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
     public NeighborhoodDTO update(NeighborhoodDTO dto, Integer id) {
         final NeighborhoodDomain updatedDomain = neighborhoodDao.findById(id).get();
         updatedDomain.setName(dto.getName());
@@ -136,8 +150,7 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    //@Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void addNeighborhoodToUser(UserDTO dto, UserDomain domain) {
         Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
         if (dto.getNeighborhoodIds() != null) {
@@ -145,4 +158,21 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
         }
         domain.setNeighborhoods(neighborhoodDomains);
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void testIndDirectNotSupported(Integer id){
+       NeighborhoodDTO neighborhoodDTO = new NeighborhoodDTO();
+       logger.info("cambiamos el barrio");
+       update(neighborhoodDTO,id);
+        logger.info("Se corta la transaccion");
+
+    }
+
+    public void testIndDirectNotSupportedNT(Integer id){
+      getById(id);
+
+    }
+
+
+
 }

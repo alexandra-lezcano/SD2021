@@ -1,15 +1,24 @@
 package com.protectionapp.sd2021;
 
+import com.protectionapp.sd2021.domain.casosDerivados.DepEstadoDomain;
+import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoDTO;
 import com.protectionapp.sd2021.dto.localization.CityDTO;
+import com.protectionapp.sd2021.dto.localization.NeighborhoodDTO;
 import com.protectionapp.sd2021.dto.user.UserDTO;
+import com.protectionapp.sd2021.service.casosDerivados.DepEstadoServiceImpl;
+import com.protectionapp.sd2021.service.casosDerivados.IDepEstadoService;
 import com.protectionapp.sd2021.service.location.ICityService;
+import com.protectionapp.sd2021.service.location.INeighborhoodService;
+import com.protectionapp.sd2021.service.location.NeighborhoodServiceImpl;
 import com.protectionapp.sd2021.service.user.IUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
 /*  Levantar la app usando el Tomcat que viene por defecto
@@ -53,9 +62,69 @@ public class Sd2021Application {
         }
     }
 
-    public static void main(String[] args) {
+    public static void testTransactionRequired(ApplicationContext applicationContext) {
+
+
+
+        logger.info("[TEST] Transaction Propagation.REQUIRED");
+        IDepEstadoService depEstadoService = applicationContext.getBean(IDepEstadoService.class);
+
+
+        int option=2;
+        switch(option) {
+            case 1:
+                //directo required exitoso y fallido
+                logger.info("Test transaccion directa required - getById");
+                depEstadoService.getById(13);
+                return;
+            case 2:
+                //indirecto exitoso y fallido con transaccion y sin transaccion
+                logger.info("Test transaccion indirecta required exitoso y fallido- metodo public testIndDirectRequired - delete");
+             //   depEstadoService.testIndDirectRequired(13); //con transaccion
+                depEstadoService.testIndDirectRequiredNT(13);//sin transaccion
+                return;
+
+
+
+        }
+
+
+    }
+
+    public static void testTransactionNotSupported(ApplicationContext applicationContext) {
+
+        logger.info("[TEST] Transaction Propagation.NOTSUPPORTED");
+        INeighborhoodService neighborhoodService = applicationContext.getBean(INeighborhoodService.class);
+
+
+        int option=2;
+
+        switch(option) {
+            case 1:
+                //directo exitoso y fallido - metodo de lectura get
+                logger.info("TEST: Directo Not Supported con getbyid");
+                logger.info("TEST: Voy a intentar hacer un get");
+                neighborhoodService.getById(17);
+                return;
+
+            case 2:
+                //Indirecto exitoso y fallido con transaccion y sin transaccion -
+                logger.info("TEST: indirecto Not Supported");
+              //  neighborhoodService.update(neighborhoodService.getById(17),29); //con transaccion
+                neighborhoodService.testIndDirectNotSupportedNT(17);// Sin transaccion
+
+                return;
+
+        }
+
+    }
+
+
+        public static void main(String[] args) {
         ApplicationContext applicationContext = SpringApplication.run(Sd2021Application.class, args);
 
-        testTransactionNever(applicationContext);
+           //testTransactionNever(applicationContext);
+          //testTransactionRequired(applicationContext);
+            testTransactionNotSupported(applicationContext);
     }
 }

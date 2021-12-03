@@ -136,8 +136,8 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     }
 
     @Override
-    //@Transactional(propagation = Propagation.REQUIRES_NEW)
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    //@Transactional(propagation = Propagation.SUPPORTS)
     public void addNeighborhoodToUser(UserDTO dto, UserDomain domain) {
         Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
         if (dto.getNeighborhoodIds() != null) {

@@ -110,7 +110,7 @@ public class Sd2021Application {
             case 2:
                 //Indirecto exitoso y fallido con transaccion y sin transaccion -
                 logger.info("TEST: indirecto Not Supported");
-              //  neighborhoodService.update(neighborhoodService.getById(17),29); //con transaccion
+             //  neighborhoodService.update(neighborhoodService.getById(17),29); //con transaccion
                 neighborhoodService.testIndDirectNotSupportedNT(17);// Sin transaccion
 
                 return;

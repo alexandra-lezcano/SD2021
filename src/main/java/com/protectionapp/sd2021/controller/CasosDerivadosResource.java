@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,12 +26,15 @@ public class CasosDerivadosResource {
 
 
     @GetMapping("/{id}")
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public CasosDerivadosDTO getById(@PathVariable(value = "id") Integer cDId) {
         return cDService.getById(cDId);
     }
 
 
     @GetMapping(path = "page/{page_num}")
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public CasosDerivadosResult getCasosDerivados(@PathVariable(value = "page_num") Integer pageNum) {
         return cDService.getAll(PageRequest.of(pageNum, 5));
     }
@@ -42,15 +46,21 @@ public class CasosDerivadosResource {
 
 
     @PostMapping()
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public CasosDerivadosDTO save(@Valid @RequestBody CasosDerivadosDTO cDDto) {
         return cDService.save(cDDto);
     }
 
     @DeleteMapping("/{id}")
+    @Secured({"ROLE_TSOCIAL"})
+
     public CasosDerivadosDTO delete(@PathVariable(value = "id") Integer id) {
         return cDService.delete(id);
     }
     @PutMapping("/{id}")
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     @ResponseStatus(HttpStatus.OK)
     public CasosDerivadosDTO update(@RequestBody CasosDerivadosDTO casoDerivadosDTO, @PathVariable(value = "id") Integer id) {
         return cDService.update(casoDerivadosDTO, id);

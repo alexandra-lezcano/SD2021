@@ -25,12 +25,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.SpringVersion;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 /*  Levantar la app usando el Tomcat que viene por defecto
  *  Habilitar cache
  *  Leer memcached.xml para conectarse al servidor de cache*/
 @EnableCaching
-@ImportResource("classpath:memcached.xml")
+@EnableWebSecurity
+@ImportResource({"classpath:memcached.xml","classpath:security-context.xml"})
 @SpringBootApplication
 public class Sd2021Application {
     private static final Logger logger = LogManager.getLogger(Sd2021Application.class);
@@ -226,7 +228,7 @@ public class Sd2021Application {
             case 2:
                 //Indirecto exitoso y fallido con transaccion y sin transaccion -
                 logger.info("TEST: indirecto Not Supported");
-              //  neighborhoodService.update(neighborhoodService.getById(17),29); //con transaccion
+             //  neighborhoodService.update(neighborhoodService.getById(17),29); //con transaccion
                 neighborhoodService.testIndDirectNotSupportedNT(17);// Sin transaccion
 
                 return;
@@ -242,7 +244,6 @@ public class Sd2021Application {
 
            //testTransactionNever(applicationContext);
           //testTransactionRequired(applicationContext);
-            testTransactionNotSupported(applicationContext);
-
+          //  testTransactionNotSupported(applicationContext);
     }
 }

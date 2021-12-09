@@ -22,9 +22,10 @@ public class UserDTO extends BaseDTO {
     private String email;
     private Integer phone;
     private Integer cityId;
-    private Integer roleId;
+    private Set<Integer> roleId;
     private Set<Integer> neighborhoodIds;
     private Set<Integer> denunciasIds;
+    private Set<Integer> casosDerivados;
 
     @XmlElement
     public String getName() {
@@ -67,7 +68,7 @@ public class UserDTO extends BaseDTO {
     }
 
     @XmlElement
-    public Integer getRoleId() {
+    public Set<Integer> getRoleId() {
         return roleId;
     }
 
@@ -80,6 +81,9 @@ public class UserDTO extends BaseDTO {
     public Set<Integer> getDenunciasIds() {
         return denunciasIds;
     }
+
+    @XmlElement
+    public Set<Integer> getCasosDerivados(){return casosDerivados;};
     
     public void setName(String name) {
         this.name = name;
@@ -113,7 +117,7 @@ public class UserDTO extends BaseDTO {
         this.cityId = cityId;
     }
 
-    public void setRoleId(Integer role) {
+    public void setRoleId(Set<Integer> role) {
         this.roleId = role;
     }
 
@@ -124,6 +128,8 @@ public class UserDTO extends BaseDTO {
     public void setDenunciasIds(Set<Integer> denunciasIds) {
         this.denunciasIds = denunciasIds;
     }
+
+    public void setCasosDerivados(Set<Integer> casosDerivados) {this.casosDerivados = casosDerivados;}
 
     @Override
     public String toString() {

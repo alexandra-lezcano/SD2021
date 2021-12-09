@@ -53,7 +53,6 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
         final CasosDerivadosDTO casosDerivados = new CasosDerivadosDTO();
         casosDerivados.setId(domain.getId());
 
-        //  casosDerivados.setDate(domain.getDate());
 
         casosDerivados.setDate(domain.getDate());
         casosDerivados.setDescription(domain.getDescription());
@@ -62,13 +61,10 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
             casosDerivados.setUser(domain.getTrabajador_social().getId());
         }
 
+        //relacion denuncia casos one to one
         if (domain.getDenuncia() != null) {
-            Set<Integer> denuncias_ids = new HashSet<>();
-            Set<DenunciaDomain> denuncias = domain.getDenuncia();
-            for (DenunciaDomain d : denuncias) {
-                denuncias_ids.add(d.getId());
-            }
-            casosDerivados.setDenuncia_ids(denuncias_ids);
+            casosDerivados.setDenuncia_id(domain.getDenuncia().getId());
+
         }
 
         //guardo las depEstado de mi caso derivado
@@ -89,8 +85,12 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
         // domain.setDate(dto.getDate());
         domain.setDescription(dto.getDescription());
 
-        if (dto.getDenuncia_ids() != null) {
+        if (dto.getUser_id() != null) {
             domain.setTrabajador_social(userDao.findById(dto.getUser_id()).get());
+        }
+
+        if(dto.getDenuncia_id() != null){
+           domain.setDenuncia(denunciaDao.findById(dto.getDenuncia_id()).get());
         }
 
         if (dto.getDependencias_ids() != null) {

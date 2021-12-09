@@ -33,13 +33,14 @@ public class CasosDerivadosDomain implements IBaseDomain {
     private Set<DepEstadoDomain> dependencia_estado;
 
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "denuncia_id", referencedColumnName = "id")
-    private Set<DenunciaDomain> denuncia ;
+    private DenunciaDomain denuncia ;
 
-    //onetoone
-    @Null
-    @OneToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+
+
+    @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserDomain trabajador_social;
 
 
@@ -90,11 +91,12 @@ public class CasosDerivadosDomain implements IBaseDomain {
         this.trabajador_social = trabajador_social;
     }
 
-    public Set<DenunciaDomain> getDenuncia() {
+    public DenunciaDomain getDenuncia() {
         return denuncia;
     }
 
-    public void setDenuncia(Set<DenunciaDomain> denuncia) {
+    public void setDenuncia(DenunciaDomain denuncia) {
         this.denuncia = denuncia;
     }
+    
 }

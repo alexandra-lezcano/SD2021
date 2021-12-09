@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sec="http://www.springframework.org/schema/security"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns="http://www.springframework.org/schema/beans"
+	   xsi:schemaLocation="
+          http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/security
+          http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<sec:http auto-config="true" use-expressions="true" pattern="/**" create-session="stateless">
+		<sec:intercept-url pattern="/users/**" access="permitAll()" />
+		<sec:intercept-url pattern="/user/username/**" access="permitAll()"/>
+		<sec:intercept-url pattern="/role/**" access="permitAll()"/>
+		<sec:intercept-url pattern="/user/**" access="permitAll()"/>
+		<sec:intercept-url pattern="/denuncias/**" access="permitAll()"/>
+		<sec:intercept-url pattern="/cities/**" access="permitAll()"/>
+		<sec:intercept-url pattern="/user/**" access="permitAll()"/>
+		<sec:intercept-url pattern="/**" access="isAuthenticated()" />
+		<sec:http-basic />
+	</sec:http>
+
+	<sec:authentication-manager alias="authenticationManager">
+		<sec:authentication-provider>
+			<sec:password-encoder ref="encoder" />
+
+			<sec:jdbc-user-service data-source-ref="dataSource" users-by-username-query="
+	  			SELECT username, password , 1 as enabled
+	  			FROM user WHERE username = ?"
+								   authorities-by-username-query="
+	  			SELECT u.username, r.description as authorities
+	  			FROM user u, user_roles u_r, role r
+	  			WHERE u.id = u_r.user_id
+	  			AND r.id = u_r.role_id
+	  			AND u.username = ?" />
+		</sec:authentication-provider>
+	</sec:authentication-manager>
+
+	<bean
+			class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"
+			id="encoder" />
+
+	<sec:global-method-security
+			secured-annotations="enabled" />
+</beans>

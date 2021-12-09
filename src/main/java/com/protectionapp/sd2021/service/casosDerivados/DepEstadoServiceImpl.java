@@ -39,8 +39,6 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
     private ICasosDerivadosDao casosDerivadosDao;
     @Autowired
     private CacheManager cacheManager;
-    @Autowired
-    private Configurations configurations;
 
     private String cacheKey = "api_dep_estado_";
 
@@ -77,28 +75,22 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
     }
 
     @Override
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Transactional
     public DepEstadoDTO save(DepEstadoDTO dto) {
         final DepEstadoDomain depEstadoDomain = convertDtoToDomain(dto);
         final DepEstadoDomain depEstado = depEstadoDao.save(depEstadoDomain);
         if (dto.getId() == null) {
             Integer nuevoId = depEstado.getId();
             dto.setId(nuevoId);
-       //     cacheManager.getCache(Configurations.CACHE_NOMBRE).put(cacheKey + nuevoId, dto);
+            cacheManager.getCache(Configurations.CACHE_NOMBRE).put(cacheKey + nuevoId, dto);
         }
         return convertDomainToDto(depEstado);
     }
 
     @Override
     @Transactional
-   // @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_dep_estado_'+#id")
-  //  @Transactional(propagation = Propagation.REQUIRED)
+    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_dep_estado_'+#id")
     public DepEstadoDTO getById(Integer id) {
-
-        if(configurations.isTransactionTest()){
-            logger.info("TEST: Aparecera un error entonces hace rollback");
-             throw new RuntimeException("Error para probar el test fallido");
-        }
         final DepEstadoDomain dE = depEstadoDao.findById(id).get();
         return convertDomainToDto(dE);
     }
@@ -117,6 +109,7 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
     }
 
     @Override
+    @Transactional
     @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_dep_estado_'+#id")
     public DepEstadoDTO update(DepEstadoDTO dto, Integer id) {
         final DepEstadoDomain updated = depEstadoDao.findById(id).get();
@@ -144,53 +137,12 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
     }
 
     @Override
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    //@CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_tipo_denuncia_'+#id")k
+    @Transactional
+    @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_tipo_denuncia_'+#id")
     public DepEstadoDTO delete(Integer id) {
         final DepEstadoDomain deletedDomain = depEstadoDao.findById(id).get();
         final DepEstadoDTO deletedDto = convertDomainToDto(deletedDomain);
         depEstadoDao.delete(deletedDomain);
         return deletedDto;
-
-
     }
-
-
-
-
-    @Transactional
-    public void testIndDirectRequired(int id){
-          getById(id);
-
-    }
-
-    public void testIndDirectRequiredNT(int id){
-        DepEstadoDTO depEstado= new DepEstadoDTO();
-        depEstado.setName("save");
-
-        logger.info("voy a guardar un objeto");
-        save(depEstado);
-
-
-     if(configurations.isTransactionTest()) {
-         logger.info("ahora intento borrar el objeto que guarde, pero su id es: "+null+"entonces debe fallar y hacer rollback");
-         delete(null);
-     }else
-         logger.info("ahora intento borrar el objeto que guarde, su id es: "+depEstado.getId());
-         delete(depEstado.getId());
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

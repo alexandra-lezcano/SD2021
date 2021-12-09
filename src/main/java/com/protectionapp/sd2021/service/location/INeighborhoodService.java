@@ -8,7 +8,4 @@ import com.protectionapp.sd2021.service.base.IBaseService;
 
 public interface INeighborhoodService extends IBaseService<NeighborhoodDTO, NeighborhoodResult> {
     void addNeighborhoodToUser(UserDTO dto, UserDomain domain);
-    void  testIndDirectNotSupported(Integer id);
-    void  testIndDirectNotSupportedNT(Integer id);
-
 }

@@ -232,30 +232,4 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         userDao.delete(deletedUserdomain);
         return deletedUserDto;
     }
-
-
-    @Override
-    @Transactional
-    public void rollbackPropagationNever(UserDTO userDTO, CityDTO cityDTO) {
-        userDTO.setCityId(cityDTO.getId());
-        save(userDTO);
-
-        if(configurations.isTransactionTest()){
-            logger.info("[TEST] Propagation.NEVER will rollback");
-            final CityDTO city = cityService.update(cityDTO,cityDTO.getId()); // Propagation.NEVER
-            logger.info("[TEST] check user is not saved");
-        }
-    }
-
-    @Override
-    public void methodCallPropagationNever(UserDTO userDTO, CityDTO cityDTO) {
-        logger.info("[TEST] Propagation.NEVER - guardar usuario");
-        userDTO.setCityId(cityDTO.getId());
-        save(userDTO);
-
-        logger.info("[TEST] Propagation.NEVER - actualizar ciudad");
-        logger.info("[TEST] Propagation.NEVER - no participa en ninguna transaccion");
-        final CityDTO city = cityService.update(cityDTO,cityDTO.getId()); // Propagation.NEVER
-        logger.info("[TEST] check usuario y ciudad se guardan");
-    }
 }

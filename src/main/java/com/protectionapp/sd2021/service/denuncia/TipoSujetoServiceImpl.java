@@ -38,12 +38,6 @@ public class TipoSujetoServiceImpl extends BaseServiceImpl<TipoSujetoDTO, TipoSu
     @Autowired
     private CacheManager cacheManager;
 
-    @Autowired
-    private Configurations configurations;
-
-    @Autowired
-    private ISujetoService sujetoService;
-
     private final Logger logger = LogManager.getLogger(this.getClass());
     private final String cacheKey = "api_tipo_sujeto_";
 
@@ -130,13 +124,9 @@ public class TipoSujetoServiceImpl extends BaseServiceImpl<TipoSujetoDTO, TipoSu
     }
 
     @Override
-    @Transactional (propagation = Propagation.SUPPORTS)
+    @Transactional
     @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_tipo_sujeto_'+#id")
     public TipoSujetoDTO delete(Integer id) {
-        if(configurations.isTransactionTest()){
-            logger.info("[TEST] Transaction Propagation.SUPPORTS: Se lanza un error par probar el rollback");
-            throw new RuntimeException ("[TEST] Test runtime exception");
-        }
         final TipoSujetoDomain deletedDomain = tipoSujetoDao.findById(id).get();
         final TipoSujetoDTO deletedDto = convertDomainToDto(deletedDomain);
         tipoSujetoDao.delete(deletedDomain);
@@ -147,25 +137,5 @@ public class TipoSujetoServiceImpl extends BaseServiceImpl<TipoSujetoDTO, TipoSu
         Set<SujetoDomain> ret = new HashSet<>();
         dto.getSujetosIds().forEach(id -> ret.add(sujetoDao.findById(id).get()));
         return ret;
-    }
-
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public SujetoDto updateSujetoNombre(SujetoDto dto, Integer id, String nombre) {
-        logger.info("[TEST] Transaction Propagation.REQUIRES_NEW: se crea una transaccion en el metodo padre");
-        dto.setNombre(nombre);
-        SujetoDto updated = sujetoService.update(dto, id);
-        logger.info("[TEST] Transaction Propagation.REQUIRES_NEW: Metodo padre exitoso");
-        return updated;
-    }
-
-    @Override
-    public SujetoDto updateSujetoNombreNoTransaction(SujetoDto dto, Integer id,String nombre) {
-        logger.info("[TEST] Transaction Propagation.REQUIRES_NEW: no se crea una transaccion en el metodo padre");
-        dto.setNombre(nombre);
-        SujetoDto updated = sujetoService.update(dto, id);
-        logger.info("[TEST] Transaction Propagation.REQUIRES_NEW: Metodo padre exitoso");
-        return updated;
     }
 }

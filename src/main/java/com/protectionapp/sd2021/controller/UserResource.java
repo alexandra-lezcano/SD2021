@@ -4,6 +4,7 @@ import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.dto.user.UserResult;
 import com.protectionapp.sd2021.service.user.UserServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,8 @@ import javax.validation.Valid; // framework de validacion de Java Beans
 @RequestMapping("/users")
 
 public class UserResource {
+    @Autowired
+    Configurations configurations;
 
     /* IOC: inyeccion de control para no crear userService */
     @Autowired
@@ -38,14 +41,25 @@ public class UserResource {
         return userService.getById(userId);
     }
 
-    /* Ayuda a paginacion, ver Pageable
+    @GetMapping(path = "page")
+    @ResponseBody
+    public UserResult getAll() {
+        return userService.getAll(PageRequest.of(0, configurations.getItemsPaginacion()));
+    }
+
+    /*
      * todo:
-     *  1- consumir la cantidad de resultados por pagina desde config.properties
      *  2- tolerancia a fallos */
     @GetMapping(path = "page/{page_num}")
     @ResponseBody
     public UserResult getAll(@PathVariable(value = "page_num") Integer pageNum) {
-        return userService.getAll(PageRequest.of(pageNum, 5));
+        return userService.getAll(PageRequest.of(pageNum, configurations.getItemsPaginacion()));
+    }
+
+    @GetMapping(path = "page/{page_num}/{size}")
+    @ResponseBody
+    public UserResult getAll(@PathVariable(value = "page_num") Integer pageNum, @PathVariable(value="size") Integer size) {
+        return userService.getAll(PageRequest.of(pageNum, size));
     }
 
     @RequestMapping(

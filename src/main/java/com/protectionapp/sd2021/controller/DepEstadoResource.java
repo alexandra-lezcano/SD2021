@@ -7,6 +7,7 @@ import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.service.casosDerivados.DepEstadoServiceImpl;
 
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,9 @@ public class DepEstadoResource {
     @Autowired
     private DepEstadoServiceImpl dEService;
 
+    @Autowired
+    Configurations configurations;
+
     @GetMapping("/{id}")
     public DepEstadoDTO getById(@PathVariable(value = "id") Integer DepEstadoId) {
         return dEService.getById(DepEstadoId);
@@ -27,15 +31,19 @@ public class DepEstadoResource {
 
 
     @GetMapping(path = "page/{page_num}")
-    public DepEstadoResult getDepEstado(@PathVariable(value = "page_num") Integer pageNum) {
-        return dEService.getAll(PageRequest.of(pageNum, 5));
+    public DepEstadoResult getAll(@PathVariable(value = "page_num") Integer pageNum) {
+        return dEService.getAll(PageRequest.of(pageNum, configurations.getItemsPaginacion()));
     }
 
-    @GetMapping(path = "/")
+    @GetMapping(path = "/page")
     public DepEstadoResult getAll(Pageable page) {
         return dEService.getAll(page);
     }
 
+    @GetMapping(path = "page/{page_num}/{size}")
+    public DepEstadoResult getAll(@PathVariable(value = "page_num") Integer pageNum, @PathVariable(value="size") Integer size) {
+        return dEService.getAll(PageRequest.of(pageNum, size));
+    }
 
     @PostMapping()
     public DepEstadoDTO save(@Valid @RequestBody DepEstadoDTO dEDto) {

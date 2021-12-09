@@ -17,6 +17,8 @@ import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.exception.DenunciaNotFoundException;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import com.protectionapp.sd2021.utils.Configurations;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -61,6 +63,12 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
 
     private final String cacheKey = "api_denuncia_";
 
+    @Autowired
+    private Configurations configurations;
+
+    private final Logger logger = LogManager.getLogger(this.getClass());
+
+
 
     @Override
     protected DenunciaDTO convertDomainToDto(DenunciaDomain domain) {
@@ -100,14 +108,13 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     @Override
     protected DenunciaDomain convertDtoToDomain(DenunciaDTO dto) {
         final DenunciaDomain denuncia = new DenunciaDomain();
-        denuncia.setID(dto.getId());
-        denuncia.setEstado(estadoDao.findById(dto.getEstado_id()).get());
-        denuncia.setCodigo(dto.getCodigo());
-        denuncia.setDescripcion(dto.getDescripcion());
-        denuncia.setFecha(dto.getFecha());
-        denuncia.setNeighborhood(neighborhoodDao.findById(dto.getNeighborhood_id()).get());
-        denuncia.setCity(cityDao.findById(dto.getCity_id()).get());
-
+        if(dto.getId() != null){denuncia.setID(dto.getId());}
+        if(dto.getEstado_id() != null){denuncia.setEstado(estadoDao.findById(dto.getEstado_id()).get());}
+        if(dto.getDescripcion()!=null){denuncia.setDescripcion(dto.getDescripcion());}
+        if(dto.getFecha()!=null){denuncia.setFecha(dto.getFecha());}
+        if(dto.getNeighborhood_id()!=null){denuncia.setNeighborhood(neighborhoodDao.findById(dto.getNeighborhood_id()).get());}
+        if(dto.getCity_id()!=null){denuncia.setCity(cityDao.findById(dto.getCity_id()).get());}
+        if(dto.getCodigo() != null){denuncia.setCodigo(dto.getCodigo());}
         if (dto.getUser_id() != null) {
             denuncia.setUser(userDao.findById(dto.getUser_id()).get());
         }
@@ -167,7 +174,6 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     }
 
     @Override
-    @Transactional
     @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_denuncia_'+#id")
     public DenunciaDTO update(DenunciaDTO dto, Integer id) {
         final DenunciaDomain updated = denunciaDao.findById(id).get();
@@ -245,5 +251,10 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
             dto.getDenunciasIds().forEach(d_id -> denunciaDomains.add(denunciaDao.findById(d_id).get()));
         }
         domain.setDenuncias(denunciaDomains);
+    }
+
+    @Override
+    public Configurations getConf(){
+        return configurations;
     }
 }

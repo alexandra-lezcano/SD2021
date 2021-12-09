@@ -6,12 +6,14 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 /*  Levantar la app usando el Tomcat que viene por defecto
  *  Habilitar cache
  *  Leer memcached.xml para conectarse al servidor de cache*/
 @EnableCaching
-@ImportResource("classpath:memcached.xml")
+@EnableWebSecurity
+@ImportResource({"classpath:memcached.xml","classpath:security-context.xml"})
 @SpringBootApplication
 public class Sd2021Application extends SpringBootServletInitializer {
 

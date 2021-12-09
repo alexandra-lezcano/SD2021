@@ -48,9 +48,13 @@ public class UserDomain implements IBaseDomain {
 
     /* Crea una columna llamada "role_id" que hace referencia a "id" dentro de RoleDomain
      * Quien sea duenho del FK tendra un @JoinColumn */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private RoleDomain role;
+    @ManyToMany
+   @JoinTable(
+           name = "user_roles",
+           joinColumns = @JoinColumn(name="user_id"),
+           inverseJoinColumns = @JoinColumn(name="role_id")
+   )
+    private Set<RoleDomain> role;
 
     /*Hay muchos usuarios en una ciudad, una ciudad puede tener muchos usuarios*/
     @ManyToOne(fetch = FetchType.LAZY)
@@ -66,9 +70,8 @@ public class UserDomain implements IBaseDomain {
     )
     private Set<NeighborhoodDomain> neighborhoods;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    //@JoinColumn(name = "user_id", referencedColumnName = "id")
-    private CasosDerivadosDomain user;
+    @OneToMany(mappedBy = "trabajador_social", cascade = CascadeType.ALL)
+    private Set<CasosDerivadosDomain> casos_derivados;
 
 
     /*Un trabajador social se ocupa de muchas denuncias*/
@@ -155,11 +158,11 @@ public class UserDomain implements IBaseDomain {
         this.username = username;
     }
 
-    public RoleDomain getRole() {
+    public Set<RoleDomain> getRole() {
         return role;
     }
 
-    public void setRole(RoleDomain role) {
+    public void setRole(Set<RoleDomain> role) {
         this.role = role;
     }
 
@@ -186,6 +189,10 @@ public class UserDomain implements IBaseDomain {
     public void setDenuncias(Set<DenunciaDomain> denuncias) {
         this.denuncias = denuncias;
     }
+
+    public Set<CasosDerivadosDomain> getCasos_derivados() {return casos_derivados;}
+
+    public void setCasos_derivados(Set<CasosDerivadosDomain> casos_derivados) {this.casos_derivados = casos_derivados;}
 
     public void update(String name, String surname, String username, Integer cn, String address, String email, Integer phone) {
         setName(name);

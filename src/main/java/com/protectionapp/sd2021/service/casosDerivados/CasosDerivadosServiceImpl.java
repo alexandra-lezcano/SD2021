@@ -11,6 +11,7 @@ import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.casosDerivados.CasosDerivadosDTO;
 import com.protectionapp.sd2021.dto.casosDerivados.CasosDerivadosResult;
+import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoDTO;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+
 import java.util.*;
 
 @Service
@@ -36,6 +38,7 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
 
     @Autowired
     private IUserDao userDao;
+
 
     @Autowired
     private IDepEstadoDao depEstadoDao;
@@ -68,11 +71,13 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
             casosDerivados.setDenuncia_ids(denuncias_ids);
         }
 
-        if (domain.getDependencia_estado() != null) {
-            Set<Integer> dependenciasIds = new HashSet<Integer>();
-            domain.getDependencia_estado().forEach(d -> dependenciasIds.add(d.getId()));
-            casosDerivados.setDependencias_ids(dependenciasIds);
+        //guardo las depEstado de mi caso derivado
+        if(domain.getDependencia_estado()!=null){
+            Set<Integer> dependenciasIds= new HashSet<Integer>();
+            domain.getDependencia_estado().forEach(d->dependenciasIds.add(d.getId()));
+          casosDerivados.setDependencias_ids(dependenciasIds);
         }
+
 
         return casosDerivados;
     }
@@ -96,14 +101,17 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
                 depEstadoDomains.add(depEstadoDao.findById(nId).get());
             }
             domain.setDependencia_estado(depEstadoDomains);
+
         }
 
         return domain;
+
     }
 
     @Override
     @Transactional
     public CasosDerivadosResult getAll(Pageable pageable) {
+
         final List<CasosDerivadosDTO> cD = new ArrayList<>();
         Page<CasosDerivadosDomain> cDresults = casosDerivadosDao.findAll(pageable);
         cDresults.forEach(casoDerivado -> cD.add(convertDomainToDto(casoDerivado)));
@@ -115,6 +123,7 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
     @Override
     @Transactional
     @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_casos_derivados_'+#id")
+
     public CasosDerivadosDTO update(CasosDerivadosDTO dto, Integer id) {
         // todo mejorar esto
         if (casosDerivadosDao.findById(id) != null) {
@@ -123,6 +132,7 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
             casoDerivado.setDate(dto.getDate());
             casoDerivado.setDescription((dto.getDescription()));
 
+//cambiamos lista de  users
             Set<UserDomain> userDomains = new HashSet<>();
 
             final CasosDerivadosDomain nuevo = casosDerivadosDao.save(casoDerivado);
@@ -130,11 +140,14 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
         }
         return null;
 
+
+
     }
 
     @Override
     @Transactional
     @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_casos_derivados_'+#id")
+
     public CasosDerivadosDTO delete(Integer id) {
         final CasosDerivadosDomain deletedDomain = casosDerivadosDao.findById(id).get();
         final CasosDerivadosDTO deletedDto = convertDomainToDto(deletedDomain);
@@ -146,6 +159,7 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
     @Override
     @Transactional
     public CasosDerivadosDTO save(CasosDerivadosDTO dto) {
+
         final CasosDerivadosDomain domain = convertDtoToDomain(dto);
         final CasosDerivadosDomain CD = casosDerivadosDao.save(domain);
 
@@ -155,6 +169,7 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
             cacheManager.getCache(Configurations.CACHE_NOMBRE).put(cacheKey + nuevoId, dto);
         }
         return convertDomainToDto(CD);
+
     }
 
     @Override

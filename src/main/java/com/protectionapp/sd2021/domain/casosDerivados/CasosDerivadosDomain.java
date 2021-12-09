@@ -24,7 +24,7 @@ public class CasosDerivadosDomain implements IBaseDomain {
     private Integer id;
 
 
-    @ManyToMany(cascade= CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "casos_derivados_dep_estado",
             joinColumns = @JoinColumn(name="casos_derivado_id"),

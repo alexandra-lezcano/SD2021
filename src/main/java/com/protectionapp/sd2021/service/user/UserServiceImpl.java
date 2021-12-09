@@ -163,19 +163,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         return convertDomainToDto(user);
     }
 
-    /* findAll() tiene su propia transaccion, pero la transaccion del metodo en si no se crea
-    o.s.t.s.AbstractPlatformTransactionManager:
-    Creating new transaction with name [org.springframework.data.jpa.repository.support.SimpleJpaRepository.findAll]:
-    PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly
-
-    Si cambio a @Transactional el metodo getAll es el padre de la transaccion
-    o.s.t.s.AbstractPlatformTransactionManager:
-    Creating new transaction with name [com.protectionapp.sd2021.service.user.UserServiceImpl.getAll]:
-    PROPAGATION_REQUIRED,ISOLATION_DEFAULT
-    */
     @Override
-    @Transactional(propagation = Propagation.NEVER)
-    //@Transactional
+    @Transactional
     public UserResult getAll(Pageable pageable) {
         final List<UserDTO> users = new ArrayList<>();
         Page<UserDomain> results = userDao.findAll(pageable);
@@ -189,7 +178,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     public UserResult getllAllNotPaginated() {
         final UserResult result = new UserResult();
         final Iterable<UserDomain> allDomains = userDao.findAll();
-        System.out.println("[ITERABLE] ALL DOMAINS " + allDomains.toString());
         final List<UserDTO> allDtos = new ArrayList<>();
 
         if (allDomains != null) {
@@ -243,31 +231,5 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         final UserDTO deletedUserDto = convertDomainToDto(deletedUserdomain);
         userDao.delete(deletedUserdomain);
         return deletedUserDto;
-    }
-
-
-    @Override
-    @Transactional
-    public void rollbackPropagationNever(UserDTO userDTO, CityDTO cityDTO) {
-        userDTO.setCityId(cityDTO.getId());
-        save(userDTO);
-
-        if(configurations.isTransactionTest()){
-            logger.info("[TEST] Propagation.NEVER will rollback");
-            final CityDTO city = cityService.update(cityDTO,cityDTO.getId()); // Propagation.NEVER
-            logger.info("[TEST] check user is not saved");
-        }
-    }
-
-    @Override
-    public void methodCallPropagationNever(UserDTO userDTO, CityDTO cityDTO) {
-        logger.info("[TEST] Propagation.NEVER - guardar usuario");
-        userDTO.setCityId(cityDTO.getId());
-        save(userDTO);
-
-        logger.info("[TEST] Propagation.NEVER - actualizar ciudad");
-        logger.info("[TEST] Propagation.NEVER - no participa en ninguna transaccion");
-        final CityDTO city = cityService.update(cityDTO,cityDTO.getId()); // Propagation.NEVER
-        logger.info("[TEST] check usuario y ciudad se guardan");
     }
 }

@@ -136,13 +136,9 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_sujeto_'+#id")
     public SujetoDto update(SujetoDto dto, Integer id) {
-        if(configurations.isTransactionTest()){
-            logger.info("[TEST] Transaction Propagation.REQUIRES_NEW: Se forza un rollback el comportamiento de la propagacion");
-            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
-        }
         final SujetoDomain updated = sujetoDao.findById(id).get();
         if (dto.getCi() != null) {
             updated.setCi(dto.getCi());
@@ -178,32 +174,4 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
         sujetoDao.delete(deletedDomain);
         return deletedDto;
     }
-
-    @Override
-    @Transactional
-    public void deleteTipo(){
-        TipoSujetoDTO nuevo = new TipoSujetoDTO();
-        nuevo.setNombre("Prueba");
-        TipoSujetoDTO guardado = tipoSujetoService.save(nuevo);
-        logger.info("[TEST] Transaction Propagation.SUPPORTS: Se crea el tipoSujeto con id: "+ guardado.getId());
-        TipoSujetoDTO borrado = tipoSujetoService.delete(guardado.getId());
-        logger.info("[TEST] Transaction Propagation.SUPPORTS: Se borra el tipoSujeto con id: "+ borrado.getId());
-    }
-
-    @Override
-    public void deleteTipoNoTransaction(){
-        logger.info("[TEST] Transaction Propagation.SUPPORTS: No se crean transacciones para delete");
-        TipoSujetoDTO nuevo = new TipoSujetoDTO();
-        nuevo.setNombre("Prueba");
-        TipoSujetoDTO guardado = tipoSujetoService.save(nuevo);
-        logger.info("[TEST] Transaction Propagation.SUPPORTS: Se crea el tipoSujeto con id: "+ guardado.getId());
-        TipoSujetoDTO borrado = tipoSujetoService.delete(guardado.getId());
-        logger.info("[TEST] Transaction Propagation.SUPPORTS: Se borra el tipoSujeto con id: "+ borrado.getId());
-
-    }
-
-    public Configurations getConf(){
-        return configurations;
-    }
-
 }

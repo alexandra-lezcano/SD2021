@@ -5,11 +5,9 @@ import com.protectionapp.sd2021.dao.denuncia.ISujetoDao;
 import com.protectionapp.sd2021.dao.denuncia.ITipoSujetoDao;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.denuncia.SujetoDomain;
-import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
 import com.protectionapp.sd2021.dto.denuncia.SujetoDto;
 import com.protectionapp.sd2021.dto.denuncia.SujetoResult;
-import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
-import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
+import com.protectionapp.sd2021.dto.denuncia.TipoSujetoDTO;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +18,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -36,9 +38,15 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
     @Autowired
     private ISujetoDao sujetoDao;
     @Autowired
+    private ITipoSujetoService tipoSujetoService;
+    @Autowired
     private CacheManager cacheManager;
+    @Autowired
+    private Configurations configurations;
 
     private final String cacheKey = "api_sujeto_";
+
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Override
     protected SujetoDto convertDomainToDto(SujetoDomain domain) {
@@ -128,9 +136,13 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_sujeto_'+#id")
     public SujetoDto update(SujetoDto dto, Integer id) {
+        if(configurations.isTransactionTest()){
+            logger.info("[TEST] Transaction Propagation.REQUIRES_NEW: Se forza un rollback el comportamiento de la propagacion");
+            TransactionInterceptor.currentTransactionStatus().setRollbackOnly();
+        }
         final SujetoDomain updated = sujetoDao.findById(id).get();
         if (dto.getCi() != null) {
             updated.setCi(dto.getCi());
@@ -166,4 +178,32 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
         sujetoDao.delete(deletedDomain);
         return deletedDto;
     }
+
+    @Override
+    @Transactional
+    public void deleteTipo(){
+        TipoSujetoDTO nuevo = new TipoSujetoDTO();
+        nuevo.setNombre("Prueba");
+        TipoSujetoDTO guardado = tipoSujetoService.save(nuevo);
+        logger.info("[TEST] Transaction Propagation.SUPPORTS: Se crea el tipoSujeto con id: "+ guardado.getId());
+        TipoSujetoDTO borrado = tipoSujetoService.delete(guardado.getId());
+        logger.info("[TEST] Transaction Propagation.SUPPORTS: Se borra el tipoSujeto con id: "+ borrado.getId());
+    }
+
+    @Override
+    public void deleteTipoNoTransaction(){
+        logger.info("[TEST] Transaction Propagation.SUPPORTS: No se crean transacciones para delete");
+        TipoSujetoDTO nuevo = new TipoSujetoDTO();
+        nuevo.setNombre("Prueba");
+        TipoSujetoDTO guardado = tipoSujetoService.save(nuevo);
+        logger.info("[TEST] Transaction Propagation.SUPPORTS: Se crea el tipoSujeto con id: "+ guardado.getId());
+        TipoSujetoDTO borrado = tipoSujetoService.delete(guardado.getId());
+        logger.info("[TEST] Transaction Propagation.SUPPORTS: Se borra el tipoSujeto con id: "+ borrado.getId());
+
+    }
+
+    public Configurations getConf(){
+        return configurations;
+    }
+
 }

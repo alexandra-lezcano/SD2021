@@ -19,7 +19,7 @@ public class TipoSujetoDomain implements IBaseDomain {
     private String nombre;
 
     /*Un tipo esta relacionado con varios sujetos*/
-    @OneToMany(mappedBy = "tipo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tipo", fetch = FetchType.EAGER)
     private Set<SujetoDomain> sujetos;
 
     public Integer getId() {

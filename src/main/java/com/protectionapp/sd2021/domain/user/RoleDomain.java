@@ -25,7 +25,8 @@ public class RoleDomain implements IBaseDomain {
     /* Relacion bidireccional donde RoleDomain es un -non-owning-side-
      * mappedBy significa que en la classe UserDomain la relacion esta
      * mapeada por el atributo -role- */
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+  //  @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    @ManyToMany
     private Set<UserDomain> users;
 
     public Integer getId() {

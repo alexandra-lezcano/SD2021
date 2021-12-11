@@ -5,6 +5,7 @@ import com.protectionapp.sd2021.dto.denuncia.DenunciaEstadoResult;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.service.denuncia.DenunciaEstadoServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/denunciaEstados")
 public class DenunciaEstadoResource {
+    @Autowired
+    Configurations configurations;
 
     @Autowired
     private DenunciaEstadoServiceImpl estadoService;
@@ -28,12 +31,24 @@ public class DenunciaEstadoResource {
         return estadoService.getById(id);
     }
 
+    @GetMapping(path = "page")
+    @ResponseBody
+    public DenunciaEstadoResult getAll() {
+        return estadoService.getAll(PageRequest.of(0,configurations.getItemsPaginacion()));
+    }
+
     @GetMapping(path = "page/{page_num}")
     @ResponseBody
     @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
 
     public DenunciaEstadoResult getAll(@PathVariable(value = "page_num") Integer pageNum) {
-        return estadoService.getAll(PageRequest.of(pageNum, 5));
+        return estadoService.getAll(PageRequest.of(pageNum, configurations.getItemsPaginacion()));
+    }
+
+    @GetMapping(path = "page/{page_num}/{size}")
+    @ResponseBody
+    public DenunciaEstadoResult getAll(@PathVariable(value = "page_num") Integer pageNum, @PathVariable(value = "size") Integer size) {
+        return estadoService.getAll(PageRequest.of(pageNum, size));
     }
 
     @RequestMapping(

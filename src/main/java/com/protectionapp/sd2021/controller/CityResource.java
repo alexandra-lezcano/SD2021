@@ -6,6 +6,7 @@ import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.localization.CityResult;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
 import com.protectionapp.sd2021.service.location.CityServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,9 @@ import javax.validation.Valid;
 
 public class CityResource {
     @Autowired
+    Configurations configurations;
+
+    @Autowired
     private CityServiceImpl cityService;
 
     @GetMapping("/{id}")
@@ -28,10 +32,23 @@ public class CityResource {
         return cityService.getById(cityId);
     }
 
-    @GetMapping(path = "page/{page_num}")
+    @GetMapping(path = "/page")
+    @ResponseBody
+    public CityResult getAll(){
+        return cityService.getAll(PageRequest.of(0, configurations.getItemsPaginacion()));
+
+    }
+
+    @GetMapping(path = "/page/{page_num}")
     @ResponseBody
     public CityResult getAll(@PathVariable(value = "page_num") Integer pageNum) {
-        return cityService.getAll(PageRequest.of(pageNum, 5));
+        return cityService.getAll(PageRequest.of(pageNum, configurations.getItemsPaginacion()));
+    }
+
+    @GetMapping(path = "/page/{page_num}/{size}")
+    @ResponseBody
+    public CityResult getAll(@PathVariable(value = "page_num") Integer pageNum, @PathVariable(value="size") Integer size) {
+        return cityService.getAll(PageRequest.of(pageNum, size));
     }
     @RequestMapping(
             method = RequestMethod.GET,

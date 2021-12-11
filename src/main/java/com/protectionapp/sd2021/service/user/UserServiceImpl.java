@@ -6,7 +6,6 @@ import com.protectionapp.sd2021.dao.user.IUserDao;
 import com.protectionapp.sd2021.domain.casosDerivados.CasosDerivadosDomain;
 import com.protectionapp.sd2021.domain.user.RoleDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
-import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.dto.user.UserResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
@@ -26,7 +25,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -78,9 +76,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         dto.setPhone(userDomain.getPhone());
         dto.setAddress(userDomain.getAddress());
 
-        if (userDomain.getRole() != null){
+        if (userDomain.getRoles() != null){
             Set<Integer> roles = new HashSet<Integer>();
-            userDomain.getRole().forEach(d->roles.add(d.getId()));
+            userDomain.getRoles().forEach(d->roles.add(d.getId()));
             dto.setRoleId(roles);
         }
         if (userDomain.getCity() != null) dto.setCityId(userDomain.getCity().getId());
@@ -121,7 +119,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         if (dto.getRoleId() != null) {
             Set<RoleDomain> roles= new HashSet<RoleDomain>();
             dto.getRoleId().forEach(d->roles.add(roleDao.findById(d).get()));
-            userDomain.setRole(roles);
+            userDomain.setRoles(roles);
           //  userDomain.setRole(roleDao.findById(dto.getRoleId()).get());
         }
 
@@ -210,7 +208,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         if (dto.getRoleId() != null) {
             Set<RoleDomain> roles= new HashSet<RoleDomain>();
             dto.getRoleId().forEach(d->roles.add(roleDao.findById(d).get()));
-            updatedUserDomain.setRole(roles);
+            updatedUserDomain.setRoles(roles);
             //  userDomain.setRole(roleDao.findById(dto.getRoleId()).get());
         }
 

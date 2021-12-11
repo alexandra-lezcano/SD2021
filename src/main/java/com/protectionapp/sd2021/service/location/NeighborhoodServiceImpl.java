@@ -73,7 +73,7 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     }
 
     @Override
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Transactional
     public NeighborhoodDTO save(NeighborhoodDTO dto) {
         final NeighborhoodDomain domain = convertDtoToDomain(dto);
         final NeighborhoodDomain neighborhoodDomain = neighborhoodDao.save(domain);
@@ -86,9 +86,8 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     }
 
     @Override
-  // @Transactional
-   // @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Transactional
+    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
     public NeighborhoodDTO getById(Integer id) {
         if(configurations.isTransactionTest()){
             logger.info("TEST: Aparecera un error pero no hace rollback");
@@ -123,10 +122,8 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     }
 
     @Override
-  //  @Transactional
-   // @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
-
     @Transactional
+    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
     public NeighborhoodDTO update(NeighborhoodDTO dto, Integer id) {
         final NeighborhoodDomain updatedDomain = neighborhoodDao.findById(id).get();
         updatedDomain.setName(dto.getName());
@@ -150,7 +147,7 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     }
 
     @Override
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Transactional
     public void addNeighborhoodToUser(UserDTO dto, UserDomain domain) {
         Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
         if (dto.getNeighborhoodIds() != null) {
@@ -158,21 +155,4 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
         }
         domain.setNeighborhoods(neighborhoodDomains);
     }
-
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void testIndDirectNotSupported(Integer id){
-       NeighborhoodDTO neighborhoodDTO = new NeighborhoodDTO();
-       logger.info("cambiamos el barrio");
-       update(neighborhoodDTO,id);
-        logger.info("Se corta la transaccion");
-
-    }
-
-    public void testIndDirectNotSupportedNT(Integer id){
-      getById(id);
-
-    }
-
-
-
 }

@@ -1,12 +1,15 @@
 package com.protectionapp.sd2021.service.user;
 
+import com.protectionapp.sd2021.dao.casosDerivados.ICasosDerivadosDao;
 import com.protectionapp.sd2021.dao.user.IRoleDao;
 import com.protectionapp.sd2021.dao.user.IUserDao;
+import com.protectionapp.sd2021.domain.casosDerivados.CasosDerivadosDomain;
+import com.protectionapp.sd2021.domain.user.RoleDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
-import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.dto.user.UserResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import com.protectionapp.sd2021.service.casosDerivados.ICasosDerivadosService;
 import com.protectionapp.sd2021.service.denuncia.IDenunciaService;
 import com.protectionapp.sd2021.service.location.ICityService;
 import com.protectionapp.sd2021.service.location.INeighborhoodService;
@@ -22,7 +25,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,6 +47,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     private IRoleDao roleDao;
 
     @Autowired
+    private ICasosDerivadosDao casosDerivadosDao;
+
+    @Autowired
     private IDenunciaService denunciaService;
 
     @Autowired
@@ -52,6 +57,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
 
     @Autowired
     private Configurations configurations;
+
+    @Autowired
+    private ICasosDerivadosService casosDerivadosService;
+
 
     private final Logger logger = LogManager.getLogger(this.getClass());
 
@@ -67,7 +76,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         dto.setPhone(userDomain.getPhone());
         dto.setAddress(userDomain.getAddress());
 
-        if (userDomain.getRole() != null) dto.setRoleId(userDomain.getRole().getId());
+        if (userDomain.getRoles() != null){
+            Set<Integer> roles = new HashSet<Integer>();
+            userDomain.getRoles().forEach(d->roles.add(d.getId()));
+            dto.setRoleId(roles);
+        }
         if (userDomain.getCity() != null) dto.setCityId(userDomain.getCity().getId());
 
         /* Relacion ManyToMany
@@ -83,6 +96,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
             userDomain.getDenuncias().forEach(d_domain -> denunciasIds.add(d_domain.getId()));
             dto.setDenunciasIds(denunciasIds);
         }
+        //relacion onetomany con casos derivados
+        if(userDomain.getCasos_derivados()!=null){
+            Set<Integer> casosIds = new HashSet<>();
+            userDomain.getCasos_derivados().forEach(d ->casosIds.add(d.getId()));
+            dto.setCasosDerivados(casosIds);
+        }
 
         return dto;
     }
@@ -97,7 +116,24 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         cityService.addCityToUser(dto, userDomain); // transaction not supported
         denunciaService.addDenunciaToUser(dto, userDomain); // transaction mandatory
 
-        if (dto.getRoleId() != null) userDomain.setRole(roleDao.findById(dto.getRoleId()).get());
+        if (dto.getRoleId() != null) {
+            Set<RoleDomain> roles= new HashSet<RoleDomain>();
+            dto.getRoleId().forEach(d->roles.add(roleDao.findById(d).get()));
+            userDomain.setRoles(roles);
+          //  userDomain.setRole(roleDao.findById(dto.getRoleId()).get());
+        }
+
+        //relacion onetomany con casosDerivados
+
+        if(dto.getCasosDerivados() !=null){
+            Set<CasosDerivadosDomain> casos = new HashSet<>();
+            dto.getCasosDerivados().forEach(d ->casos.add(casosDerivadosDao.findById(d).get()));
+            userDomain.setCasos_derivados(casos);
+        }
+
+
+
+
 
         return userDomain;
     }
@@ -125,19 +161,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         return convertDomainToDto(user);
     }
 
-    /* findAll() tiene su propia transaccion, pero la transaccion del metodo en si no se crea
-    o.s.t.s.AbstractPlatformTransactionManager:
-    Creating new transaction with name [org.springframework.data.jpa.repository.support.SimpleJpaRepository.findAll]:
-    PROPAGATION_REQUIRED,ISOLATION_DEFAULT,readOnly
-
-    Si cambio a @Transactional el metodo getAll es el padre de la transaccion
-    o.s.t.s.AbstractPlatformTransactionManager:
-    Creating new transaction with name [com.protectionapp.sd2021.service.user.UserServiceImpl.getAll]:
-    PROPAGATION_REQUIRED,ISOLATION_DEFAULT
-    */
     @Override
-    @Transactional(propagation = Propagation.NEVER)
-    //@Transactional
+    @Transactional
     public UserResult getAll(Pageable pageable) {
         final List<UserDTO> users = new ArrayList<>();
         Page<UserDomain> results = userDao.findAll(pageable);
@@ -151,7 +176,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     public UserResult getllAllNotPaginated() {
         final UserResult result = new UserResult();
         final Iterable<UserDomain> allDomains = userDao.findAll();
-        System.out.println("[ITERABLE] ALL DOMAINS " + allDomains.toString());
         final List<UserDTO> allDtos = new ArrayList<>();
 
         if (allDomains != null) {
@@ -177,8 +201,17 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
                 dto.getEmail(),
                 dto.getPhone()
         );
+/*
+        if (dto.getRoleId() != null){
+            //updatedUserDomain.setRole(roleDao.findById(dto.getRoleId()).get());
+        }*/
+        if (dto.getRoleId() != null) {
+            Set<RoleDomain> roles= new HashSet<RoleDomain>();
+            dto.getRoleId().forEach(d->roles.add(roleDao.findById(d).get()));
+            updatedUserDomain.setRoles(roles);
+            //  userDomain.setRole(roleDao.findById(dto.getRoleId()).get());
+        }
 
-        if (dto.getRoleId() != null) updatedUserDomain.setRole(roleDao.findById(dto.getRoleId()).get());
 
         neighborhoodService.addNeighborhoodToUser(dto, updatedUserDomain); // transaction requires_new
         cityService.addCityToUser(dto, updatedUserDomain); // transaction not_supported
@@ -196,31 +229,5 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         final UserDTO deletedUserDto = convertDomainToDto(deletedUserdomain);
         userDao.delete(deletedUserdomain);
         return deletedUserDto;
-    }
-
-
-    @Override
-    @Transactional
-    public void rollbackPropagationNever(UserDTO userDTO, CityDTO cityDTO) {
-        userDTO.setCityId(cityDTO.getId());
-        save(userDTO);
-
-        if(configurations.isTransactionTest()){
-            logger.info("[TEST] Propagation.NEVER will rollback");
-            final CityDTO city = cityService.update(cityDTO,cityDTO.getId()); // Propagation.NEVER
-            logger.info("[TEST] check user is not saved");
-        }
-    }
-
-    @Override
-    public void methodCallPropagationNever(UserDTO userDTO, CityDTO cityDTO) {
-        logger.info("[TEST] Propagation.NEVER - guardar usuario");
-        userDTO.setCityId(cityDTO.getId());
-        save(userDTO);
-
-        logger.info("[TEST] Propagation.NEVER - actualizar ciudad");
-        logger.info("[TEST] Propagation.NEVER - no participa en ninguna transaccion");
-        final CityDTO city = cityService.update(cityDTO,cityDTO.getId()); // Propagation.NEVER
-        logger.info("[TEST] check usuario y ciudad se guardan");
     }
 }

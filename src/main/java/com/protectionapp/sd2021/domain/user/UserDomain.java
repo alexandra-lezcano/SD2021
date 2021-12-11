@@ -46,11 +46,13 @@ public class UserDomain implements IBaseDomain {
     @Transient
     private String confirmPassword;
 
-    /* Crea una columna llamada "role_id" que hace referencia a "id" dentro de RoleDomain
-     * Quien sea duenho del FK tendra un @JoinColumn */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private RoleDomain role;
+    @ManyToMany
+   @JoinTable(
+           name = "user_role",
+           joinColumns = @JoinColumn(name="user_id"),
+           inverseJoinColumns = @JoinColumn(name="role_id")
+   )
+    private Set<RoleDomain> roles;
 
     /*Hay muchos usuarios en una ciudad, una ciudad puede tener muchos usuarios*/
     @ManyToOne(fetch = FetchType.LAZY)
@@ -66,9 +68,8 @@ public class UserDomain implements IBaseDomain {
     )
     private Set<NeighborhoodDomain> neighborhoods;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    //@JoinColumn(name = "user_id", referencedColumnName = "id")
-    private CasosDerivadosDomain user;
+    @OneToMany(mappedBy = "trabajador_social", cascade = CascadeType.ALL)
+    private Set<CasosDerivadosDomain> casos_derivados;
 
 
     /*Un trabajador social se ocupa de muchas denuncias*/
@@ -155,12 +156,12 @@ public class UserDomain implements IBaseDomain {
         this.username = username;
     }
 
-    public RoleDomain getRole() {
-        return role;
+    public Set<RoleDomain> getRoles() {
+        return roles;
     }
 
-    public void setRole(RoleDomain role) {
-        this.role = role;
+    public void setRoles(Set<RoleDomain> role) {
+        this.roles = role;
     }
 
     public Set<NeighborhoodDomain> getNeighborhoods() {
@@ -186,6 +187,10 @@ public class UserDomain implements IBaseDomain {
     public void setDenuncias(Set<DenunciaDomain> denuncias) {
         this.denuncias = denuncias;
     }
+
+    public Set<CasosDerivadosDomain> getCasos_derivados() {return casos_derivados;}
+
+    public void setCasos_derivados(Set<CasosDerivadosDomain> casos_derivados) {this.casos_derivados = casos_derivados;}
 
     public void update(String name, String surname, String username, Integer cn, String address, String email, Integer phone) {
         setName(name);

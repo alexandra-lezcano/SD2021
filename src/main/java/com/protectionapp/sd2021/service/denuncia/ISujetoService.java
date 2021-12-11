@@ -8,7 +8,4 @@ import com.protectionapp.sd2021.service.base.IBaseService;
 import com.protectionapp.sd2021.utils.Configurations;
 
 public interface ISujetoService extends IBaseService <SujetoDto, SujetoResult> {
-    public void deleteTipo();
-    public void deleteTipoNoTransaction();
-    public Configurations getConf();
 }

@@ -10,6 +10,7 @@ import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,6 +27,7 @@ public class CityResource {
 
     @GetMapping("/{id}")
     @ResponseBody
+
     public CityDTO getById(@PathVariable(value = "id") Integer cityId) {
         return cityService.getById(cityId);
     }
@@ -48,7 +50,6 @@ public class CityResource {
     public CityResult getAll(@PathVariable(value = "page_num") Integer pageNum, @PathVariable(value="size") Integer size) {
         return cityService.getAll(PageRequest.of(pageNum, size));
     }
-
     @RequestMapping(
             method = RequestMethod.GET,
             produces = "application/JSON"
@@ -60,17 +61,20 @@ public class CityResource {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
+    @Secured({"ROLE_ADMIN"})
     public CityDTO save(@Valid @RequestBody CityDTO cityDTO) {
         return cityService.save(cityDTO);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Secured({"ROLE_ADMIN"})
     public CityDTO update(@Valid @RequestBody CityDTO cityDTO, @PathVariable(value = "id") Integer id) {
         return cityService.update(cityDTO, id);
     }
 
     @DeleteMapping("/{id}")
+    @Secured({"ROLE_ADMIN"})
     public CityDTO delete(@PathVariable(value = "id") Integer id) {
         return cityService.delete(id);
     }

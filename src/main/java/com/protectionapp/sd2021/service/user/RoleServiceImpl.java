@@ -13,12 +13,13 @@ import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+@Service
 public class RoleServiceImpl extends BaseServiceImpl<RoleDTO, RoleDomain,RoleResult> implements IRoleService {
     @Autowired
     private IRoleDao roleDao;

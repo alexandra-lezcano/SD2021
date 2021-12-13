@@ -119,7 +119,8 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
 
     @Override
     @Transactional
-    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
+  //
+    //  @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
     public CityDTO getById(Integer id) {
         final CityDomain city = cityDao.findById(id).get();
         return convertDomainToDto(city);
@@ -153,8 +154,8 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     /* Al ser llamado directamente - no se crea transaccion
     *  Al ser llamado desde metodo - si metodo padre tiene transaccion entonces falla  */
     @Override
-    @Transactional(propagation = Propagation.NEVER)
-    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
+    //@Transactional(propagation = Propagation.NEVER)
+    //@CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
     public CityDTO update(CityDTO dto, Integer id) {
         final CityDomain updatedCityDomain = cityDao.findById(id).get(); // find by id tiene su propia transaccion
 
@@ -194,7 +195,7 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
 
     @Override
     @Transactional
-    @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
+    //@CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
     public CityDTO delete(Integer id) {
         final CityDomain deletedDomain = cityDao.findById(id).get();
         final CityDTO deletedDto = convertDomainToDto(deletedDomain);

@@ -42,6 +42,18 @@ public class UserResource {
      * todo:
      *  1- consumir la cantidad de resultados por pagina desde config.properties
      *  2- tolerancia a fallos */
+
+    @GetMapping("/username/{username}")
+    @ResponseBody
+    public UserDTO getByUsername(@PathVariable(value = "username") String username) {
+        return userService.getByUsername(username);
+    }
+
+
+
+
+
+
     @GetMapping(path = "page/{page_num}")
     @ResponseBody
     public UserResult getAll(@PathVariable(value = "page_num") Integer pageNum) {
@@ -69,6 +81,7 @@ public class UserResource {
         return userService.update(newUserDTO, userId);
 
     }
+
 
     @DeleteMapping("/{id}")
     public UserDTO delete(@PathVariable(value = "id") Integer userId) {

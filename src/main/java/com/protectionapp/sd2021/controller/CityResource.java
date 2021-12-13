@@ -30,6 +30,7 @@ public class CityResource {
 
     @GetMapping(path = "page/{page_num}")
     @ResponseBody
+
     public CityResult getAll(@PathVariable(value = "page_num") Integer pageNum) {
         return cityService.getAll(PageRequest.of(pageNum, 5));
     }
@@ -37,6 +38,7 @@ public class CityResource {
             method = RequestMethod.GET,
             produces = "application/JSON"
     )
+
     public CityResult getllAllNotPaginated() {
         return cityService.getllAllNotPaginated();
     }
@@ -44,20 +46,17 @@ public class CityResource {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    @Secured({"ROLE_ADMIN"})
     public CityDTO save(@Valid @RequestBody CityDTO cityDTO) {
         return cityService.save(cityDTO);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Secured({"ROLE_ADMIN"})
     public CityDTO update(@Valid @RequestBody CityDTO cityDTO, @PathVariable(value = "id") Integer id) {
         return cityService.update(cityDTO, id);
     }
 
     @DeleteMapping("/{id}")
-    @Secured({"ROLE_ADMIN"})
     public CityDTO delete(@PathVariable(value = "id") Integer id) {
         return cityService.delete(id);
     }

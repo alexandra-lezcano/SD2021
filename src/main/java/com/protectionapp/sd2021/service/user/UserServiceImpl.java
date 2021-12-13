@@ -7,6 +7,7 @@ import com.protectionapp.sd2021.domain.casosDerivados.CasosDerivadosDomain;
 import com.protectionapp.sd2021.domain.user.RoleDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
 import com.protectionapp.sd2021.dto.localization.CityDTO;
+import com.protectionapp.sd2021.dto.user.RoleDTO;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.dto.user.UserResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
@@ -64,6 +65,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     private ICasosDerivadosService casosDerivadosService;
 
 
+
     private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Override
@@ -77,6 +79,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         dto.setEmail(userDomain.getEmail());
         dto.setPhone(userDomain.getPhone());
         dto.setAddress(userDomain.getAddress());
+        dto.setPassword(userDomain.getPassword());
 
         if (userDomain.getRole() != null){
             Set<Integer> roles = new HashSet<Integer>();
@@ -112,7 +115,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     protected UserDomain convertDtoToDomain(UserDTO dto) {
         final UserDomain userDomain = new UserDomain();
         userDomain.setId(dto.getId());
-        userDomain.update(dto.getName(),dto.getSurname(),dto.getUsername(),dto.getCn(),dto.getAddress(),dto.getEmail(),dto.getPhone());
+        userDomain.update(dto.getName(),dto.getSurname(),dto.getUsername(),dto.getCn(),dto.getAddress(),dto.getEmail(),dto.getPhone(),dto.getPassword());
 
         neighborhoodService.addNeighborhoodToUser(dto, userDomain); // transaction requires new - COMENZA ACA tal vez getAll falla porque esto requiere una nueva transaccion
         cityService.addCityToUser(dto, userDomain); // transaction not supported
@@ -132,10 +135,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
             dto.getCasosDerivados().forEach(d ->casos.add(casosDerivadosDao.findById(d).get()));
             userDomain.setCasos_derivados(casos);
         }
-
-
-
-
 
         return userDomain;
     }
@@ -157,9 +156,16 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
 
     @Override
     @Transactional
-    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_user_'+#id")
+ //   @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_user_'+#id")
     public UserDTO getById(Integer id) {
         final UserDomain user = userDao.findById(id).get();
+        return convertDomainToDto(user);
+    }
+
+
+    @Transactional
+    public UserDTO getByUsername (String userame){
+        final UserDomain user= userDao.findByUsername(userame);
         return convertDomainToDto(user);
     }
 
@@ -202,7 +208,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
 
     @Override
     @Transactional
-    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_user_'+#id")
+  //  @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_user_'+#id")
     public UserDTO update(UserDTO dto, Integer id) {
         final UserDomain updatedUserDomain = userDao.findById(id).get();
 
@@ -213,7 +219,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
                 dto.getCn(),
                 dto.getAddress(),
                 dto.getEmail(),
-                dto.getPhone()
+                dto.getPhone(),
+                dto.getPassword()
         );
 /*
         if (dto.getRoleId() != null){
@@ -237,7 +244,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
 
     @Override
     @Transactional
-    @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_user_'+#id")
+   // @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_user_'+#id")
     public UserDTO delete(Integer id) {
         final UserDomain deletedUserdomain = userDao.findById(id).get();
         final UserDTO deletedUserDto = convertDomainToDto(deletedUserdomain);
@@ -270,4 +277,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         final CityDTO city = cityService.update(cityDTO,cityDTO.getId()); // Propagation.NEVER
         logger.info("[TEST] check usuario y ciudad se guardan");
     }
+
+
+
 }

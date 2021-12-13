@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,12 +23,14 @@ public class DenunciaResource {
     private DenunciaServiceImpl denunciaService;
 
     @GetMapping("/{id}")
+    @Secured({"ROLE_ADMIN"})
     public DenunciaDTO getById(@PathVariable(value = "id") Integer id) throws DenunciaNotFoundException {
         return denunciaService.getById(id);
     }
 
     /*Ver cantidad de resultados por pagina aca tambien*/
     @GetMapping(path = "page/{num}")
+    @Secured({"ROLE_ADMIN"})
     public DenunciaResult getAll(@PathVariable(value = "num") Integer num) throws DenunciaNotFoundException {
         return denunciaService.getAll(PageRequest.of(num, 5));
     }
@@ -36,6 +39,7 @@ public class DenunciaResource {
             method = RequestMethod.GET,
             produces = "application/JSON"
     )
+    @Secured({"ROLE_ADMIN"})
     public DenunciaResult getllAllNotPaginated() {
         return denunciaService.getllAllNotPaginated();
     }
@@ -45,6 +49,7 @@ public class DenunciaResource {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
+    @Secured({"ROLE_ADMIN"})
     public DenunciaDTO postDenuncia(@Valid @RequestBody DenunciaDTO denunciaDTO) {
         return denunciaService.save(denunciaDTO);
     }
@@ -52,12 +57,14 @@ public class DenunciaResource {
     /*Put en construccion*/
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Secured({"ROLE_ADMIN"})
     public DenunciaDTO updateDenuncia(@Valid @RequestBody DenunciaDTO denunciaDTO, @PathVariable(value = "id") Integer id) {
         return denunciaService.update(denunciaDTO, id);
     }
 
     /*Delete en construccion*/
     @DeleteMapping("/{id}")
+    @Secured({"ROLE_ADMIN"})
     public DenunciaDTO deleteDenuncia(@PathVariable(name = "id") Integer id) {
         return denunciaService.delete(id);
     }

@@ -253,7 +253,7 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
         domain.setDenuncias(denunciaDomains);
     }
 
-    @Override
+
     public Configurations getConf(){
         return configurations;
     }

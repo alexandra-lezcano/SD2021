@@ -45,6 +45,11 @@ public class DepEstadoResource {
         return dEService.getAll(PageRequest.of(pageNum, size));
     }
 
+    @GetMapping(path="/find/{page}/{strtofind}")
+    public DepEstadoResult getAllByName(@PathVariable(value="page") Integer page, @PathVariable(value="strtofind") String string){
+        return dEService.getAllByName(PageRequest.of(page, configurations.getItemsPaginacion()),string);
+    }
+
     @PostMapping()
     public DepEstadoDTO save(@Valid @RequestBody DepEstadoDTO dEDto) {
         return dEService.save(dEDto);

@@ -155,4 +155,14 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
         }
         domain.setNeighborhoods(neighborhoodDomains);
     }
+
+    @Override
+    public NeighborhoodResult findAllByCityPaged(Integer city, Pageable pageable) {
+        final List<NeighborhoodDTO> n_dtos = new ArrayList<>();
+        Page<NeighborhoodDomain> n_domains = neighborhoodDao.findByCity_IdEquals(city, pageable);
+        n_domains.forEach(n_domain -> n_dtos.add(convertDomainToDto(n_domain)));
+        final NeighborhoodResult n_result = new NeighborhoodResult();
+        n_result.setNeighborhoods(n_dtos);
+        return n_result;
+    }
 }

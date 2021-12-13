@@ -46,6 +46,13 @@ public class NeighborhoodResource {
         return neighborhoodService.getAll(PageRequest.of(0, configurations.getItemsPaginacion()));
     }
 
+    @GetMapping(path = "/find/{page}/{city}")
+    @ResponseBody
+    public NeighborhoodResult getByCityPaged(@PathVariable(value="page")Integer page, @PathVariable(value = "city") Integer city){
+        System.out.println("City: " + city + " Page: " + page);
+        return neighborhoodService.findAllByCityPaged(city, PageRequest.of(page, configurations.getItemsPaginacion()));
+    }
+
     @RequestMapping(
             method = RequestMethod.GET,
             produces = "application/JSON"
@@ -58,7 +65,6 @@ public class NeighborhoodResource {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public NeighborhoodDTO save(@Valid @RequestBody NeighborhoodDTO neighborhoodDTO) {
-        System.out.println(neighborhoodDTO);
         return neighborhoodService.save(neighborhoodDTO);
     }
 

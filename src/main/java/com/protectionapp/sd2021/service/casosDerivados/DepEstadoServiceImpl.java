@@ -145,4 +145,15 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
         depEstadoDao.delete(deletedDomain);
         return deletedDto;
     }
+
+    @Override
+    @Transactional
+    public DepEstadoResult getAllByName(Pageable pageable, String strtofind){
+        final List<DepEstadoDTO> depEstados = new ArrayList<DepEstadoDTO>();
+        Page<DepEstadoDomain> results = depEstadoDao.findByNameContainsIgnoreCaseOrDescriptionContainsIgnoreCase(strtofind,strtofind,pageable);
+        results.forEach(dE -> depEstados.add(convertDomainToDto(dE)));
+        final DepEstadoResult DEResult = new DepEstadoResult();
+        DEResult.setDepEstados(depEstados);
+        return DEResult;
+    }
 }

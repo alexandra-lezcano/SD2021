@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 
         public Page<DepEstadoDomain> findAll(Pageable pageable);
 
+        Page<DepEstadoDomain> findByNameContainsIgnoreCaseOrDescriptionContainsIgnoreCase(String name, String description, Pageable pageable);
+
 
 
 }

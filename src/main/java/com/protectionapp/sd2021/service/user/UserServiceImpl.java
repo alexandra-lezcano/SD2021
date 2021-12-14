@@ -27,7 +27,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -81,9 +80,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         dto.setAddress(userDomain.getAddress());
         dto.setPassword(userDomain.getPassword());
 
-        if (userDomain.getRole() != null){
+        if (userDomain.getRoles() != null){
             Set<Integer> roles = new HashSet<Integer>();
-            userDomain.getRole().forEach(d->roles.add(d.getId()));
+            userDomain.getRoles().forEach(d->roles.add(d.getId()));
             dto.setRoleId(roles);
         }
         if (userDomain.getCity() != null) dto.setCityId(userDomain.getCity().getId());
@@ -124,7 +123,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         if (dto.getRoleId() != null) {
             Set<RoleDomain> roles= new HashSet<RoleDomain>();
             dto.getRoleId().forEach(d->roles.add(roleDao.findById(d).get()));
-            userDomain.setRole(roles);
+            userDomain.setRoles(roles);
           //  userDomain.setRole(roleDao.findById(dto.getRoleId()).get());
         }
 
@@ -179,9 +178,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     Creating new transaction with name [com.protectionapp.sd2021.service.user.UserServiceImpl.getAll]:
     PROPAGATION_REQUIRED,ISOLATION_DEFAULT
     */
+
     @Override
-    @Transactional(propagation = Propagation.NEVER)
-    //@Transactional
+    @Transactional
     public UserResult getAll(Pageable pageable) {
         final List<UserDTO> users = new ArrayList<>();
         Page<UserDomain> results = userDao.findAll(pageable);
@@ -195,7 +194,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     public UserResult getllAllNotPaginated() {
         final UserResult result = new UserResult();
         final Iterable<UserDomain> allDomains = userDao.findAll();
-        System.out.println("[ITERABLE] ALL DOMAINS " + allDomains.toString());
         final List<UserDTO> allDtos = new ArrayList<>();
 
         if (allDomains != null) {
@@ -229,7 +227,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         if (dto.getRoleId() != null) {
             Set<RoleDomain> roles= new HashSet<RoleDomain>();
             dto.getRoleId().forEach(d->roles.add(roleDao.findById(d).get()));
-            updatedUserDomain.setRole(roles);
+            updatedUserDomain.setRoles(roles);
             //  userDomain.setRole(roleDao.findById(dto.getRoleId()).get());
         }
 
@@ -251,33 +249,4 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         userDao.delete(deletedUserdomain);
         return deletedUserDto;
     }
-
-
-    @Override
-    @Transactional
-    public void rollbackPropagationNever(UserDTO userDTO, CityDTO cityDTO) {
-        userDTO.setCityId(cityDTO.getId());
-        save(userDTO);
-
-        if(configurations.isTransactionTest()){
-            logger.info("[TEST] Propagation.NEVER will rollback");
-            final CityDTO city = cityService.update(cityDTO,cityDTO.getId()); // Propagation.NEVER
-            logger.info("[TEST] check user is not saved");
-        }
-    }
-
-    @Override
-    public void methodCallPropagationNever(UserDTO userDTO, CityDTO cityDTO) {
-        logger.info("[TEST] Propagation.NEVER - guardar usuario");
-        userDTO.setCityId(cityDTO.getId());
-        save(userDTO);
-
-        logger.info("[TEST] Propagation.NEVER - actualizar ciudad");
-        logger.info("[TEST] Propagation.NEVER - no participa en ninguna transaccion");
-        final CityDTO city = cityService.update(cityDTO,cityDTO.getId()); // Propagation.NEVER
-        logger.info("[TEST] check usuario y ciudad se guardan");
-    }
-
-
-
 }

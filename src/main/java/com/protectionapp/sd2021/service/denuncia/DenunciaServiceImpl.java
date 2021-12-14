@@ -244,17 +244,12 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     }
 
     @Override
-    @Transactional(propagation = Propagation.MANDATORY)
+    @Transactional
     public void addDenunciaToUser(UserDTO dto, UserDomain domain) {
         Set<DenunciaDomain> denunciaDomains = new HashSet<>();
         if (dto.getDenunciasIds() != null) {
             dto.getDenunciasIds().forEach(d_id -> denunciaDomains.add(denunciaDao.findById(d_id).get()));
         }
         domain.setDenuncias(denunciaDomains);
-    }
-
-
-    public Configurations getConf(){
-        return configurations;
     }
 }

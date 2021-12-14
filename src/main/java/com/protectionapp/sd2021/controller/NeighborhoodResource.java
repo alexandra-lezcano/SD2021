@@ -5,6 +5,7 @@ import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodDTO;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
 import com.protectionapp.sd2021.service.location.NeighborhoodServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,9 @@ import javax.validation.Valid;
 
 public class NeighborhoodResource {
     @Autowired
+    Configurations configurations;
+
+    @Autowired
     private NeighborhoodServiceImpl neighborhoodService;
 
     @GetMapping("/{id}")
@@ -29,7 +33,26 @@ public class NeighborhoodResource {
     @GetMapping(path = "page/{page_num}")
     @ResponseBody
     public NeighborhoodResult getAll(@PathVariable(value = "page_num") Integer pageNum) {
-        return neighborhoodService.getAll(PageRequest.of(pageNum, 5));
+        return neighborhoodService.getAll(PageRequest.of(pageNum, configurations.getItemsPaginacion()));
+    }
+
+    @GetMapping(path = "page/{page_num}/{size}")
+    @ResponseBody
+    public NeighborhoodResult getAll(@PathVariable(value = "page_num") Integer pageNum, @PathVariable(value="size") Integer size ) {
+        return neighborhoodService.getAll(PageRequest.of(pageNum, size));
+    }
+
+    @GetMapping(path = "page")
+    @ResponseBody
+    public NeighborhoodResult getAll() {
+        return neighborhoodService.getAll(PageRequest.of(0, configurations.getItemsPaginacion()));
+    }
+
+    @GetMapping(path = "/find/{page}/{city}")
+    @ResponseBody
+    public NeighborhoodResult getByCityPaged(@PathVariable(value="page")Integer page, @PathVariable(value = "city") Integer city){
+        System.out.println("City: " + city + " Page: " + page);
+        return neighborhoodService.findAllByCityPaged(city, PageRequest.of(page, configurations.getItemsPaginacion()));
     }
 
     @RequestMapping(
@@ -44,7 +67,6 @@ public class NeighborhoodResource {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public NeighborhoodDTO save(@Valid @RequestBody NeighborhoodDTO neighborhoodDTO) {
-        System.out.println(neighborhoodDTO);
         return neighborhoodService.save(neighborhoodDTO);
     }
 

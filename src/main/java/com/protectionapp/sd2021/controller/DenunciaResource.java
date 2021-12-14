@@ -5,6 +5,7 @@ import com.protectionapp.sd2021.dto.denuncia.DenunciaResult;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.exception.DenunciaNotFoundException;
 import com.protectionapp.sd2021.service.denuncia.DenunciaServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,9 @@ import javax.validation.Valid;
 @RequestMapping("/denuncias")
 public class DenunciaResource {
     @Autowired
+    Configurations configurations;
+
+    @Autowired
     private DenunciaServiceImpl denunciaService;
 
     @GetMapping("/{id}")
@@ -28,11 +32,20 @@ public class DenunciaResource {
         return denunciaService.getById(id);
     }
 
-    /*Ver cantidad de resultados por pagina aca tambien*/
+    @GetMapping(path = "page")
+    public DenunciaResult getAll() throws DenunciaNotFoundException {
+        return denunciaService.getAll(PageRequest.of(0, configurations.getItemsPaginacion()));
+    }
+
     @GetMapping(path = "page/{num}")
     @Secured({"ROLE_ADMIN"})
     public DenunciaResult getAll(@PathVariable(value = "num") Integer num) throws DenunciaNotFoundException {
         return denunciaService.getAll(PageRequest.of(num, 5));
+    }
+
+    @GetMapping(path = "page/{num}/{size}")
+    public DenunciaResult getAll(@PathVariable(value = "num") Integer num, @PathVariable(value = "size") Integer size) throws DenunciaNotFoundException {
+        return denunciaService.getAll(PageRequest.of(num, size));
     }
 
     @RequestMapping(

@@ -192,7 +192,7 @@ public class UserDomain implements IBaseDomain {
 
     public void setCasos_derivados(Set<CasosDerivadosDomain> casos_derivados) {this.casos_derivados = casos_derivados;}
 
-    public void update(String name, String surname, String username, Integer cn, String address, String email, Integer phone) {
+    public void update(String name, String surname, String username, Integer cn, String address, String email, Integer phone,String password) {
         setName(name);
         setSurname(surname);
         setUsername(username);
@@ -200,5 +200,6 @@ public class UserDomain implements IBaseDomain {
         setAddress(address);
         setEmail(email);
         setPhone(phone);
+        setPassword(password);
     }
 }

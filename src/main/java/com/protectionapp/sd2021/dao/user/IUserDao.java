@@ -12,4 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface IUserDao extends JpaRepository<UserDomain, Integer> {
     // Permite retornar results paginados
     public Page<UserDomain> findAll(Pageable pageable);
+    public UserDomain findByUsername(String user);
+
 }

@@ -118,7 +118,8 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
 
     @Override
     @Transactional
-    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
+  //
+    //  @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
     public CityDTO getById(Integer id) {
         final CityDomain city = cityDao.findById(id).get();
         return convertDomainToDto(city);
@@ -195,7 +196,7 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
 
     @Override
     @Transactional
-    @CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
+    //@CacheEvict(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
     public CityDTO delete(Integer id) {
         final CityDomain deletedDomain = cityDao.findById(id).get();
         final CityDTO deletedDto = convertDomainToDto(deletedDomain);

@@ -10,12 +10,14 @@ import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/neighborhoods")
+
 public class NeighborhoodResource {
     @Autowired
     Configurations configurations;

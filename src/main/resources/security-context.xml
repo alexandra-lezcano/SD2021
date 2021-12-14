@@ -15,13 +15,12 @@
 		<sec:intercept-url pattern="/user/**" access="permitAll()"/>
 		<sec:intercept-url pattern="/denuncias/**" access="permitAll()"/>
 		<sec:intercept-url pattern="/cities/**" access="permitAll()"/>
+		<sec:intercept-url pattern="/neighborhoods/**" access="permitAll()"/>
 		<sec:intercept-url pattern="/cities" access="permitAll()"/>
-
-
 		<sec:intercept-url pattern="/user/**" access="permitAll()"/>
 		<sec:intercept-url pattern="/users//**" access="permitAll()"/>
-
 		<sec:http-basic />
+		<sec:csrf disabled="true"/>
 	</sec:http>
 
 	<sec:authentication-manager alias="authenticationManager">

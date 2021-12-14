@@ -22,6 +22,7 @@ public class UserDTO extends BaseDTO {
     private String email;
     private Integer phone;
     private Integer cityId;
+    private String password;
     private Set<Integer> roleId;
     private Set<Integer> neighborhoodIds;
     private Set<Integer> denunciasIds;
@@ -130,6 +131,14 @@ public class UserDTO extends BaseDTO {
     }
 
     public void setCasosDerivados(Set<Integer> casosDerivados) {this.casosDerivados = casosDerivados;}
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Override
     public String toString() {

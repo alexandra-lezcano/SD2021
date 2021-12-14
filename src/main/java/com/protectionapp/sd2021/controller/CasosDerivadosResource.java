@@ -65,7 +65,7 @@ public class CasosDerivadosResource {
         return cDService.delete(id);
     }
     @PutMapping("/{id}")
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
 
     @ResponseStatus(HttpStatus.OK)
     public CasosDerivadosDTO update(@RequestBody CasosDerivadosDTO casoDerivadosDTO, @PathVariable(value = "id") Integer id) {

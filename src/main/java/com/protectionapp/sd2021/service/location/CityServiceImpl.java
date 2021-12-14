@@ -136,6 +136,17 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
         return cityResult;
     }
 
+    @Override
+    @Transactional
+    public CityResult getAllByName(Pageable pageable, String search){
+        final List<CityDTO> cities = new ArrayList<>();
+        Page<CityDomain> cityDomains = cityDao.findByNameContainsIgnoreCaseOrDescriptionContainsIgnoreCase(search, search, pageable);
+        cityDomains.forEach(cityDomain -> cities.add(convertDomainToDto(cityDomain)));
+        final CityResult cityResult = new CityResult();
+        cityResult.setCities(cities);
+        return cityResult;
+    }
+
     public CityResult getllAllNotPaginated() {
         final CityResult result = new CityResult();
         final Iterable<CityDomain> allDomains = cityDao.findAll();

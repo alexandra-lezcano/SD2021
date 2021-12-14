@@ -1,5 +1,6 @@
 package com.protectionapp.sd2021.controller;
 
+import com.protectionapp.sd2021.dto.denuncia.DenunciaResult;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.TipoDenunciaResult;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodDTO;
@@ -51,6 +52,11 @@ public class NeighborhoodResource {
     public NeighborhoodResult getByCityPaged(@PathVariable(value="page")Integer page, @PathVariable(value = "city") Integer city){
         System.out.println("City: " + city + " Page: " + page);
         return neighborhoodService.findAllByCityPaged(city, PageRequest.of(page, configurations.getItemsPaginacion()));
+    }
+
+    @GetMapping(path="res/{page}/{search}")
+    public NeighborhoodResult getAllByName(@PathVariable(value = "page") Integer page, @PathVariable(value="search") String search){
+        return neighborhoodService.getAllByName(PageRequest.of(page, configurations.getItemsPaginacion()), search);
     }
 
     @RequestMapping(

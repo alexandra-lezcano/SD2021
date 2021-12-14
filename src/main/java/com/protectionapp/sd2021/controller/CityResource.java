@@ -50,12 +50,19 @@ public class CityResource {
     public CityResult getAll(@PathVariable(value = "page_num") Integer pageNum, @PathVariable(value="size") Integer size) {
         return cityService.getAll(PageRequest.of(pageNum, size));
     }
+
     @RequestMapping(
             method = RequestMethod.GET,
             produces = "application/JSON"
     )
     public CityResult getllAllNotPaginated() {
         return cityService.getllAllNotPaginated();
+    }
+
+    @GetMapping(path="find/{page}/{search}")
+    @ResponseBody
+    public CityResult getByName(@PathVariable(value = "page") Integer page, @PathVariable(value="search") String search){
+        return cityService.getAllByName(PageRequest.of(page, configurations.getItemsPaginacion()), search);
     }
 
     @PostMapping()

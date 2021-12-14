@@ -20,4 +20,10 @@ public interface INeighborhoodDao extends JpaRepository<NeighborhoodDomain, Inte
 
     Page<NeighborhoodDomain> findByCity_IdEquals(Integer id, Pageable pageable);
 
+    Page<NeighborhoodDomain> findByNameContainsIgnoreCaseOrDescriptionContainsIgnoreCase(String name, String description, Pageable pageable);
+
+    Page<NeighborhoodDomain> findByNameContainsIgnoreCaseOrDescriptionContainsIgnoreCaseOrCity_NameContainsIgnoreCase(String name, String description, String name1, Pageable pageable);
+
+
+
 }

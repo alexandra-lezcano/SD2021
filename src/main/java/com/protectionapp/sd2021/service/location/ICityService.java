@@ -6,8 +6,10 @@ import com.protectionapp.sd2021.dto.localization.CityResult;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.service.base.IBaseService;
+import org.springframework.data.domain.Pageable;
 
 public interface ICityService extends IBaseService<CityDTO, CityResult> {
    NeighborhoodResult getNeighborhoodByCityId(Integer city_id);
    void addCityToUser(UserDTO dto, UserDomain domain);
+   public CityResult getAllByName(Pageable pageable, String search);
 }

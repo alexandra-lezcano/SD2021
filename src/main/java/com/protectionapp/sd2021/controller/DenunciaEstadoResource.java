@@ -40,6 +40,8 @@ public class DenunciaEstadoResource {
             method = RequestMethod.GET,
             produces = "application/JSON"
     )
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public DenunciaEstadoResult getllAllNotPaginated() {
         return estadoService.getAllNotPaginated();
     }
@@ -48,6 +50,8 @@ public class DenunciaEstadoResource {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public DenunciaEstadoDTO save(@Valid @RequestBody DenunciaEstadoDTO denunciaEstadoDTO) {
         return estadoService.save(denunciaEstadoDTO);
     }

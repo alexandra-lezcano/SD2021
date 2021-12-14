@@ -54,7 +54,7 @@ VALUES  ('DEP01', 'Fiscalia'), ('DEP02', 'Codeni'), ('DEP03', 'Ministerio de la 
         ('DEP13', 'CONTRAFOR'), ('DEP14', 'Consejo Nacional de la niñez y la Adolexcencia'), ('DEP15', 'SENADE');
 
 #8 Denuncias estado
-INSERT INTO denuncia_estado (nombre) VALUES ('Pendiente'), ('Atendido'), ('Cerrado')
+INSERT INTO denuncia_estado (nombre) VALUES ('Pendiente'), ('Atendido'), ('Cerrado');
 
 #Test User
 INSERT INTO user (name,surname,email,phone,address,cn,city_id,username,password)
@@ -70,23 +70,26 @@ VALUES (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (9, 1), (10, 1);
 
 #10 Denuncias
 INSERT INTO denuncias (codigo, descripcion, fecha, city_id, estado_id, neighborhood_id, user_id, caso_derivado_id)
-VALUES   ('QVE872','commodo at, libero. Morbi accumsan laoreet ipsum. Curabitur consequat, lectus sit amet luctus vulputate','21-08-19',9,3,45, null, null),
-         ('FPF310','fringilla. Donec feugiat metus sit amet ante. Vivamus','21-05-11',5,3,29, null, null),
-         ('ETY136','erat, in consectetuer ipsum nunc id','20-10-24',10,2,45, null, null),
-         ('QXD484','mattis semper, dui lectus rutrum urna, nec luctus felis','21-06-11',10,2,47, null, null),
-         ('XWI167','Phasellus elit pede, malesuada vel, venenatis','21-12-16',6,2,42, null, null),
-         ('WFZ707','egestas rhoncus. Proin nisl sem, consequat nec, mollis vitae, posuere','21-11-15',6,2,38, null, null),
-         ('JUR382','est. Nunc laoreet lectus quis massa. Mauris vestibulum, neque sed dictum eleifend','21-01-30',6,2,37, null, null),
-         ('QUN789','venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras','21-11-21',10,2,15, null, null),
-         ('RUK181','metus. Vivamus euismod urna. Nullam lobortis quam a felis','21-05-15',4,2,26, null, null),
-         ('RWQ356','Sed pharetra, felis eget varius ultrices, mauris ipsum porta elit, a feugiat tellus','21-02-06',6,3,32, null, null),
-         ('CGS861','ut dolor dapibus gravida. Aliquam tincidunt, nunc ac mattis ornare, lectus ante dictum','21-03-16',10,2,48, null, null),
-         ('LQM489','at, libero. Morbi accumsan laoreet ipsum. Curabitur consequat','21-06-30',1,2,1, null, null),
-         ('NIS146','Curabitur sed tortor. Integer aliquam adipiscing lacus. Ut nec urna et arcu imperdiet','21-12-16',4,3,26, null, null),
-         ('IDN938','ipsum primis in faucibus orci luctus et ultrices','21-06-13',3,2,20, null, null),
-         ('NKA604','sodales at, velit. Pellentesque ultricies dignissim lacus. Aliquam rutrum lorem ac risus. Morbi','21-08-30',1,1,3, null, null),
-         ('GIC426','purus sapien, gravida non, sollicitudin a, malesuada id, erat.','21-01-24',2,2,15, null, null),
-         ('YBB385','in consectetuer ipsum nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare','21-06-25',5,3,30, null, null),
-         ('SEH245','lacus. Mauris non dui nec urna','21-11-11',6,2,32, null, null),
-         ('FLR368','ac mattis ornare, lectus ante dictum mi, ac mattis velit justo','21-09-03',4,2,26, null, null),
-         ('CGP861','penatibus et magnis dis parturient montes, nascetur ridiculus mus.','21-08-21',3,1,21, null, null);
+VALUES   ('QVE872','commodo at, libero. Morbi accumsan laoreet ipsum. Curabitur consequat, lectus sit amet luctus vulputate','21-08-19',9,3,45,2, null),
+         ('FPF310','fringilla. Donec feugiat metus sit amet ante. Vivamus','21-05-11',5,3,29,2, null),
+         ('ETY136','erat, in consectetuer ipsum nunc id','20-10-24',10,2,45,2, null),
+         ('QXD484','mattis semper, dui lectus rutrum urna, nec luctus felis','21-06-11',10,2,47,2, null),
+         ('XWI167','Phasellus elit pede, malesuada vel, venenatis','21-12-16',6,2,42,2, null),
+         ('WFZ707','egestas rhoncus. Proin nisl sem, consequat nec, mollis vitae, posuere','21-11-15',6,2,38,2, null),
+         ('JUR382','est. Nunc laoreet lectus quis massa. Mauris vestibulum, neque sed dictum eleifend','21-01-30',6,2,37,2, null),
+         ('QUN789','venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras','21-11-21',10,2,15,2, null),
+         ('RUK181','metus. Vivamus euismod urna. Nullam lobortis quam a felis','21-05-15',4,2,26,2, null),
+         ('RWQ356','Sed pharetra, felis eget varius ultrices, mauris ipsum porta elit, a feugiat tellus','21-02-06',6,3,32,2, null),
+         ('CGS861','ut dolor dapibus gravida. Aliquam tincidunt, nunc ac mattis ornare, lectus ante dictum','21-03-16',10,2,48,2, null),
+         ('LQM489','at, libero. Morbi accumsan laoreet ipsum. Curabitur consequat','21-06-30',1,2,1,3, null),
+         ('NIS146','Curabitur sed tortor. Integer aliquam adipiscing lacus. Ut nec urna et arcu imperdiet','21-12-16',4,3,26,3, null),
+         ('IDN938','ipsum primis in faucibus orci luctus et ultrices','21-06-13',3,2,20,3, null),
+         ('NKA604','sodales at, velit. Pellentesque ultricies dignissim lacus. Aliquam rutrum lorem ac risus. Morbi','21-08-30',1,1,3,4, null),
+         ('GIC426','purus sapien, gravida non, sollicitudin a, malesuada id, erat.','21-01-24',2,2,15,4, null),
+         ('YBB385','in consectetuer ipsum nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare','21-06-25',5,3,30,4, null),
+         ('SEH245','lacus. Mauris non dui nec urna','21-11-11',6,2,32,4, null),
+         ('FLR368','ac mattis ornare, lectus ante dictum mi, ac mattis velit justo','21-09-03',4,2,26,4, null),
+         ('CGP861','penatibus et magnis dis parturient montes, nascetur ridiculus mus.','21-08-21',3,1,21,4, null);
+
+
+

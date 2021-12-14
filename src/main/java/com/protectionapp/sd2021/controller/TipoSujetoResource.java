@@ -3,6 +3,7 @@ package com.protectionapp.sd2021.controller;
 import com.protectionapp.sd2021.dto.denuncia.*;
 import com.protectionapp.sd2021.exception.DenunciaNotFoundException;
 import com.protectionapp.sd2021.service.denuncia.TipoSujetoServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,9 @@ import javax.validation.Valid;
 @RequestMapping("/tiposSujetos")
 public class TipoSujetoResource {
     @Autowired
+    Configurations configurations;
+
+    @Autowired
     private TipoSujetoServiceImpl tipoSujetoService;
 
     @GetMapping("/{id}")
@@ -21,10 +25,22 @@ public class TipoSujetoResource {
         return tipoSujetoService.getById(id);
     }
 
+    @GetMapping(path = "page")
+    @ResponseBody
+    public TipoSujetoResult getAll() {
+        return tipoSujetoService.getAll(PageRequest.of(0, configurations.getItemsPaginacion()));
+    }
+
     @GetMapping(path = "page/{page_num}")
     @ResponseBody
     public TipoSujetoResult getAll(@PathVariable(value = "page_num") Integer pageNum) {
-        return tipoSujetoService.getAll(PageRequest.of(pageNum, 5));
+        return tipoSujetoService.getAll(PageRequest.of(pageNum, configurations.getItemsPaginacion()));
+    }
+
+    @GetMapping(path = "page/{page_num}/{size}")
+    @ResponseBody
+    public TipoSujetoResult getAll(@PathVariable(value = "page_num") Integer pageNum, @PathVariable(value = "size") Integer size) {
+        return tipoSujetoService.getAll(PageRequest.of(pageNum, size));
     }
 
     @RequestMapping(

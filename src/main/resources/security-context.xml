@@ -32,7 +32,7 @@
 	  			FROM user WHERE username = ?"
 								   authorities-by-username-query="
 	  			SELECT u.username, r.description as authorities
-	  			FROM user u, user_roles u_r, role r
+	  			FROM user u, user_role u_r, role r
 	  			WHERE u.id = u_r.user_id
 	  			AND r.id = u_r.role_id
 	  			AND u.username = ?" />

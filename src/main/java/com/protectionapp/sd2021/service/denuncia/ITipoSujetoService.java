@@ -10,6 +10,4 @@ import org.springframework.stereotype.Service;
 
 public interface ITipoSujetoService extends IBaseService<TipoSujetoDTO, TipoSujetoResult> {
     public TipoSujetoResult getllAllNotPaginated();
-    public SujetoDto updateSujetoNombre (SujetoDto dto, Integer id, String nombre);
-    public SujetoDto updateSujetoNombreNoTransaction (SujetoDto dto, Integer id, String nombre);
 }

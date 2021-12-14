@@ -7,6 +7,7 @@ import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoDTO;
 import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoResult;
 import com.protectionapp.sd2021.dto.user.UserDTO;
 import com.protectionapp.sd2021.service.casosDerivados.CasosDerivadosServiceImpl;
+import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/casosDerivados")
 public class CasosDerivadosResource {
-
+    @Autowired
+    Configurations configurations;
 
     @Autowired
     private CasosDerivadosServiceImpl cDService;
@@ -34,16 +36,20 @@ public class CasosDerivadosResource {
 
     @GetMapping(path = "page/{page_num}")
     @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
-
-    public CasosDerivadosResult getCasosDerivados(@PathVariable(value = "page_num") Integer pageNum) {
-        return cDService.getAll(PageRequest.of(pageNum, 5));
+    public CasosDerivadosResult getAll(@PathVariable(value = "page_num") Integer pageNum) {
+        return cDService.getAll(PageRequest.of(pageNum, configurations.getItemsPaginacion()));
     }
 
-    @GetMapping(path = "/")
-    public CasosDerivadosResult getAll(Pageable page) {
-        return cDService.getAll(page);
+    @GetMapping(path = "page")
+    public CasosDerivadosResult getAll() {
+        return cDService.getAll(PageRequest.of(0, configurations.getItemsPaginacion()));
     }
 
+    @GetMapping(path = "page/{page_num}/{size}")
+    @ResponseBody
+    public CasosDerivadosResult getAll(@PathVariable(value = "page_num") Integer pageNum, @PathVariable(value = "size") Integer size){
+        return cDService.getAll(PageRequest.of(0, size));
+    }
 
     @PostMapping()
     @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
@@ -66,11 +72,5 @@ public class CasosDerivadosResource {
         return cDService.update(casoDerivadosDTO, id);
 
     }
-
-
-
-
-
-
 }
 

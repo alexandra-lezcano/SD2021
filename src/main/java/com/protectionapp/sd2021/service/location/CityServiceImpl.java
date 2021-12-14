@@ -27,7 +27,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -105,7 +104,7 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional
     public CityDTO save(CityDTO dto) {
         final CityDomain cityDomain = convertDtoToDomain(dto);
         final CityDomain city = cityDao.save(cityDomain);
@@ -151,13 +150,11 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
         return result;
     }
 
-    /* Al ser llamado directamente - no se crea transaccion
-    *  Al ser llamado desde metodo - si metodo padre tiene transaccion entonces falla  */
     @Override
-    //@Transactional(propagation = Propagation.NEVER)
-    //@CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
+    @Transactional
+    @CachePut(value = Configurations.CACHE_NOMBRE, key = "'api_city_'+#id")
     public CityDTO update(CityDTO dto, Integer id) {
-        final CityDomain updatedCityDomain = cityDao.findById(id).get(); // find by id tiene su propia transaccion
+        final CityDomain updatedCityDomain = cityDao.findById(id).get();
 
         Set<NeighborhoodDomain> neighborhoodDomains = new HashSet<>();
         if (dto.getNeighborhoods() != null) {
@@ -182,14 +179,7 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
         );
 
         updatedCityDomain.setDenuncias(denunciaDomains);
-
-        if(configurations.isTransactionTest()){
-            logger.info("[TEST] Fallar llamada directa");
-            throw new RuntimeException("Fallar llamada directa");
-
-        }
-        logger.info("[TEST] Llamada directa exitosa");
-        cityDao.save(updatedCityDomain); // save tiene su propia transaccion
+        cityDao.save(updatedCityDomain);
         return convertDomainToDto(updatedCityDomain);
     }
 
@@ -234,11 +224,8 @@ public class CityServiceImpl extends BaseServiceImpl<CityDTO, CityDomain, CityRe
     }
 
     @Override
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Transactional
     public void addCityToUser(UserDTO dto, UserDomain domain) {
-     /*   if(configurations.isTransactionTest()){
-            throw new RuntimeException("Test Rollback");
-        }*/
         if (dto.getCityId() != null) domain.setCity(cityDao.findById(dto.getCityId()).get());
     }
 }

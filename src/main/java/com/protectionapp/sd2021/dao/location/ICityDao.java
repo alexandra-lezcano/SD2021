@@ -11,4 +11,8 @@ import org.springframework.stereotype.Repository;
 public interface ICityDao extends CrudRepository<CityDomain, Integer> {
     // Permite retornar results paginados en CityServiceImpl
     public Page<CityDomain> findAll(Pageable pageable);
+
+    Page<CityDomain> findByNameContainsIgnoreCaseOrDescriptionContainsIgnoreCase(String name, String description, Pageable pageable);
+
+
 }

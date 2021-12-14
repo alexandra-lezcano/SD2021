@@ -4,6 +4,7 @@ import com.protectionapp.sd2021.dao.location.ICityDao;
 import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
+import com.protectionapp.sd2021.dto.denuncia.DenunciaResult;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodDTO;
 import com.protectionapp.sd2021.dto.localization.NeighborhoodResult;
 import com.protectionapp.sd2021.dto.user.UserDTO;
@@ -157,9 +158,21 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     }
 
     @Override
+    @Transactional
     public NeighborhoodResult findAllByCityPaged(Integer city, Pageable pageable) {
         final List<NeighborhoodDTO> n_dtos = new ArrayList<>();
         Page<NeighborhoodDomain> n_domains = neighborhoodDao.findByCity_IdEquals(city, pageable);
+        n_domains.forEach(n_domain -> n_dtos.add(convertDomainToDto(n_domain)));
+        final NeighborhoodResult n_result = new NeighborhoodResult();
+        n_result.setNeighborhoods(n_dtos);
+        return n_result;
+    }
+
+    @Override
+    @Transactional
+    public NeighborhoodResult getAllByName(Pageable pageable, String search){
+        final List<NeighborhoodDTO> n_dtos = new ArrayList<>();
+        Page<NeighborhoodDomain> n_domains = neighborhoodDao.findByNameContainsIgnoreCaseOrDescriptionContainsIgnoreCaseOrCity_NameContainsIgnoreCase(search, search, search, pageable);
         n_domains.forEach(n_domain -> n_dtos.add(convertDomainToDto(n_domain)));
         final NeighborhoodResult n_result = new NeighborhoodResult();
         n_result.setNeighborhoods(n_dtos);

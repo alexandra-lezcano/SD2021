@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +28,7 @@ public class TipoDenunciaResource {
 
     @GetMapping("/{id}")
     @ResponseBody
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public TipoDenunciaDTO getById(@PathVariable(value = "id") Integer id) {
         return tipoDenunciaService.getById(id);
     }
@@ -41,18 +43,21 @@ public class TipoDenunciaResource {
 
     @GetMapping(path = "/page")
     @ResponseBody
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public TipoDenunciaResult getAll() {
         return tipoDenunciaService.getAll(PageRequest.of(0,configurations.getItemsPaginacion()));
     }
 
     @GetMapping(path="/page/{page_num}")
     @ResponseBody
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public TipoDenunciaResult getAll(@PathVariable(value = "page_num") Integer page){
         return tipoDenunciaService.getAll(PageRequest.of(page,configurations.getItemsPaginacion()));
     }
 
     @GetMapping(path="/page/{page_num}/{size}")
     @ResponseBody
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public TipoDenunciaResult getAll(@PathVariable(value = "page_num") Integer page, @PathVariable(value="size") Integer size){
         return tipoDenunciaService.getAll(PageRequest.of(page,size));
     }
@@ -61,6 +66,7 @@ public class TipoDenunciaResource {
             method = RequestMethod.GET,
             produces = "application/JSON"
     )
+   @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public TipoDenunciaResult getllAllNotPaginated() {
         return tipoDenunciaService.getllAllNotPaginated();
     }
@@ -68,17 +74,20 @@ public class TipoDenunciaResource {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public TipoDenunciaDTO save(@Valid @RequestBody TipoDenunciaDTO dto) {
         return tipoDenunciaService.save(dto);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public TipoDenunciaDTO update(@RequestBody TipoDenunciaDTO dto, @PathVariable(value = "id") Integer id) {
         return tipoDenunciaService.update(dto, id);
     }
 
     @DeleteMapping("/{id}")
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public TipoDenunciaDTO delete(@PathVariable(value = "id") Integer id) {
         return tipoDenunciaService.delete(id);
     }

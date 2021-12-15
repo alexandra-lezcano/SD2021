@@ -33,6 +33,7 @@ public class DenunciaEstadoResource {
 
     @GetMapping(path = "page")
     @ResponseBody
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public DenunciaEstadoResult getAll() {
         return estadoService.getAll(PageRequest.of(0,configurations.getItemsPaginacion()));
     }
@@ -47,6 +48,7 @@ public class DenunciaEstadoResource {
 
     @GetMapping(path = "page/{page_num}/{size}")
     @ResponseBody
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public DenunciaEstadoResult getAll(@PathVariable(value = "page_num") Integer pageNum, @PathVariable(value = "size") Integer size) {
         return estadoService.getAll(PageRequest.of(pageNum, size));
     }
@@ -55,6 +57,8 @@ public class DenunciaEstadoResource {
             method = RequestMethod.GET,
             produces = "application/JSON"
     )
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public DenunciaEstadoResult getllAllNotPaginated() {
         return estadoService.getAllNotPaginated();
     }
@@ -63,6 +67,8 @@ public class DenunciaEstadoResource {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public DenunciaEstadoDTO save(@Valid @RequestBody DenunciaEstadoDTO denunciaEstadoDTO) {
         return estadoService.save(denunciaEstadoDTO);
     }

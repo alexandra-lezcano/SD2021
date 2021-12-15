@@ -41,12 +41,14 @@ public class CasosDerivadosResource {
     }
 
     @GetMapping(path = "page")
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public CasosDerivadosResult getAll() {
         return cDService.getAll(PageRequest.of(0, configurations.getItemsPaginacion()));
     }
 
     @GetMapping(path = "page/{page_num}/{size}")
     @ResponseBody
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public CasosDerivadosResult getAll(@PathVariable(value = "page_num") Integer pageNum, @PathVariable(value = "size") Integer size){
         return cDService.getAll(PageRequest.of(0, size));
     }
@@ -68,9 +70,17 @@ public class CasosDerivadosResource {
 
 
     @ResponseStatus(HttpStatus.OK)
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public CasosDerivadosDTO update(@RequestBody CasosDerivadosDTO casoDerivadosDTO, @PathVariable(value = "id") Integer id) {
         return cDService.update(casoDerivadosDTO, id);
 
+    }
+
+    @GetMapping(path = "user/{page_num}/{id}")
+    @ResponseBody
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+    public CasosDerivadosResult getAllByUser(@PathVariable(value = "page_num") Integer pageNum, @PathVariable(value = "id") Integer id){
+        return cDService.getAllByUser(PageRequest.of(pageNum,configurations.getItemsPaginacion()),id);
     }
 }
 

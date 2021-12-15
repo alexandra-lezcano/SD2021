@@ -1,8 +1,10 @@
 package com.protectionapp.sd2021.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
 import com.protectionapp.sd2021.domain.casosDerivados.CasosDerivadosDomain;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
+import com.protectionapp.sd2021.domain.investigacion.InvestigacionDomain;
 import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 
@@ -46,7 +48,7 @@ public class UserDomain implements IBaseDomain {
     @Transient
     private String confirmPassword;
 
-    @ManyToMany
+   @ManyToMany
    @JoinTable(
            name = "user_role",
            joinColumns = @JoinColumn(name="user_id"),
@@ -72,9 +74,17 @@ public class UserDomain implements IBaseDomain {
     private Set<CasosDerivadosDomain> casos_derivados;
 
 
-    /*Un trabajador social se ocupa de muchas denuncias*/
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<DenunciaDomain> denuncias;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "users")
+    private Set<InvestigacionDomain> investigaciones;
+
+    public Set<InvestigacionDomain> getInvestigaciones() {
+        return investigaciones;
+    }
+
+    public void setInvestigaciones(Set<InvestigacionDomain> investigaciones) {
+        this.investigaciones = investigaciones;
+    }
 
     public String getName() {
         return name;
@@ -178,14 +188,6 @@ public class UserDomain implements IBaseDomain {
 
     public void setCity(CityDomain city) {
         this.city = city;
-    }
-
-    public Set<DenunciaDomain> getDenuncias() {
-        return denuncias;
-    }
-
-    public void setDenuncias(Set<DenunciaDomain> denuncias) {
-        this.denuncias = denuncias;
     }
 
     public Set<CasosDerivadosDomain> getCasos_derivados() {return casos_derivados;}

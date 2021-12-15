@@ -39,8 +39,9 @@ public class SujetoDomain implements IBaseDomain {
     private TipoSujetoDomain tipo;
 
     /*Un sujeto tiene una denuncia*/
-    @ManyToMany(mappedBy = "sujetos")
-    private Set<DenunciaDomain> denuncias;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "denuncia_id", referencedColumnName = "id")
+    private DenunciaDomain denuncia;
 
     public Integer getId() {
         return id;
@@ -90,14 +91,6 @@ public class SujetoDomain implements IBaseDomain {
         this.direccion = direccion;
     }
 
-    public Set<DenunciaDomain> getDenuncias() {
-        return denuncias;
-    }
-
-    public void setDenuncias(Set<DenunciaDomain> denuncia) {
-        this.denuncias = denuncia;
-    }
-
     public TipoSujetoDomain getTipo() {
         return tipo;
     }
@@ -106,4 +99,11 @@ public class SujetoDomain implements IBaseDomain {
         this.tipo = tipo;
     }
 
+    public DenunciaDomain getDenuncia() {
+        return denuncia;
+    }
+
+    public void setDenuncia(DenunciaDomain denuncia) {
+        this.denuncia = denuncia;
+    }
 }

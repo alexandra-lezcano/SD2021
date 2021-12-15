@@ -6,16 +6,16 @@ import com.protectionapp.sd2021.dao.denuncia.ISujetoDao;
 import com.protectionapp.sd2021.dao.denuncia.ITipoDenunciaDao;
 import com.protectionapp.sd2021.dao.location.ICityDao;
 import com.protectionapp.sd2021.dao.location.INeighborhoodDao;
-import com.protectionapp.sd2021.dao.user.IUserDao;
 import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.denuncia.SujetoDomain;
 import com.protectionapp.sd2021.domain.denuncia.TipoDenunciaDomain;
-import com.protectionapp.sd2021.domain.user.UserDomain;
+import com.protectionapp.sd2021.domain.investigacion.InvestigacionDomain;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaDTO;
 import com.protectionapp.sd2021.dto.denuncia.DenunciaResult;
-import com.protectionapp.sd2021.dto.user.UserDTO;
+import com.protectionapp.sd2021.dto.investigacion.InvestigacionDTO;
 import com.protectionapp.sd2021.exception.DenunciaNotFoundException;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import com.protectionapp.sd2021.service.investigacion.InvestigacionServiceImpl;
 import com.protectionapp.sd2021.utils.Configurations;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,7 +56,7 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     private INeighborhoodDao neighborhoodDao;
 
     @Autowired
-    private IUserDao userDao;
+    private InvestigacionServiceImpl investigacionService;
 
     @Autowired
     private CacheManager cacheManager;
@@ -81,11 +81,6 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
         denuncia.setCity_id(domain.getCity().getId());
         denuncia.setNeighborhood_id(domain.getNeighborhood().getId());
 
-        /*Debemos tolerar que la denuncia sea creada in un trabajador social asignado*/
-        if (domain.getUser() != null) {
-            denuncia.setUser_id(domain.getUser().getId());
-        }
-
         if (domain.getTiposDenuncias() != null) {
             Set<Integer> ids = new HashSet<>();
             for (TipoDenunciaDomain t : domain.getTiposDenuncias()) {
@@ -102,6 +97,9 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
             denuncia.setSujeto_ids(ids);
         }
 
+        if(domain.getInvestigacion()!=null){
+            denuncia.setInvestigacionId(domain.getInvestigacion().getId());
+        }
         return denuncia;
     }
 
@@ -115,9 +113,6 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
         if(dto.getNeighborhood_id()!=null){denuncia.setNeighborhood(neighborhoodDao.findById(dto.getNeighborhood_id()).get());}
         if(dto.getCity_id()!=null){denuncia.setCity(cityDao.findById(dto.getCity_id()).get());}
         if(dto.getCodigo() != null){denuncia.setCodigo(dto.getCodigo());}
-        if (dto.getUser_id() != null) {
-            denuncia.setUser(userDao.findById(dto.getUser_id()).get());
-        }
 
         if (dto.getSujeto_ids() != null) {
             Set<SujetoDomain> sujetos = new HashSet<>();
@@ -136,6 +131,8 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
             }
             denuncia.setTiposDenuncias(tipos);
         }
+
+        investigacionService.addInvestigacionToDenuncia(dto,denuncia);
 
         return denuncia;
     }
@@ -201,9 +198,7 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
         if (dto.getSujeto_ids() != null) {
             updated.setSujetos(getSujetosDomainFromDTO(dto));
         }
-        if (dto.getUser_id() != null) {
-            updated.setUser(userDao.findById(dto.getUser_id()).get());
-        }
+
         denunciaDao.save(updated);
         return convertDomainToDto(updated);
     }
@@ -245,11 +240,9 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
 
     @Override
     @Transactional
-    public void addDenunciaToUser(UserDTO dto, UserDomain domain) {
-        Set<DenunciaDomain> denunciaDomains = new HashSet<>();
-        if (dto.getDenunciasIds() != null) {
-            dto.getDenunciasIds().forEach(d_id -> denunciaDomains.add(denunciaDao.findById(d_id).get()));
+    public void addDenunciaToInvestigacion(InvestigacionDTO dto, InvestigacionDomain domain) {
+        if(dto.getDenunciaId()!=null){
+            domain.setDenuncia(denunciaDao.findById(dto.getDenunciaId()).get());
         }
-        domain.setDenuncias(denunciaDomains);
     }
 }

@@ -4,8 +4,10 @@ import com.protectionapp.sd2021.dao.casosDerivados.ICasosDerivadosDao;
 import com.protectionapp.sd2021.dao.user.IRoleDao;
 import com.protectionapp.sd2021.dao.user.IUserDao;
 import com.protectionapp.sd2021.domain.casosDerivados.CasosDerivadosDomain;
+import com.protectionapp.sd2021.domain.investigacion.InvestigacionDomain;
 import com.protectionapp.sd2021.domain.user.RoleDomain;
 import com.protectionapp.sd2021.domain.user.UserDomain;
+import com.protectionapp.sd2021.dto.investigacion.InvestigacionDTO;
 import com.protectionapp.sd2021.dto.localization.CityDTO;
 import com.protectionapp.sd2021.dto.user.RoleDTO;
 import com.protectionapp.sd2021.dto.user.UserDTO;
@@ -13,6 +15,7 @@ import com.protectionapp.sd2021.dto.user.UserResult;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
 import com.protectionapp.sd2021.service.casosDerivados.ICasosDerivadosService;
 import com.protectionapp.sd2021.service.denuncia.IDenunciaService;
+import com.protectionapp.sd2021.service.investigacion.InvestigacionServiceImpl;
 import com.protectionapp.sd2021.service.location.ICityService;
 import com.protectionapp.sd2021.service.location.INeighborhoodService;
 import com.protectionapp.sd2021.utils.Configurations;
@@ -63,7 +66,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
     @Autowired
     private ICasosDerivadosService casosDerivadosService;
 
-
+    @Autowired
+    private InvestigacionServiceImpl investigacionService;
 
     private final Logger logger = LogManager.getLogger(this.getClass());
 
@@ -95,11 +99,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
             dto.setNeighborhoodIds(neighborhoodIds);
         }
 
-        if (userDomain.getDenuncias() != null) {
-            Set<Integer> denunciasIds = new HashSet<>();
-            userDomain.getDenuncias().forEach(d_domain -> denunciasIds.add(d_domain.getId()));
-            dto.setDenunciasIds(denunciasIds);
-        }
         //relacion onetomany con casos derivados
         if(userDomain.getCasos_derivados()!=null){
             Set<Integer> casosIds = new HashSet<>();
@@ -107,6 +106,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
             dto.setCasosDerivados(casosIds);
         }
 
+        Set<Integer> investigacionIds = new HashSet<>();
+        if(userDomain.getInvestigaciones()!=null){
+            userDomain.getInvestigaciones().forEach(investigacionDomain -> investigacionIds.add(investigacionDomain.getId()));
+        }
+        dto.setInvestigacionIds(investigacionIds);
         return dto;
     }
 
@@ -116,9 +120,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         userDomain.setId(dto.getId());
         userDomain.update(dto.getName(),dto.getSurname(),dto.getUsername(),dto.getCn(),dto.getAddress(),dto.getEmail(),dto.getPhone(),dto.getPassword());
 
+        investigacionService.addInvestigacionesToUser(dto, userDomain);
         neighborhoodService.addNeighborhoodToUser(dto, userDomain); // transaction requires new - COMENZA ACA tal vez getAll falla porque esto requiere una nueva transaccion
         cityService.addCityToUser(dto, userDomain); // transaction not supported
-        denunciaService.addDenunciaToUser(dto, userDomain); // transaction mandatory
 
         if (dto.getRoleId() != null) {
             Set<RoleDomain> roles= new HashSet<RoleDomain>();
@@ -231,11 +235,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
             //  userDomain.setRole(roleDao.findById(dto.getRoleId()).get());
         }
 
-
+        investigacionService.addInvestigacionesToUser(dto, updatedUserDomain);
         neighborhoodService.addNeighborhoodToUser(dto, updatedUserDomain); // transaction requires_new
         cityService.addCityToUser(dto, updatedUserDomain); // transaction not_supported
-        denunciaService.addDenunciaToUser(dto, updatedUserDomain); // transaction mandatory
-
         userDao.save(updatedUserDomain);
         return convertDomainToDto(updatedUserDomain);
     }
@@ -248,5 +250,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         final UserDTO deletedUserDto = convertDomainToDto(deletedUserdomain);
         userDao.delete(deletedUserdomain);
         return deletedUserDto;
+    }
+
+    @Override
+    @Transactional
+    public void addUsersToInvestigacion(InvestigacionDTO dto, InvestigacionDomain domain) {
+        Set<UserDomain> userDomains = new HashSet<>();
+        if(dto.getUserIds()!=null){
+            dto.getUserIds().forEach(userId -> userDomains.add(userDao.findById(userId).get()));
+        }
+        domain.setUsers(userDomains);
     }
 }

@@ -61,11 +61,11 @@ INSERT INTO user (name,surname,email,phone,address,cn,city_id,username,password)
 VALUES ('Test','User','test5@google.com',9361703,'179-8299 Velit St.',6135124,2,'User','$2a$04$wwietxcXYYDhsva8irZ/.egR0a.vT2T5mtWGVyDRDGtKE1uzzflOi');
 
 #9 Asignar Admins
-INSERT INTO user_roles (user_id, role_id)
+INSERT INTO user_role (user_id, role_id)
 VALUES (1, 2), (11, 2);
 
 #9 Asignar T Sociales
-INSERT INTO user_roles (user_id, role_id)
+INSERT INTO user_role (user_id, role_id)
 VALUES (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (9, 1), (10, 1);
 
 #10 Denuncias

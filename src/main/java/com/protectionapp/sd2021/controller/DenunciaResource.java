@@ -44,6 +44,7 @@ public class DenunciaResource {
     }
 
     @GetMapping(path = "page/{num}/{size}")
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public DenunciaResult getAll(@PathVariable(value = "num") Integer num, @PathVariable(value = "size") Integer size) throws DenunciaNotFoundException {
         return denunciaService.getAll(PageRequest.of(num, size));
     }
@@ -52,7 +53,8 @@ public class DenunciaResource {
             method = RequestMethod.GET,
             produces = "application/JSON"
     )
-    @Secured({"ROLE_ADMIN"})
+
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public DenunciaResult getllAllNotPaginated() {
         return denunciaService.getllAllNotPaginated();
     }

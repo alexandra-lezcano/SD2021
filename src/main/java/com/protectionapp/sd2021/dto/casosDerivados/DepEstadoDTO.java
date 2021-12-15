@@ -2,8 +2,10 @@ package com.protectionapp.sd2021.dto.casosDerivados;
 
 import com.protectionapp.sd2021.dto.base.BaseDTO;
 
-import java.util.Set;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Set;
+@XmlRootElement(name = "depEstado")
 public class DepEstadoDTO extends BaseDTO {
 
     private static final long serialVersionUID = 1L;

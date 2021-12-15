@@ -68,7 +68,7 @@ public class UserDomain implements IBaseDomain {
     )
     private Set<NeighborhoodDomain> neighborhoods;
 
-    @OneToMany(mappedBy = "trabajador_social", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<CasosDerivadosDomain> casos_derivados;
 
 

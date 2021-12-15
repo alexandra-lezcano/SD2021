@@ -32,7 +32,7 @@ public class SujetoResource {
 
     @GetMapping(path = "page")
     @ResponseBody
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+    @Secured({"ROLE_USER"})
     public SujetoResult getAll() {
         return sujetoService.getAll(PageRequest.of(0, configurations.getItemsPaginacion()));
     }

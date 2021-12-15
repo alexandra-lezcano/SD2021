@@ -75,5 +75,12 @@ public class CasosDerivadosResource {
         return cDService.update(casoDerivadosDTO, id);
 
     }
+
+    @GetMapping(path = "user/{page_num}/{id}")
+    @ResponseBody
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+    public CasosDerivadosResult getAllByUser(@PathVariable(value = "page_num") Integer pageNum, @PathVariable(value = "id") Integer id){
+        return cDService.getAllByUser(PageRequest.of(pageNum,configurations.getItemsPaginacion()),id);
+    }
 }
 

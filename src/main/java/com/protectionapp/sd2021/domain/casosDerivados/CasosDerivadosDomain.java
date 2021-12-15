@@ -41,7 +41,7 @@ public class CasosDerivadosDomain implements IBaseDomain {
 
     @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserDomain trabajador_social;
+    private UserDomain user;
 
 
 
@@ -84,11 +84,11 @@ public class CasosDerivadosDomain implements IBaseDomain {
     }
 
     public UserDomain getTrabajador_social() {
-        return trabajador_social;
+        return user;
     }
 
     public void setTrabajador_social(UserDomain trabajador_social) {
-        this.trabajador_social = trabajador_social;
+        this.user = trabajador_social;
     }
 
     public DenunciaDomain getDenuncia() {

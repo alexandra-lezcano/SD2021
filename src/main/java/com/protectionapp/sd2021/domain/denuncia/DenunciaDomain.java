@@ -2,15 +2,13 @@ package com.protectionapp.sd2021.domain.denuncia;
 
 import com.protectionapp.sd2021.domain.base.IBaseDomain;
 import com.protectionapp.sd2021.domain.casosDerivados.CasosDerivadosDomain;
+import com.protectionapp.sd2021.domain.investigacion.InvestigacionDomain;
 import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
-import java.util.Date;
 import java.util.Set;
 
-import com.protectionapp.sd2021.domain.user.UserDomain;
 
 @Entity
 @Table(name = "denuncias")
@@ -24,7 +22,7 @@ public class DenunciaDomain implements IBaseDomain {
     private Integer id;
 
     @Column(name = "fecha")
-    private Date fecha;
+    private String fecha;
 
     @Column(name = "descripcion")
     private String descripcion;
@@ -46,13 +44,7 @@ public class DenunciaDomain implements IBaseDomain {
     )
     private Set<TipoDenunciaDomain> tipos;
 
-    /*Tabla intermedia entre sujeto y denuncia*/
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "denuncia_sujetos",
-            joinColumns = @JoinColumn(name = "denuncia_id"),
-            inverseJoinColumns = @JoinColumn(name = "sujeto_id")
-    )
+    @OneToMany(mappedBy = "denuncia")
     private Set<SujetoDomain> sujetos;
 
     /*Una denuncia tiene una ciudad*/
@@ -66,14 +58,20 @@ public class DenunciaDomain implements IBaseDomain {
     private NeighborhoodDomain neighborhood;
 
 
-    /* Muchas denuncias corresponden a un trabajador social */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserDomain user;
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "caso_derivado_id")
     private CasosDerivadosDomain denuncias_caso_derivado;
+
+    @OneToOne(mappedBy = "denuncia")
+    private InvestigacionDomain investigacion;
+
+    public InvestigacionDomain getInvestigacion() {
+        return investigacion;
+    }
+
+    public void setInvestigacion(InvestigacionDomain investigacion) {
+        this.investigacion = investigacion;
+    }
 
     public Set<TipoDenunciaDomain> getTiposDenuncias() {
         return this.tipos;
@@ -91,11 +89,11 @@ public class DenunciaDomain implements IBaseDomain {
         this.id = id;
     }
 
-    public Date getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
@@ -125,14 +123,6 @@ public class DenunciaDomain implements IBaseDomain {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public UserDomain getUser() {
-        return user;
-    }
-
-    public void setUser(UserDomain user) {
-        this.user = user;
     }
 
     public Set<SujetoDomain> getSujetos() {

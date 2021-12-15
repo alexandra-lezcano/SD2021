@@ -21,7 +21,7 @@ public class DenunciaDTO extends BaseDTO {
 
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-	private Date fecha;
+	private String fecha;
 	private String descripcion;
 	private Integer estado_id;
 	private String codigo;
@@ -29,10 +29,19 @@ public class DenunciaDTO extends BaseDTO {
 	private Integer city_id;
 	private Integer neighborhood_id;
 	private Set<Integer> sujeto_ids;
-	private Integer user_id;
+	private Integer investigacionId;
 
 	@XmlElement
-	public Date getFecha() {
+	public Integer getInvestigacionId() {
+		return investigacionId;
+	}
+
+	public void setInvestigacionId(Integer investigacionId) {
+		this.investigacionId = investigacionId;
+	}
+
+	@XmlElement
+	public String getFecha() {
 		return fecha;
 	}
 
@@ -71,12 +80,8 @@ public class DenunciaDTO extends BaseDTO {
 		return neighborhood_id;
 	}
 
-	@XmlElement
-	public Integer getUser_id() {
-		return user_id;
-	}
 
-	public void setFecha(Date fecha) {
+	public void setFecha(String fecha) {
 		this.fecha = fecha;
 	}
 
@@ -106,10 +111,6 @@ public class DenunciaDTO extends BaseDTO {
 
 	public void setEstado_id(Integer estado_id) {
 		this.estado_id = estado_id;
-	}
-
-	public void setUser_id(Integer user_id) {
-		this.user_id = user_id;
 	}
 
 }

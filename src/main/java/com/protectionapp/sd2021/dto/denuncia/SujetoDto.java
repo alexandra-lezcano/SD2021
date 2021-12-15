@@ -4,7 +4,6 @@ import com.protectionapp.sd2021.dto.base.BaseDTO;
 import javax.xml.bind.annotation.XmlElement;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Set;
 
 @XmlRootElement(name = "sujetos")
 public class SujetoDto extends BaseDTO {
@@ -19,8 +18,8 @@ public class SujetoDto extends BaseDTO {
 	private String telefono;
 	private String correo;
 	private String direccion;
-	private Integer tipo_id;
-	private Set<Integer> denuncias;
+	private Integer tipoId;
+	private Integer denunciaId;
 
 	@XmlElement
 	public String getCi() {
@@ -48,13 +47,13 @@ public class SujetoDto extends BaseDTO {
 	}
 
 	@XmlElement
-	public Integer getTipo_id() {
-		return tipo_id;
+	public Integer getTipoId() {
+		return tipoId;
 	}
 
 	@XmlElement
-	public Set<Integer> getDenuncias() {
-		return denuncias;
+	public Integer getDenunciaId() {
+		return denunciaId;
 	}
 
 	public void setCi(String ci) {
@@ -77,11 +76,19 @@ public class SujetoDto extends BaseDTO {
 		this.direccion = direccion;
 	}
 
-	public void setTipo_id(Integer tipo_id) {
-		this.tipo_id = tipo_id;
+	public void setTipoId(Integer tipoId) {
+		this.tipoId = tipoId;
 	}
 
-	public void setDenuncias(Set<Integer> denuncia_id) {
-		this.denuncias = denuncia_id;
+	public void setDenunciaId(Integer denuncia_id) {
+		this.denunciaId = denuncia_id;
+	}
+
+	public void setBasicFields(String ci, String nombre, String telefono, String correo, String direccion){
+		this.ci = ci;
+		this.nombre = nombre;
+		this.telefono = telefono;
+		this.correo = correo;
+		this.direccion = direccion;
 	}
 }

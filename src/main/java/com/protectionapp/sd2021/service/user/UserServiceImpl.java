@@ -249,4 +249,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         userDao.delete(deletedUserdomain);
         return deletedUserDto;
     }
+
+    @Override
+    @Transactional
+    //   @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_user_'+#id")
+    public UserDomain getDomainById(Integer id) {
+        final UserDomain user = userDao.findById(id).get();
+        return user;
+    }
+
 }

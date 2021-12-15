@@ -34,6 +34,7 @@ public class CityResource {
 
     @GetMapping(path = "/page")
     @ResponseBody
+
     public CityResult getAll(){
         return cityService.getAll(PageRequest.of(0, configurations.getItemsPaginacion()));
 

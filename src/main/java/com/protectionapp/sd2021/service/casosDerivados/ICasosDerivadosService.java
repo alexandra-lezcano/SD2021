@@ -9,4 +9,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface ICasosDerivadosService extends IBaseService<CasosDerivadosDTO, CasosDerivadosResult> {
     Page<CasosDerivadosDomain> findAll(Pageable pageable);
+    public CasosDerivadosResult getAllByUser(Pageable pageable, Integer id) ;
 }

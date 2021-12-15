@@ -13,6 +13,7 @@ import com.protectionapp.sd2021.dto.casosDerivados.CasosDerivadosDTO;
 import com.protectionapp.sd2021.dto.casosDerivados.CasosDerivadosResult;
 import com.protectionapp.sd2021.dto.casosDerivados.DepEstadoDTO;
 import com.protectionapp.sd2021.service.base.BaseServiceImpl;
+import com.protectionapp.sd2021.service.user.IUserService;
 import com.protectionapp.sd2021.utils.Configurations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -38,7 +39,8 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
 
     @Autowired
     private IUserDao userDao;
-
+    @Autowired
+    private IUserService userService;
 
     @Autowired
     private IDepEstadoDao depEstadoDao;
@@ -119,6 +121,20 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
         cDResult.setCasosDerivados(cD);
         return cDResult;
     }
+
+    @Override
+    @Transactional
+    public CasosDerivadosResult getAllByUser(Pageable pageable,Integer id) {
+
+        final List<CasosDerivadosDTO> cD = new ArrayList<>();
+        UserDomain user = userService.getDomainById(id);
+        Page<CasosDerivadosDomain> cDresults = casosDerivadosDao.findByUser_IdEquals(id,pageable);
+        cDresults.forEach(casoDerivado -> cD.add(convertDomainToDto(casoDerivado)));
+        final CasosDerivadosResult cDResult = new CasosDerivadosResult();
+        cDResult.setCasosDerivados(cD);
+        return cDResult;
+    }
+
 
     @Override
     @Transactional

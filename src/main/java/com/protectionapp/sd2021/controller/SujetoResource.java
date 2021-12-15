@@ -32,6 +32,7 @@ public class SujetoResource {
 
     @GetMapping(path = "page")
     @ResponseBody
+    @Secured({"ROLE_USER"})
     public SujetoResult getAll() {
         return sujetoService.getAll(PageRequest.of(0, configurations.getItemsPaginacion()));
     }
@@ -45,6 +46,7 @@ public class SujetoResource {
 
     @GetMapping(path = "page/{page_num}/{size}")
     @ResponseBody
+    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public SujetoResult getAll(@PathVariable(value = "page_num") Integer pageNum, @PathVariable Integer size) {
         return sujetoService.getAll(PageRequest.of(pageNum, size));
     }

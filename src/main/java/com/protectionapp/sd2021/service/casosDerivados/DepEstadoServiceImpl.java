@@ -105,7 +105,18 @@ public class DepEstadoServiceImpl extends BaseServiceImpl<DepEstadoDTO, DepEstad
         final DepEstadoResult DEResult = new DepEstadoResult();
         DEResult.setDepEstados(depEstados);
         return DEResult;
+    }
 
+    @Override
+    @Transactional
+    public DepEstadoResult getAll(){
+        final List<DepEstadoDTO> depEstados = new ArrayList<DepEstadoDTO>();
+        List<DepEstadoDomain> results = depEstadoDao.findAll();
+        results.forEach(dE -> depEstados.add(convertDomainToDto(dE)));
+
+        final DepEstadoResult DEResult = new DepEstadoResult();
+        DEResult.setDepEstados(depEstados);
+        return DEResult;
     }
 
     @Override

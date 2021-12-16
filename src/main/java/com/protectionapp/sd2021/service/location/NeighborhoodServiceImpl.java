@@ -172,7 +172,13 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
     @Transactional
     public NeighborhoodResult getAllByName(Pageable pageable, String search){
         final List<NeighborhoodDTO> n_dtos = new ArrayList<>();
-        Page<NeighborhoodDomain> n_domains = neighborhoodDao.findByNameContainsIgnoreCaseOrDescriptionContainsIgnoreCaseOrCity_NameContainsIgnoreCase(search, search, search, pageable);
+        Page <NeighborhoodDomain> n_domains = null;
+        if (search == null || search.equals("")){
+            System.out.println("Si");
+            n_domains = neighborhoodDao.findAll(pageable);
+        } else {
+            n_domains = neighborhoodDao.findByNameContainsIgnoreCaseOrDescriptionContainsIgnoreCaseOrCity_NameContainsIgnoreCase(search, search, search, pageable);
+        }
         n_domains.forEach(n_domain -> n_dtos.add(convertDomainToDto(n_domain)));
         final NeighborhoodResult n_result = new NeighborhoodResult();
         n_result.setNeighborhoods(n_dtos);

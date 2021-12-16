@@ -28,7 +28,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -59,6 +58,9 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     private InvestigacionServiceImpl investigacionService;
 
     @Autowired
+    private ISujetoService sujetoService;
+
+    @Autowired
     private CacheManager cacheManager;
 
     private final String cacheKey = "api_denuncia_";
@@ -74,7 +76,7 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
     protected DenunciaDTO convertDomainToDto(DenunciaDomain domain) {
         final DenunciaDTO denuncia = new DenunciaDTO();
         denuncia.setId(domain.getId());
-        denuncia.setEstado_id(domain.getEstado().getId());
+        //denuncia.setEstado_id(domain.getEstado().getId());
         denuncia.setDescripcion(domain.getDescripcion());
         denuncia.setFecha(domain.getFecha());
         denuncia.setCodigo(domain.getCodigo());
@@ -115,10 +117,12 @@ public class DenunciaServiceImpl extends BaseServiceImpl<DenunciaDTO, DenunciaDo
         if(dto.getCodigo() != null){denuncia.setCodigo(dto.getCodigo());}
 
         if (dto.getSujeto_ids() != null) {
+            logger.info("Dentro de DENUNCIA - converto dto to domain");
             Set<SujetoDomain> sujetos = new HashSet<>();
             Set<Integer> ids = dto.getSujeto_ids();
             for (Integer i : ids) {
                 sujetos.add(sujetoDao.findById(i).get());
+                logger.info("Dentro de DENUNCIA/llamada a sujeto Dao - converto dto to domain");
             }
             denuncia.setSujetos(sujetos);
         }

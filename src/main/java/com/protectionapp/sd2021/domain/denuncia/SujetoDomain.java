@@ -40,7 +40,7 @@ public class SujetoDomain implements IBaseDomain {
 
     /*Un sujeto tiene una denuncia*/
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "denuncia_id", referencedColumnName = "id")
+    @JoinColumn(name = "denuncia_id")
     private DenunciaDomain denuncia;
 
     public Integer getId() {

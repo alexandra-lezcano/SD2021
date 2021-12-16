@@ -44,7 +44,7 @@ public class DenunciaDomain implements IBaseDomain {
     )
     private Set<TipoDenunciaDomain> tipos;
 
-    @OneToMany(mappedBy = "denuncia")
+    @OneToMany(mappedBy = "denuncia", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SujetoDomain> sujetos;
 
     /*Una denuncia tiene una ciudad*/

@@ -54,7 +54,7 @@ public class CasosDerivadosResource {
     }
 
     @PostMapping()
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
 
     public CasosDerivadosDTO save(@Valid @RequestBody CasosDerivadosDTO cDDto) {
         return cDService.save(cDDto);
@@ -72,6 +72,7 @@ public class CasosDerivadosResource {
     @ResponseStatus(HttpStatus.OK)
     @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public CasosDerivadosDTO update(@RequestBody CasosDerivadosDTO casoDerivadosDTO, @PathVariable(value = "id") Integer id) {
+        System.out.println("USEEEER->"+casoDerivadosDTO.getUser_id());
         return cDService.update(casoDerivadosDTO, id);
 
     }

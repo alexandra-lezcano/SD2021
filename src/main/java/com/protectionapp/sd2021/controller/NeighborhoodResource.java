@@ -65,7 +65,7 @@ public class NeighborhoodResource {
             method = RequestMethod.GET,
             produces = "application/JSON"
     )
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public NeighborhoodResult getllAllNotPaginated() {
         return neighborhoodService.getllAllNotPaginated();
     }

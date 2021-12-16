@@ -41,7 +41,7 @@ public class DepEstadoResource {
     @GetMapping(path = "/page")
     @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public DepEstadoResult getAll(Pageable page) {
-        return dEService.getAll(page);
+        return dEService.getAll();
     }
 
     @GetMapping(path = "page/{page_num}/{size}")

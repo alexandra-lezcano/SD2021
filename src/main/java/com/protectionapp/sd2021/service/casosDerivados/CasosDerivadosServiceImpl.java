@@ -177,6 +177,7 @@ public class CasosDerivadosServiceImpl extends BaseServiceImpl<CasosDerivadosDTO
     public CasosDerivadosDTO save(CasosDerivadosDTO dto) {
 
         final CasosDerivadosDomain domain = convertDtoToDomain(dto);
+
         final CasosDerivadosDomain CD = casosDerivadosDao.save(domain);
 
         if (dto.getId() == null) {

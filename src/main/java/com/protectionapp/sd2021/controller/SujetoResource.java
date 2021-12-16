@@ -25,28 +25,24 @@ public class SujetoResource {
 
     @GetMapping("/{id}")
     @ResponseBody
-    @Secured({"ROLE_ADMIN"})
     public SujetoDto getById(@PathVariable(value="id") Integer id){
         return sujetoService.getById(id);
     }
 
     @GetMapping(path = "page")
     @ResponseBody
-    @Secured({"ROLE_USER"})
     public SujetoResult getAll() {
         return sujetoService.getAll(PageRequest.of(0, configurations.getItemsPaginacion()));
     }
 
     @GetMapping(path = "page/{page_num}")
     @ResponseBody
-    @Secured({"ROLE_ADMIN"})
     public SujetoResult getAll(@PathVariable(value = "page_num") Integer pageNum) {
         return sujetoService.getAll(PageRequest.of(pageNum, configurations.getItemsPaginacion()));
     }
 
     @GetMapping(path = "page/{page_num}/{size}")
     @ResponseBody
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public SujetoResult getAll(@PathVariable(value = "page_num") Integer pageNum, @PathVariable Integer size) {
         return sujetoService.getAll(PageRequest.of(pageNum, size));
     }
@@ -55,7 +51,6 @@ public class SujetoResource {
             method = RequestMethod.GET,
             produces = "application/JSON"
     )
-    @Secured({"ROLE_ADMIN"})
     public SujetoResult getllAllNotPaginated() {
         return sujetoService.getllAllNotPaginated();
     }
@@ -63,7 +58,7 @@ public class SujetoResource {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    @Secured({"ROLE_ADMIN"})
+
     public SujetoDto save(@Valid @RequestBody SujetoDto sujetoDto){
         return sujetoService.save(sujetoDto);
     }
@@ -71,14 +66,14 @@ public class SujetoResource {
     /*Put en construccion*/
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Secured({"ROLE_ADMIN"})
+
     public SujetoDto update(@Valid @RequestBody SujetoDto sujetoDto, @PathVariable(value = "id") Integer id) {
         return sujetoService.update(sujetoDto, id);
     }
 
     /*Delete en construccion*/
     @DeleteMapping("/{id}")
-    @Secured({"ROLE_ADMIN"})
+
     public SujetoDto delete(@PathVariable(name = "id") Integer id) {
         return sujetoService.delete(id);
     }

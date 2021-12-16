@@ -152,7 +152,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, UserDomain, UserRe
         if (dto.getId() == null) {
             Integer id = userDomain.getId();
             dto.setId(id);
-            cacheManager.getCache(Configurations.CACHE_NOMBRE).put("api_user_" + id, dto);
+            //cacheManager.getCache(Configurations.CACHE_NOMBRE).put("api_user_" + id, dto);
         }
         return convertDomainToDto(user);
     }

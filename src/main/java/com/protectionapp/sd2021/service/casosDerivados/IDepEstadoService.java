@@ -9,4 +9,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface IDepEstadoService extends IBaseService<DepEstadoDTO, DepEstadoResult> {
     public DepEstadoResult getAllByName(Pageable pageable, String strtofind);
+    public  DepEstadoResult getAll();
 }

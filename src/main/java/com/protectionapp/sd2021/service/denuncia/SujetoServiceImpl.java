@@ -94,7 +94,7 @@ public class SujetoServiceImpl extends BaseServiceImpl<SujetoDto, SujetoDomain, 
 
     @Override
     @Transactional
-    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_sujeto_'+#id")
+    //@Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_sujeto_'+#id")
     public SujetoDto getById(Integer id) {
         final SujetoDomain sujeto = sujetoDao.findById(id).get();
         return convertDomainToDto(sujeto);

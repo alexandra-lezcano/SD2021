@@ -22,28 +22,28 @@ public class TipoSujetoResource {
     private TipoSujetoServiceImpl tipoSujetoService;
 
     @GetMapping("/{id}")
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public TipoSujetoDTO getById(@PathVariable(value = "id") Integer id) {
         return tipoSujetoService.getById(id);
     }
 
     @GetMapping(path = "page")
     @ResponseBody
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public TipoSujetoResult getAll() {
         return tipoSujetoService.getAll(PageRequest.of(0, configurations.getItemsPaginacion()));
     }
 
     @GetMapping(path = "page/{page_num}")
     @ResponseBody
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public TipoSujetoResult getAll(@PathVariable(value = "page_num") Integer pageNum) {
         return tipoSujetoService.getAll(PageRequest.of(pageNum, configurations.getItemsPaginacion()));
     }
 
     @GetMapping(path = "page/{page_num}/{size}")
     @ResponseBody
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public TipoSujetoResult getAll(@PathVariable(value = "page_num") Integer pageNum, @PathVariable(value = "size") Integer size) {
         return tipoSujetoService.getAll(PageRequest.of(pageNum, size));
     }
@@ -52,7 +52,7 @@ public class TipoSujetoResource {
             method = RequestMethod.GET,
             produces = "application/JSON"
     )
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public TipoSujetoResult getllAllNotPaginated() {
         return tipoSujetoService.getllAllNotPaginated();
     }
@@ -61,7 +61,7 @@ public class TipoSujetoResource {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public TipoSujetoDTO postTipoSujeto(@Valid @RequestBody TipoSujetoDTO tipoSujetoDTO) {
         return tipoSujetoService.save(tipoSujetoDTO);
     }
@@ -69,14 +69,14 @@ public class TipoSujetoResource {
     /*Put en construccion*/
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public TipoSujetoDTO updateTipoSujeto(@Valid @RequestBody TipoSujetoDTO tipoSujetoDTO, @PathVariable(value = "id") Integer id) {
         return tipoSujetoService.update(tipoSujetoDTO, id);
     }
 
     /*Delete en construccion*/
     @DeleteMapping("/{id}")
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+
     public TipoSujetoDTO deleteTipoSujeto(@PathVariable(name = "id") Integer id) {
         return tipoSujetoService.delete(id);
     }

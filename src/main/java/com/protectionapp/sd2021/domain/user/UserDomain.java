@@ -7,6 +7,8 @@ import com.protectionapp.sd2021.domain.denuncia.DenunciaDomain;
 import com.protectionapp.sd2021.domain.investigacion.InvestigacionDomain;
 import com.protectionapp.sd2021.domain.location.CityDomain;
 import com.protectionapp.sd2021.domain.location.NeighborhoodDomain;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -203,5 +205,9 @@ public class UserDomain implements IBaseDomain {
         setEmail(email);
         setPhone(phone);
         setPassword(password);
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encryptedPassword = passwordEncoder.encode(password);
+        setPassword(encryptedPassword);
     }
 }

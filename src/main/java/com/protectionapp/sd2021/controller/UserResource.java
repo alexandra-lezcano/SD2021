@@ -46,20 +46,12 @@ public class UserResource {
         return userService.getAll(PageRequest.of(0, configurations.getItemsPaginacion()));
     }
 
-    /*
-     * todo:
-     *  2- tolerancia a fallos */
-
+    /* todo:tolerancia a fallos */
     @GetMapping("/username/{username}")
     @ResponseBody
     public UserDTO getByUsername(@PathVariable(value = "username") String username) {
         return userService.getByUsername(username);
     }
-
-
-
-
-
 
     @GetMapping(path = "page/{page_num}")
     @ResponseBody
@@ -94,7 +86,6 @@ public class UserResource {
         return userService.update(newUserDTO, userId);
 
     }
-
 
     @DeleteMapping("/{id}")
     public UserDTO delete(@PathVariable(value = "id") Integer userId) {

@@ -88,7 +88,7 @@ public class NeighborhoodServiceImpl extends BaseServiceImpl<NeighborhoodDTO, Ne
 
     @Override
     @Transactional
-    @Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
+    //@Cacheable(value = Configurations.CACHE_NOMBRE, key = "'api_neighborhood_'+#id")
     public NeighborhoodDTO getById(Integer id) {
         if(configurations.isTransactionTest()){
             logger.info("TEST: Aparecera un error pero no hace rollback");

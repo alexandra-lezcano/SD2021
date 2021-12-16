@@ -27,7 +27,7 @@ public class DenunciaResource {
     private DenunciaServiceImpl denunciaService;
 
     @GetMapping("/{id}")
-    @Secured({"ROLE_ADMIN"})
+   // @Secured({"ROLE_ADMIN"})
     public DenunciaDTO getById(@PathVariable(value = "id") Integer id) throws DenunciaNotFoundException {
         return denunciaService.getById(id);
     }
@@ -38,13 +38,13 @@ public class DenunciaResource {
     }
 
     @GetMapping(path = "page/{num}")
-    @Secured({"ROLE_ADMIN"})
+   // @Secured({"ROLE_ADMIN"})
     public DenunciaResult getAll(@PathVariable(value = "num") Integer num) throws DenunciaNotFoundException {
-        return denunciaService.getAll(PageRequest.of(num, 5));
+        return denunciaService.getAll(PageRequest.of(num, configurations.getItemsPaginacion()));
     }
 
     @GetMapping(path = "page/{num}/{size}")
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+   // @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public DenunciaResult getAll(@PathVariable(value = "num") Integer num, @PathVariable(value = "size") Integer size) throws DenunciaNotFoundException {
         return denunciaService.getAll(PageRequest.of(num, size));
     }
@@ -54,7 +54,7 @@ public class DenunciaResource {
             produces = "application/JSON"
     )
 
-    @Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
+    //@Secured({"ROLE_ADMIN","ROLE_TSOCIAL"})
     public DenunciaResult getllAllNotPaginated() {
         return denunciaService.getllAllNotPaginated();
     }
